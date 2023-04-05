@@ -13,17 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('vendors', function (Blueprint $table) {
             $table->id();
-            $table->enum('type' , ['admin' , 'custmer' , 'vender']);
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('phone')->unique();
-            $table->string('otp');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
-            $table->rememberToken();
+            $table->string('commercial_name');
+            $table->string('phone');
+            $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('max_orders');
+            $table->string('max_jar');
+            $table->enum('active' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
         });
     }
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('vendors');
     }
 };
