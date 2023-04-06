@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('phone');
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

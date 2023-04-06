@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('file_path');
             $table->enum('status' , ['PENDING' , 'REJECTED' , 'APPROVED']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

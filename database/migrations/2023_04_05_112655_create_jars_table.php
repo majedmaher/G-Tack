@@ -17,9 +17,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('price');
-            $table->integer('size');
+            $table->float('size');
             $table->string('image');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

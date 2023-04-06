@@ -15,16 +15,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->enum('type' , ['admin' , 'custmer' , 'vender']);
+            $table->enum('type' , ['ADMIN' , 'CUSTMER' , 'VENDER'])->default('CUSTMER');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('otp');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
+            $table->enum('status' , ['ACTIVE' , 'INACTIVE'])->default('ACTIVE');
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('rate');
             $table->string('feedback');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'ON_THE_WAY']);
             $table->text('note');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
