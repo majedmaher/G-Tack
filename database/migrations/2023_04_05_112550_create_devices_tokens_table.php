@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('tokenable_type' , ['']);
             $table->enum('device_name' , ['']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

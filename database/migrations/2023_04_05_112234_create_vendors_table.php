@@ -19,10 +19,11 @@ return new class extends Migration
             $table->string('commercial_name');
             $table->string('phone');
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->string('max_orders');
-            $table->string('max_jar');
+            $table->string('max_orders')->nullable();
+            $table->string('max_jar')->nullable();
             $table->enum('active' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

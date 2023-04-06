@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_required');
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

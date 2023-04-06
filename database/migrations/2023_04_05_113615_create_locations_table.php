@@ -20,6 +20,7 @@ return new class extends Migration
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->enum('type' , ['GOVERNORATE' , 'REGION']);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

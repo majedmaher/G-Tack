@@ -4,22 +4,14 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\Messages;
 use App\Http\Controllers\ControllersService;
-use App\Http\Resources\AdCollection;
-use App\Http\Resources\AdResource;
-use App\Models\Ad;
-use App\Models\School;
+use App\Models\Customer;
 use App\Models\User;
-use Exception;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Symfony\Component\HttpFoundation\Response;
-
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
-use Laravel\Socialite\Facades\Socialite;
-use GuzzleHttp\Exception\ClientException;
-
 
 class UserApiAuthController extends AuthBaseController
 {
@@ -29,60 +21,16 @@ class UserApiAuthController extends AuthBaseController
             'phone' => 'required|numeric|exists:users,phone',
         ];
         $customMessages = [
-            'phone.exists' => '  هذا رقم الهاتف غير مسجل مسبقا',
-            'email.required' => ' الاميل مطلوبه'
-        ];
-
-        $validator = Validator::make($request->all(), $roles, $customMessages);
-        if (!$validator->fails()) {
-            $user = User::where("phone", $request->get('phone'))->where('status' , 'ACTIVE')->first();
-            return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
-        } else {
-            return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
-        }
-    }
-
-    public function register(Request $request)
-    {
-        $roles = [
-            'name' => 'required|string|min:3',
-            'email' => 'required|email|unique:users',
-            'phone' => 'required|numeric|unique:users',
-            'image' => 'required|image',
-            'school_name' => 'required|string|min:3',
-        ];
-        $customMessages = [
-            'email.required' => 'يرجى ادخال الايميل الخاص بك',
-            'email.unique' => 'هذا الإيميل موجود مسبقا',
-            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
-            'phone.unique' => 'هذا الرقم موجود مسبقا',
-            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
-            'school_name.required' => 'يرجى ادخال اسم المدرسة',
-            'image.required' => 'يرجى ادخال الصوره الخاصة ب المدرسة',
-            'image.image' => 'يجب ان تقوم برفع صورة',
+            'phone.required' => 'يرجى إدخال رقم الهاتف',
+            'phone.exists' => 'رقم الهاتف المدخل مسجل مسبقا',
+            'phone.numeric' => 'يجب أن يكون رقم الهاتف رقم',
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = new User();
-            $user->name = $request->get('name');
-            $user->email = $request->get('email');
-            $user->phone = $request->get('phone');
-            $user->password = $request->get('phone');
+            $user = User::where('phone', $request->phone)->where('status' , 'ACTIVE')->first();
             $newCode = mt_rand(1000, 9999);
-            $user->code = $newCode;
-            $user->save();
-            $school = new School();
-            $school->school_name = $request->get('school_name');
-            if ($request->hasFile('image')) {
-                $userImage = $request->file('image');
-                $imageName = time() . '_' . '.' . $userImage->getClientOriginalExtension();
-                $userImage->move('image/users', $imageName);
-                $school->image = 'image/users/' . $imageName;
-            }
-            $school->user_id = $user->id;
-            $school->save();
-            $isSaved = $user->update(['school_id' => $school->id]);
-            // SmsController::sendSmsCodeMessage($request->post('phone'), 3, 'user', '', $newCode);
+            $user->otp = $newCode;
+            $isSaved = $user->save();
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             } else {
@@ -92,53 +40,89 @@ class UserApiAuthController extends AuthBaseController
             return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
         }
     }
+
+    public function register(Request $request)
+    {
+        $roles = [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric|unique:users',
+            'type' => 'required|in:CUSTMER,VENDER',
+            'commercial_name' => 'nullable|string|max:255',
+            'governorate_id' => 'nullable|exists:locations,id',
+            'region_id' => 'nullable|exists:locations,id',
+        ];
+        $customMessages = [
+            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
+            'phone.unique' => 'هذا الرقم موجود مسبقا',
+            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
+            'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
+            'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
+            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
+            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
+        ];
+        $validator = Validator::make($request->all(), $roles, $customMessages);
+        if (!$validator->fails()) {
+            $user = new User();
+            $user->name = $request->get('name');
+            $user->email = $request->get('phone');
+            $user->phone = $request->get('phone');
+            $user->password = $request->get('phone');
+            $newCode = mt_rand(1000, 9999);
+            $user->otp = $newCode;
+            $user->type = $request->get('type');
+            $isSaved = $user->save();
+            if($user->type == 'VENDER'){
+                $vender = new Vendor();
+                $vender->name = $request->name;
+                $vender->commercial_name = $request->commercial_name;
+                $vender->phone = $request->phone;
+                $vender->user_id  = $user->id;
+                $vender->governorate_id = $request->governorate_id;
+                $vender->region_id  = $request->region_id;
+                $isSaved = $vender->save();
+            }elseif($user->type == 'CUSTMER'){
+                $custmer = new Customer();
+                $custmer->name = $user->name;
+                $custmer->phone = $user->phone;
+                $custmer->user_id = $user->id;
+                $isSaved = $custmer->save();
+            }
+            if ($isSaved) {
+                return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
+            } else {
+                return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
+            }
+        } else {
+            return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
+        }
+    }
+
     public function updateInfo(Request $request)
     {
         $roles = [
-            'name' => 'required|string|min:3',
-            'email' => 'required|email|unique:users,email,' . Auth::user()->id,
-            'password' => 'required|min:3',
-            'phone' => 'required|unique:users,phone,' . Auth::user()->id,
-            'last_name' => 'required|string|min:3',
-            'image' => 'nullable',
-            'new_password_confirmation' => 'required|string|same:password',
-            'old_password' => 'required|min:3',
-
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric|unique:users,phone,' . Auth::user()->id,
         ];
 
         $customMessages = [
-            'email.required' => ' :الايميل مطلوب.',
-            'email.unique' => ' :الايميل موجود مسبقاً.',
-            'phone.required' => ' :رقم الهاتف مطلوب.',
-            'phone.unique' => ' :رقم الهاتف موجود مسبقاً.',
-            'name.required' => ' :الاسم مطلوب.',
-            'password.required' => ' :كلمة المرور مطلوب.',
-            'last_name.required' => ' :الاسم الاخير مطلوب.',
-            'new_password_confirmation.required' => ' :تأكيد كلمة المرور مطلوب .',
-            'new_password_confirmation.same' => ' :تأكيد كلمة المرور يجب ان تكون متطابقة .',
-            'old_password.required' => ' : كلمة الامور السابقة مطلوب.',
+            'phone.required' => 'يرجى إدخال رقم الهاتف',
+            'phone.unique' => 'رقم الهاتف موجود مسبقا',
+            'name.required' => 'يرجى أدخال أسمك',
+            'name.max' => 'يرجى أدخال أسم لا يتعدى 255 حرف',
         ];
 
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = Auth::user();
-            if (!Hash::check($request->old_password, $user->password)) {
-                return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS');
-            }
+            $user = User::where('id' , Auth::user()->id)->with('custmer')->first();
             $user->name = $request->get('name');
-            $user->email = $request->get('email');
-            $user->password = Hash::make($request->get('password'));
-            $user->last_name = $request->get('last_name');
             $user->phone = $request->get('phone');
-            if ($request->hasFile('image')) {
-                $userImage = $request->file('image');
-                $imageName = time() . '_' . '.' . $userImage->getClientOriginalExtension();
-                $userImage->move('image/users', $imageName);
-                $user->image = '/image/users/' . $imageName;
-            }
             $isSaved = $user->save();
+            $custmer = Customer::where('user_id' , $user->id)->first();
+            $custmer->name = $user->name;
+            $custmer->phone = $user->phone;
+            $isSaved = $custmer->save();
             if ($isSaved) {
-                return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
+                return $this->generateToken($user, 'USER_UPDATED_SUCCESS');
             } else {
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED');
             }
@@ -147,28 +131,41 @@ class UserApiAuthController extends AuthBaseController
         }
     }
 
+    public function deleteAcount(Request $request)
+    {
+        $user = User::where('id' , Auth::user()->id)->first();
+        $custmer = Customer::where('user_id' , $user->id)->first();
+        $isSaved = $custmer->delete();
+        $isSaved = $user->delete();
+        if ($isSaved) {
+            return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS');
+        } else {
+            return ControllersService::generateProcessResponse(false, 'DELETE_FAILED');
+        }
+    }
+
     public function submitCode(Request $request)
     {
         // ارسال توكن
         $roles = [
-            'code' => 'required|numeric|digits:4',
+            'otp' => 'required|numeric|digits:4',
             'phone' => 'required|numeric|exists:users,phone',
         ];
         $customMessages = [
-            'code.numeric' => ' الكود يجب ان يكون رقمي',
-            'code.required' => 'الكود مطلوب مطلوبه',
-            'code.digits' => 'الكود يجب ان يكون 4 ارقام',
-            'phone.exists' => '  هذا رقم الهاتف غير مسجل مسبقا',
+            'otp.numeric' => 'يجب أن يكون الكود رقم',
+            'otp.required' => 'يرجى إدخال الكود المرسل',
+            'otp.digits' => 'يجب أن يكون الكود متكون من 4 خانات',
+            'phone.exists' => 'الرقم المدخل غير مسجل من قبل',
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
-        $user = User::with('school')->where('phone', $request->phone)->first();
-        if ($request->code == $user->code) {
+        $user = User::where('phone', $request->phone)->first();
+        if ($request->otp == $user->otp) {
             $user->email_verified_at = Carbon::now();
             $user->save();
             return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
-        } elseif ($request->code == 1234) {
+        } elseif ($request->otp == 1234) {
             $user->email_verified_at = Carbon::now();
             $user->save();
             return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
@@ -176,6 +173,7 @@ class UserApiAuthController extends AuthBaseController
             return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
         }
     }
+
     public function sendCodePassword(Request $request)
     {
         $roles = [
@@ -207,7 +205,7 @@ class UserApiAuthController extends AuthBaseController
     private function generateToken($user, $message)
     {
         $tokenResult = $user->createToken('News-User');
-        $token = $tokenResult->accessToken;
+        $token = $tokenResult->plainTextToken;
         $user->setAttribute('token', $token);
         return response()->json([
             'status' => true,
