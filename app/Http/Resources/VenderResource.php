@@ -21,6 +21,10 @@ class VenderResource extends JsonResource
             'max_orders' => $this->max_orders,
             'max_jar' => $this->max_jar,
             'active' => $this->active,
+            'reviews_count' => intval($this->reviews_count),
+            'reviews_sum_rate' => intval($this->reviews_sum_rate),
+            'orders_count' => $this->orders_count,
+            'user' => new UserResource($this->whenLoaded('user')),
             'governorate' => new GovernorateResource($this->whenLoaded('governorate')),
         ];
     }

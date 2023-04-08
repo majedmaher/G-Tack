@@ -1,12 +1,9 @@
 <?php
 
-use App\Http\Controllers\API\AuthBaseController;
-use App\Http\Controllers\API\HomeController;
-use App\Http\Controllers\API\UserApiAuthController;
-use App\Http\Controllers\API\VendersController;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\API\V1\AuthBaseController;
+use App\Http\Controllers\API\V1\HomeController;
+use App\Http\Controllers\API\V1\UserApiAuthController;
+use App\Http\Controllers\API\V1\VendersController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,14 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
     Route::get('home', [HomeController::class, 'home']);
     Route::get('settings', [HomeController::class, 'settings']);
     Route::resource('vender', VendersController::class);
+    Route::resource('order', VendersController::class);
     Route::put('update/profile', [UserApiAuthController::class, 'updateInfo']);
     Route::delete('delete/profile', [UserApiAuthController::class , 'deleteAcount']);
     Route::get('logout', [AuthBaseController::class , 'logout']);
