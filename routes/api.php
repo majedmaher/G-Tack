@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\API\V1\AddressesController;
 use App\Http\Controllers\API\V1\AuthBaseController;
 use App\Http\Controllers\API\V1\HomeController;
+use App\Http\Controllers\API\V1\OrdersController;
 use App\Http\Controllers\API\V1\UserApiAuthController;
 use App\Http\Controllers\API\V1\VendersController;
 use Illuminate\Support\Facades\Route;
@@ -25,7 +27,8 @@ Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
     Route::get('home', [HomeController::class, 'home']);
     Route::get('settings', [HomeController::class, 'settings']);
     Route::resource('vender', VendersController::class);
-    Route::resource('order', VendersController::class);
+    Route::resource('order', OrdersController::class);
+    Route::resource('address', AddressesController::class);
     Route::put('update/profile', [UserApiAuthController::class, 'updateInfo']);
     Route::delete('delete/profile', [UserApiAuthController::class , 'deleteAcount']);
     Route::get('logout', [AuthBaseController::class , 'logout']);

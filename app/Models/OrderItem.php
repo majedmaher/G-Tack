@@ -9,4 +9,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class OrderItem extends Model
 {
     use HasFactory , SoftDeletes;
+
+    public function jars()
+    {
+        return $this->belongsTo(Jar::class , 'jar_id' , 'id');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class , 'order_id' , 'id');
+    }
 }

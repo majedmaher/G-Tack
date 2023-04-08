@@ -104,7 +104,6 @@ class UserApiAuthController extends AuthBaseController
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users,phone,' . Auth::user()->id,
         ];
-
         $customMessages = [
             'phone.required' => 'يرجى إدخال رقم الهاتف',
             'phone.unique' => 'رقم الهاتف موجود مسبقا',
@@ -115,8 +114,8 @@ class UserApiAuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
             $user = User::where('id' , Auth::user()->id)->with('custmer')->first();
-            $user->name = $request->get('name');
-            $user->phone = $request->get('phone');
+            $user->name = $request->name;
+            $user->phone = $request->phone;
             $isSaved = $user->save();
             $custmer = Customer::where('user_id' , $user->id)->first();
             $custmer->name = $user->name;

@@ -36,7 +36,13 @@ class VendersController extends Controller
         ->whereHas('governorate' , function($q){
             $q->where('status' , 'ACTIVE');
         })
-        ->with('governorate' , 'user')->withCount('reviews')->withSum('reviews' , 'rate')->withSum('orders' , 'time')->withCount('orders')->withAvg('orders' , 'time')->get();
+        ->with('governorate' , 'user')
+        ->withCount('reviews')
+        ->withSum('reviews' , 'rate')
+        ->withSum('orders' , 'time')
+        ->withCount('orders')
+        ->withAvg('orders' , 'time')
+        ->get();
         return (new VenderCollection($vendor))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
