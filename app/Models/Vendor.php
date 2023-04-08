@@ -11,6 +11,11 @@ class Vendor extends Model
     use HasFactory , SoftDeletes;
 
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function governorate()
     {
         return $this->belongsTo(Location::class , 'governorate_id' , 'id');
@@ -24,5 +29,10 @@ class Vendor extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class , 'vendor_id' , 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class , 'vendor_id' , 'id');
     }
 }

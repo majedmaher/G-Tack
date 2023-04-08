@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Messages;
 use App\Http\Controllers\ControllersService;
@@ -67,6 +67,7 @@ class UserApiAuthController extends AuthBaseController
             $user->email = $request->get('phone');
             $user->phone = $request->get('phone');
             $user->password = $request->get('phone');
+            $user->status  = 'WAITING';
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $user->type = $request->get('type');
@@ -160,18 +161,24 @@ class UserApiAuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
-        $user = User::where('phone', $request->phone)->first();
-        if ($request->otp == $user->otp) {
-            $user->email_verified_at = Carbon::now();
-            $user->save();
-            return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
-        } elseif ($request->otp == 1234) {
-            $user->email_verified_at = Carbon::now();
-            $user->save();
-            return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
-        } else {
-            return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
+        $user = User::where('phone', '12312135456')->first();
+        if($user){
+            if ($request->otp == $user->otp) {
+                $user->email_verified_at = Carbon::now();
+                $user->save();
+                return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
+            } elseif ($request->otp == 1234) {
+                $user->email_verified_at = Carbon::now();
+                $user->save();
+                return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
+            } else {
+                return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
+            }
+        }else{
+            return ControllersService::generateValidationErrorMessage("الرقم المدخل غير مسجل من قبل", 200);
         }
+
+
     }
 
     public function sendCodePassword(Request $request)

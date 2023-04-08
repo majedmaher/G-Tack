@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\API\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\VenderCollection;
@@ -21,6 +21,9 @@ class VendersController extends Controller
         $region_id = $request->region_id;
 
         $vendor = Vendor::where('active' , 'ACTIVE')
+        ->whereHas('user' , function($q){
+            $q->where('status' , 'ACTIVE');
+        })
         ->when($name , function ($q) use($name){
             $q->where('name' , $name);
         })
@@ -33,8 +36,7 @@ class VendersController extends Controller
         ->whereHas('governorate' , function($q){
             $q->where('status' , 'ACTIVE');
         })
-        ->with('governorate')->withCount('reviews')->withSum('reviews' , 'rate')->get();
-        return $vendor;
+        ->with('governorate' , 'user')->withCount('reviews')->withSum('reviews' , 'rate')->withSum('orders' , 'time')->withCount('orders')->withAvg('orders' , 'time')->get();
         return (new VenderCollection($vendor))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
