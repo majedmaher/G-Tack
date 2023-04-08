@@ -10,6 +10,8 @@ class Customer extends Model
 {
     use HasFactory , SoftDeletes;
 
+    protected $guarded = [];
+
     public function user()
     {
         return $this->belongsTo(User::class);
