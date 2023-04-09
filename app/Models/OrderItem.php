@@ -10,6 +10,8 @@ class OrderItem extends Model
 {
     use HasFactory , SoftDeletes;
 
+    protected $guarded = [];
+
     public function jars()
     {
         return $this->belongsTo(Jar::class , 'jar_id' , 'id');

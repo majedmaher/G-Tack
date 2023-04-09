@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('address_id')->constrained('addresses', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('lat');
             $table->decimal('lng');
+            $table->string('label');
             $table->string('map_address');
             $table->string('description');
             $table->timestamps();

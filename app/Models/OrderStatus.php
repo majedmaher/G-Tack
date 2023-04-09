@@ -9,4 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class OrderStatus extends Model
 {
     use HasFactory , SoftDeletes;
+
+    protected $table = "order_status";
+
+    protected $guarded = [];
 }
