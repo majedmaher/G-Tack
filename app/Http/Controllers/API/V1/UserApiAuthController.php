@@ -22,7 +22,7 @@ class UserApiAuthController extends AuthBaseController
         ];
         $customMessages = [
             'phone.required' => 'يرجى إدخال رقم الهاتف',
-            'phone.exists' => 'رقم الهاتف المدخل مسجل مسبقا',
+            'phone.exists' => 'الرقم الدخل لم يتم تسجيلة',
             'phone.numeric' => 'يجب أن يكون رقم الهاتف رقم',
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
@@ -51,6 +51,7 @@ class UserApiAuthController extends AuthBaseController
             'governorate_id' => 'nullable|exists:locations,id',
             'region_id' => 'nullable|exists:locations,id',
         ];
+
         $customMessages = [
             'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
             'phone.unique' => 'هذا الرقم موجود مسبقا',
@@ -160,7 +161,7 @@ class UserApiAuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
-        $user = User::where('phone', '12312135456')->first();
+        $user = User::where('phone', $request->phone)->first();
         if($user){
             if ($request->otp == $user->otp) {
                 $user->email_verified_at = Carbon::now();

@@ -49,4 +49,19 @@ class User extends Authenticatable
     {
         return $this->hasOne(Customer::class);
     }
+
+    public function devices()
+    {
+        return $this->hasMany(DevicesToken::class, 'user_id');
+    }
+
+    /**
+     * Specifies the user's FCM token
+     *
+     * @return string|array
+     */
+    public function routeNotificationForFcm()
+    {
+        return $this->devices()->pluck('fcm_token')->toArray();
+    }
 }

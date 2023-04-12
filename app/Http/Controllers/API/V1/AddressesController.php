@@ -55,12 +55,11 @@ class AddressesController extends Controller
             $isSaved = Address::create($data);
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
-            } else {
-                return ControllersService::generateProcessResponse(false, 'CREATE_FAILED', 400);
             }
-        } else {
-            return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
+            return ControllersService::generateProcessResponse(false, 'CREATE_FAILED', 400);
+
         }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
 
     /**
