@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('vendor_id')->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'ON_THE_WAY']);
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->time('time');
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->time('time')->nullable();
             $table->text('note')->nullable();
             $table->decimal('total');
             $table->timestamps();

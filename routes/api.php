@@ -30,10 +30,11 @@ Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('vender', VendersController::class);
     Route::resource('review', ReviewController::class);
     Route::resource('order', OrdersController::class);
+    Route::post('reorder/{id}', [OrdersController::class, 'reorder']);
     Route::resource('address', AddressesController::class);
     Route::put('update/profile', [UserApiAuthController::class, 'updateInfo']);
     Route::delete('delete/profile', [UserApiAuthController::class , 'deleteAcount']);
-    Route::get('logout', [AuthBaseController::class , 'logout']);
+Route::get('logout', [AuthBaseController::class , 'logout']);
 });
 
 
