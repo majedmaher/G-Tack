@@ -10,5 +10,10 @@ class OrderAddress extends Model
 {
     use HasFactory , SoftDeletes;
 
-    protected $guarded = [];
+    protected $fillable = ['order_id' , 'address_id' , 'lat' , 'lng' , 'label' , 'map_address' , 'description'];
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class , 'order_id' , 'id');
+    }
 }

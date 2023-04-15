@@ -3,7 +3,9 @@
 use App\Http\Controllers\API\V1\AddressesController;
 use App\Http\Controllers\API\V1\AuthBaseController;
 use App\Http\Controllers\API\V1\HomeController;
+use App\Http\Controllers\API\V1\NotificationsController;
 use App\Http\Controllers\API\V1\OrdersController;
+use App\Http\Controllers\API\V1\ReasonsController;
 use App\Http\Controllers\API\V1\ReviewController;
 use App\Http\Controllers\API\V1\UserApiAuthController;
 use App\Http\Controllers\API\V1\VendersController;
@@ -20,8 +22,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function () {
 // });
 
 Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
@@ -34,7 +35,9 @@ Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('address', AddressesController::class);
     Route::put('update/profile', [UserApiAuthController::class, 'updateInfo']);
     Route::delete('delete/profile', [UserApiAuthController::class , 'deleteAcount']);
-Route::get('logout', [AuthBaseController::class , 'logout']);
+    Route::resource('reason', ReasonsController::class);
+    Route::resource('notification', NotificationsController::class);
+    Route::get('logout', [AuthBaseController::class , 'logout']);
 });
 
 

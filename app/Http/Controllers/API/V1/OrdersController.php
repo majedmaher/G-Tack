@@ -13,6 +13,7 @@ use App\Models\OrderAddress;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
 use App\Services\CreateOrderService;
+use App\Services\ReOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class OrdersController extends Controller
     public function index(Request $request)
     {
         $status = $request->status;
-        $order = Order::with('items' , 'vendor' , 'address')
+        $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
         ->when($status , function ($q) use ($status) {
             $q->where('status' , $status);
         })
@@ -75,7 +76,7 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with('items' , 'vendor' , 'address')
+        $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
         ->where('customer_id' , Auth::user()->id)->where('id' , $id)
         ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
         , 'total' , 'start_time' , 'end_time' , 'time'
@@ -102,36 +103,33 @@ class OrdersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request , $id)
     {
         $order = Order::find($id);
         $order->update([
-            'status' => 'CANAEL',
+            'status' => 'PENDING',
         ]);
         OrderStatus::create([
             'order_id' => $order->id,
             'customer_id' => Auth::user()->id,
             'vendor_id' => $order->vendor_id,
-            'status' => 'CANAEL',
+            'status' => 'PENDING',
             'note' => "1",
+            'reason_id' => $request->reason_id,
         ]);
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 
-    public function reorder(Request $request, $id)
+    public function reorder(Request $request, ReOrderService $reOrderService , $id)
     {
-        $order = Order::find($id);
-        $newOrder = $order->replicate();
-        $newOrder->save();
-        // $post = Post::with('user')->find(1);
-        // $newPost = $post->replicate();
-        // $newPost->push();
-
-        // $newUser = $post->user->replicate();
-        // $newUser->push();
-
-        // $newPost->user()->associate($newUser);
-        // $newPost->save();
+        try {
+            $reOrderService->handle($id);
+        } catch (Throwable $e) {
+            return response([
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+        return ControllersService::generateProcessResponse(true, 'REORDER_SUCCESS', 200);
     }
 
 }

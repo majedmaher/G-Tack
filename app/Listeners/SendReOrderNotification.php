@@ -2,12 +2,11 @@
 
 namespace App\Listeners;
 
-use App\Events\OrderCreated;
-use App\Notifications\NewOrderNotification;
+use App\Events\ReOrdered;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class SendNewOrderNotification
+class SendReOrderNotification
 {
     /**
      * Create the event listener.
@@ -22,15 +21,12 @@ class SendNewOrderNotification
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param  \App\Events\ReOrdered  $event
      * @return void
      */
-    public function handle(OrderCreated $event)
+    public function handle(ReOrdered $event)
     {
-        $order = $event->order;
+        $reorder = $event->reorder;
         // Send the notifciation
-        $order->vendor->user->notify(new NewOrderNotification($order));
-        $order->customer->user->notify(new NewOrderNotification($order));
-
     }
 }
