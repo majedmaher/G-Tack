@@ -86,10 +86,10 @@ class NewOrderNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => '',
-            'body' => '',
-            'image' => '',
-            'link' => '',
+            'title' => 'تطبيق جيتك',
+            'body' => 'تم أنشاء طلبك بنجاح',
+            // 'image' => '',
+            // 'link' => '',
         ];
     }
 

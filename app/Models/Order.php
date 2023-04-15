@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory , Notifiable, SoftDeletes;
 
     const STATUS_PENDING = 'PENDING';
     const STATUS_ACCEPTED = 'ACCEPTED';
@@ -53,10 +54,20 @@ class Order extends Model
         ->with(['jars:id,name,size,price,image']);
     }
 
+    public function statuses()
+    {
+        return $this->hasMany(OrderStatus::class , 'order_id' , 'id')->with('reason');
+    }
+
     public function vendor()
     {
         return $this->belongsTo(Vendor::class , 'vendor_id' , 'id')
-        ->select('id' , 'name' , 'commercial_name' , 'phone' , 'active');
+        ->select('id' , 'name' , 'user_id' , 'commercial_name' , 'phone' , 'active');
+    }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class , 'customer_id' , 'id');
     }
 
     public function address()
@@ -69,10 +80,8 @@ class Order extends Model
         if ($this->status == $status) {
             return;
         }
-        
         $this->status = $status;
         $this->save();
-
         OrderStatus::create([
             'order_id' => $this->id,
             'customer_id' => Auth::user()->id,

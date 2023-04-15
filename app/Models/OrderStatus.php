@@ -13,4 +13,9 @@ class OrderStatus extends Model
     protected $table = "order_status";
 
     protected $guarded = [];
+
+    public function reason()
+    {
+        return $this->belongsTo(Reason::class , 'reason_id' , 'id');
+    }
 }

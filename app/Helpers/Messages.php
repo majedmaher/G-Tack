@@ -73,6 +73,7 @@ class Messages
 
         'NO_ACCESS_PERMISSION' => 'ليس لديك صلاحية وصول لهذا العنصر',
         'NOT_FOUND' => 'العنصر غير موجود',
+        'REORDER_SUCCESS' => 'تم أعادة الطلب بنجاح',
     ];
 
     private static $enMessages = [
@@ -145,6 +146,8 @@ class Messages
         'PASSWORD_changed' => 'PASSWORD_changed',
         'NO_ACCESS_PERMISSION' => 'You dont have access permission to this component',
         'NOT_FOUND' => 'Object not fount',
+        'REORDER_SUCCESS' => 'The request was successfully re-order',
+
     ];
 
     public static function getMessage($code)
