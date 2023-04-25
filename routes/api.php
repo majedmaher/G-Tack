@@ -1,14 +1,16 @@
 <?php
 
-use App\Http\Controllers\API\V1\AddressesController;
 use App\Http\Controllers\API\V1\AuthBaseController;
-use App\Http\Controllers\API\V1\HomeController;
-use App\Http\Controllers\API\V1\NotificationsController;
-use App\Http\Controllers\API\V1\OrdersController;
-use App\Http\Controllers\API\V1\ReasonsController;
-use App\Http\Controllers\API\V1\ReviewController;
-use App\Http\Controllers\API\V1\UserApiAuthController;
-use App\Http\Controllers\API\V1\VendersController;
+use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\Customer\HomeController;
+use App\Http\Controllers\API\V1\Customer\AddressesController;
+use App\Http\Controllers\API\V1\Customer\NotificationsController;
+use App\Http\Controllers\API\V1\Customer\OrdersController;
+use App\Http\Controllers\API\V1\Customer\ReasonsController;
+use App\Http\Controllers\API\V1\Customer\ReviewController;
+use App\Http\Controllers\API\V1\Customer\UserApiAuthController;
+use App\Http\Controllers\API\V1\Customer\VendersController;
+use App\Http\Controllers\API\V1\Vender\AttachmentsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,8 +26,12 @@ use Illuminate\Support\Facades\Route;
 
 // Route::middleware('auth:sanctum')->get('/user', function () {
 // });
-
-Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
+Route::prefix('V1')->namespace('API')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('submitcode', [AuthController::class, 'submitCode']);
+});
+Route::prefix('customer/V1')->middleware(['auth:sanctum'])->group(function () {
     Route::get('home', [HomeController::class, 'home']);
     Route::get('settings', [HomeController::class, 'settings']);
     Route::resource('vender', VendersController::class);
@@ -40,9 +46,7 @@ Route::prefix('')->middleware(['auth:sanctum'])->group(function () {
     Route::get('logout', [AuthBaseController::class , 'logout']);
 });
 
-
-Route::prefix('')->namespace('API')->group(function () {
-    Route::post('register', [UserApiAuthController::class, 'register']);
-    Route::post('login', [UserApiAuthController::class, 'login']);
-    Route::post('submitcode', [UserApiAuthController::class, 'submitCode']);
+Route::prefix('vender/V1')->middleware(['auth:sanctum'])->group(function () {
+    Route::resource('attachment', AttachmentsController::class);
 });
+

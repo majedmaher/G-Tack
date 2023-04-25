@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->boolean('is_required');
+            $table->enum('type' , ['IMAGE' , 'FILE']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
             $table->softDeletes();

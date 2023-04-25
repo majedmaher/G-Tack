@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1;
+namespace App\Http\Controllers\API\V1\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\JarCollection;
@@ -19,7 +19,6 @@ class HomeController extends Controller
     public function settings(Request $request)
     {
         $setting = Setting::where('key' , $request->key)->first();
-
         return parent::success($setting , 'تمت العملية بنجاح');
     }
 }
