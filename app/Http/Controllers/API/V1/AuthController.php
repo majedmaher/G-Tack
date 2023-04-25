@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Helpers\Messages;
+use App\Http\Controllers\API\V1\AuthBaseController;
 use App\Http\Controllers\ControllersService;
 use App\Models\Customer;
 use App\Models\User;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
-class UserApiAuthController extends AuthBaseController
+class AuthController extends AuthBaseController
 {
     public function login(Request $request)
     {
@@ -27,7 +28,7 @@ class UserApiAuthController extends AuthBaseController
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = User::where('phone', $request->phone)->where('status' , 'ACTIVE')->first();
+            $user = User::where('phone', $request->phone)->where('status', 'ACTIVE')->first();
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $isSaved = $user->save();
@@ -73,7 +74,7 @@ class UserApiAuthController extends AuthBaseController
             $user->otp = $newCode;
             $user->type = $request->get('type');
             $isSaved = $user->save();
-            if($user->type == 'VENDER'){
+            if ($user->type == 'VENDER') {
                 $vender = new Vendor();
                 $vender->name = $request->name;
                 $vender->commercial_name = $request->commercial_name;
@@ -82,7 +83,7 @@ class UserApiAuthController extends AuthBaseController
                 $vender->governorate_id = $request->governorate_id;
                 $vender->region_id  = $request->region_id;
                 $isSaved = $vender->save();
-            }elseif($user->type == 'CUSTMER'){
+            } elseif ($user->type == 'CUSTMER') {
                 $custmer = new Customer();
                 $custmer->name = $user->name;
                 $custmer->phone = $user->phone;
@@ -114,11 +115,11 @@ class UserApiAuthController extends AuthBaseController
 
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = User::where('id' , Auth::user()->id)->with('custmer')->first();
+            $user = User::where('id', Auth::user()->id)->with('custmer')->first();
             $user->name = $request->name;
             $user->phone = $request->phone;
             $isSaved = $user->save();
-            $custmer = Customer::where('user_id' , $user->id)->first();
+            $custmer = Customer::where('user_id', $user->id)->first();
             $custmer->name = $user->name;
             $custmer->phone = $user->phone;
             $isSaved = $custmer->save();
@@ -134,10 +135,16 @@ class UserApiAuthController extends AuthBaseController
 
     public function deleteAcount(Request $request)
     {
-        $user = User::where('id' , Auth::user()->id)->first();
-        $custmer = Customer::where('user_id' , $user->id)->first();
-        $isSaved = $custmer->delete();
-        $isSaved = $user->delete();
+        $user = User::where('id', Auth::user()->id)->first();
+        if ($user->type == 'CUSTMER') {
+            $custmer = Customer::where('user_id', $user->id)->first();
+            $isSaved = $custmer->delete();
+            $isSaved = $user->delete();
+        } else {
+            $vendor = Vendor::where('user_id', $user->id)->first();
+            $isSaved = $vendor->delete();
+            $isSaved = $user->delete();
+        }
         if ($isSaved) {
             return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS');
         } else {
@@ -162,7 +169,7 @@ class UserApiAuthController extends AuthBaseController
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
         $user = User::where('phone', $request->phone)->first();
-        if($user){
+        if ($user) {
             if ($request->otp == $user->otp) {
                 $user->email_verified_at = Carbon::now();
                 $user->save();
@@ -174,11 +181,9 @@ class UserApiAuthController extends AuthBaseController
             } else {
                 return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
             }
-        }else{
+        } else {
             return ControllersService::generateValidationErrorMessage("الرقم المدخل غير مسجل من قبل", 200);
         }
-
-
     }
 
     public function sendCodePassword(Request $request)
