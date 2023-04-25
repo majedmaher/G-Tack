@@ -10,7 +10,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class VendersController extends Controller
+class VendorsController extends Controller
 {
     /**
      * Display a listing of the resource.

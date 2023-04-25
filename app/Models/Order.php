@@ -12,15 +12,26 @@ class Order extends Model
 {
     use HasFactory , Notifiable, SoftDeletes;
 
+    // const STATUS_PENDING = 'PENDING';
+    // const STATUS_ACCEPTED = 'ACCEPTED';
+    // const STATUS_PROCESSING = 'PROCESSING';
+    // const STATUS_ONWAY = 'ONWAY';
+    // const STATUS_FILLED = 'FILLED';
+    // const STATUS_DELIVERED = 'DELIVERED';
+    // const STATUS_DECLINED = 'DECLINED';
+    // const STATUS_COMPLETED = 'COMPLETED';
+    // const STATUS_CANCELLED = 'CANCELLED';
+
     const STATUS_PENDING = 'PENDING';
     const STATUS_ACCEPTED = 'ACCEPTED';
-    const STATUS_PROCESSING = 'PROCESSING';
+    const STATUS_DECLINED = 'DECLINED';
     const STATUS_ONWAY = 'ONWAY';
+    const STATUS_PROCESSING = 'PROCESSING';
     const STATUS_FILLED = 'FILLED';
     const STATUS_DELIVERED = 'DELIVERED';
-    const STATUS_DECLINED = 'DECLINED';
     const STATUS_COMPLETED = 'COMPLETED';
-    const STATUS_CANCELLED = 'CANCELLED';
+    const STATUS_CANCELLED_BY_VENDER = 'CANCELLED_BY_VENDER';
+    const STATUS_CANCELLED_BY_CUSTOMER = 'CANCELLED_BY_CUSTOMER';
 
 
     protected $guarded = [];

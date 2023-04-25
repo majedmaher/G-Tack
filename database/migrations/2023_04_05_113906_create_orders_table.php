@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('number');
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('vendor_id')->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'ON_THE_WAY']);
+            $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'DECLINED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED' , 'COMPLETED' , 'CANCELLED_BY_VENDER' , 'CANCELLED_BY_CUSTOMER']);
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->time('time')->nullable();
