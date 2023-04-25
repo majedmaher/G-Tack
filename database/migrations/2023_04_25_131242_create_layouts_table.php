@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('jars', function (Blueprint $table) {
+        Schema::create('layouts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('price');
-            $table->float('size');
             $table->string('image');
+            $table->string('title');
+            $table->string('description');
             $table->enum('status' , ['ACTIVE' , 'INACTIVE'])->default('ACTIVE');
             $table->timestamps();
             $table->softDeletes();
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jars');
+        Schema::dropIfExists('layouts');
     }
 };
