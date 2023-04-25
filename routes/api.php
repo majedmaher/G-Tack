@@ -10,7 +10,11 @@ use App\Http\Controllers\API\V1\Customer\ReasonsController;
 use App\Http\Controllers\API\V1\Customer\ReviewController;
 use App\Http\Controllers\API\V1\Customer\UserApiAuthController;
 use App\Http\Controllers\API\V1\Customer\VendersController;
+use App\Http\Controllers\API\V1\Customer\VendorsController as CustomerVendorsController;
+use App\Http\Controllers\API\V1\LocationsController;
 use App\Http\Controllers\API\V1\Vender\AttachmentsController;
+use App\Http\Controllers\API\V1\Vender\VendersController as VenderVendersController;
+use App\Http\Controllers\API\V1\Vender\VendorsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,7 +38,7 @@ Route::prefix('V1')->namespace('API')->group(function () {
 Route::prefix('customer/V1')->middleware(['auth:sanctum'])->group(function () {
     Route::get('home', [HomeController::class, 'home']);
     Route::get('settings', [HomeController::class, 'settings']);
-    Route::resource('vender', VendersController::class);
+    Route::resource('vender', CustomerVendorsController::class);
     Route::resource('review', ReviewController::class);
     Route::resource('order', OrdersController::class);
     Route::post('reorder/{id}', [OrdersController::class, 'reorder']);
@@ -48,5 +52,11 @@ Route::prefix('customer/V1')->middleware(['auth:sanctum'])->group(function () {
 
 Route::prefix('vender/V1')->middleware(['auth:sanctum'])->group(function () {
     Route::resource('attachment', AttachmentsController::class);
+    Route::resource('vender', VendorsController::class);
+    Route::put('status/{id}', [VendorsController::class , 'status']);
+});
+
+Route::prefix('V1')->middleware(['auth:sanctum'])->group(function () {
+    Route::get('location', LocationsController::class);
 });
 

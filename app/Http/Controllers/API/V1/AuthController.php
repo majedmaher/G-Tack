@@ -138,18 +138,19 @@ class AuthController extends AuthBaseController
         $user = User::where('id', Auth::user()->id)->first();
         if ($user->type == 'CUSTMER') {
             $custmer = Customer::where('user_id', $user->id)->first();
-            $isSaved = $custmer->delete();
-            $isSaved = $user->delete();
+            $custmer->delete();
+            $user->delete();
         } else {
-            $vendor = Vendor::where('user_id', $user->id)->first();
-            $isSaved = $vendor->delete();
-            $isSaved = $user->delete();
+            $vendor = Vendor::whereHas('orders' , function($q){
+                $q->whereIn('status'  , ['PENDING' , 'ACCEPTED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED']);
+            })->where('user_id', $user->id)->first();
+            if($vendor){
+                return ControllersService::generateProcessResponse(false, 'DELETE_FAILED');
+            }
+            $vendor->delete();
+            $user->delete();
         }
-        if ($isSaved) {
             return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS');
-        } else {
-            return ControllersService::generateProcessResponse(false, 'DELETE_FAILED');
-        }
     }
 
     public function submitCode(Request $request)
@@ -203,7 +204,7 @@ class AuthController extends AuthBaseController
             $newCode = mt_rand(1000, 9999);
             $user->code = $newCode;
             $isSaved = $user->save();
-            SmsController::sendSmsCodeMessage($request->post('phone'), 3, 'user', '', $newCode);
+            // SmsController::sendSmsCodeMessage($request->post('phone'), 3, 'user', '', $newCode);
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS');
             } else {
