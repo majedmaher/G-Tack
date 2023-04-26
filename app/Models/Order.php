@@ -30,7 +30,7 @@ class Order extends Model
     const STATUS_FILLED = 'FILLED';
     const STATUS_DELIVERED = 'DELIVERED';
     const STATUS_COMPLETED = 'COMPLETED';
-    const STATUS_CANCELLED_BY_VENDER = 'CANCELLED_BY_VENDER';
+    const STATUS_CANCELLED_BY_VENDOR = 'CANCELLED_BY_VENDOR';
     const STATUS_CANCELLED_BY_CUSTOMER = 'CANCELLED_BY_CUSTOMER';
 
 
@@ -78,7 +78,8 @@ class Order extends Model
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class , 'customer_id' , 'id');
+        return $this->belongsTo(Customer::class , 'customer_id' , 'id')
+        ->select('id' , 'name' , 'user_id' , 'phone');
     }
 
     public function address()

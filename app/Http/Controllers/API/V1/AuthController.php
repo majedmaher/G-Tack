@@ -28,7 +28,10 @@ class AuthController extends AuthBaseController
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = User::where('phone', $request->phone)->where('status', 'ACTIVE')->first();
+            $user = User::where('phone', $request->phone)->first();
+            if($user->status != "ACTIVE"){
+                return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
+            }
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $isSaved = $user->save();

@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('reasons', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type' , ['customer' , 'vendor']);
-            $table->enum('context' , ['rejection' , 'cancelation']);
+            $table->enum('type' , ['CUSTOMER' , 'VENDOR']);
+            $table->enum('context' , ['REJECTION' , 'CANCELATION']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
             $table->softDeletes();

@@ -8,11 +8,14 @@ use App\Http\Controllers\API\V1\Customer\HomeController;
 use App\Http\Controllers\API\V1\Customer\AddressesController;
 use App\Http\Controllers\API\V1\Customer\OrdersController;
 use App\Http\Controllers\API\V1\Customer\ReasonsController;
+use App\Http\Controllers\API\V1\Vender\ReasonsController as VenderReasonsController;
 use App\Http\Controllers\API\V1\Customer\ReviewController;
 use App\Http\Controllers\API\V1\Customer\UserApiAuthController;
 use App\Http\Controllers\API\V1\Customer\VendorsController as CustomerVendorsController;
 use App\Http\Controllers\API\V1\LayoutsController;
 use App\Http\Controllers\API\V1\Vender\AttachmentsController;
+use App\Http\Controllers\API\V1\Vender\OrdersController as VenderOrdersController;
+use App\Http\Controllers\API\V1\Vender\ReviewController as VenderReviewController;
 use App\Http\Controllers\API\V1\Vender\VendorsController;
 use Illuminate\Support\Facades\Route;
 
@@ -45,13 +48,16 @@ Route::prefix('V1')->group(function () {
         Route::resource('address', AddressesController::class);
         Route::put('update/profile', [UserApiAuthController::class, 'updateInfo']);
         Route::delete('delete/profile', [UserApiAuthController::class , 'deleteAcount']);
-        Route::resource('reason', ReasonsController::class);
+        Route::get('reason', ReasonsController::class);
         Route::get('logout', [AuthBaseController::class , 'logout']);
     });
 
     Route::prefix('vender')->middleware(['auth:sanctum'])->group(function () {
         Route::resource('attachment', AttachmentsController::class);
         Route::resource('vender', VendorsController::class);
+        Route::resource('order', VenderOrdersController::class);
+        Route::get('reason', VenderReasonsController::class);
+        Route::get('review', VenderReviewController::class);
         Route::put('status/{id}', [VendorsController::class , 'status']);
     });
 

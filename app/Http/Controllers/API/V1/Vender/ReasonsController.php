@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Customer;
+namespace App\Http\Controllers\API\V1\Vender;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReasonCollection;
@@ -14,7 +14,7 @@ class ReasonsController extends Controller
         $type = $request->type;
         $context = $request->context;
         $reasons = Reason::where('status' , 'ACTIVE')
-        ->where('type' , 'CUSTOMER')
+        ->where('type' , 'VENDOR')
         ->when($context , function ($q) use($context){
             $q->where('context' , $context);
         })

@@ -1,24 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Customer;
+namespace App\Http\Controllers\API\V1\Vender;
 
-use App\Events\OrderCreated;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
-use App\Http\Requests\CreateOrderRequest;
-use App\Http\Resources\OrderCollection;
-use App\Models\Address;
 use App\Models\Order;
-use App\Models\OrderAddress;
-use App\Models\OrderItem;
 use App\Models\OrderStatus;
-use App\Services\CreateOrderService;
-use App\Services\ReOrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
-use Throwable;
 
 class OrdersController extends Controller
 {
@@ -30,12 +19,12 @@ class OrdersController extends Controller
     public function index(Request $request)
     {
         $status = $request->status;
-        $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
+        $order = Order::with('items' , 'customer' , 'address' , 'statuses')
         ->when($status , function ($q) use ($status) {
             $q->where('status' , $status);
         })
-        ->where('customer_id' , Auth::user()->id)
-        ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
+        ->where('vendor_id' , Auth::user()->id)
+        ->select('id' , 'customer_id' , 'vendor_id' , 'number' , 'status' , 'note'
         , 'total' , 'start_time' , 'end_time' , 'time'
         , 'created_at')
         ->latest()->get();
@@ -51,21 +40,12 @@ class OrdersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\CreateOrderRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(CreateOrderRequest $request, CreateOrderService $createOrderService)
+    public function store(Request $request)
     {
-        $data = $request->all();
-        try {
-            $order = $createOrderService->handle($data);
-        } catch (Throwable $e) {
-            return response([
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-        return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
-
+        //
     }
 
     /**
@@ -76,9 +56,9 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
+        $order = Order::with('items' , 'customer' , 'address' , 'statuses')
         ->where('customer_id' , Auth::user()->id)->where('id' , $id)
-        ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
+        ->select('id' , 'customer_id' , 'vendor_id' , 'number' , 'status' , 'note'
         , 'total' , 'start_time' , 'end_time' , 'time'
         , 'created_at')
         ->latest()->get();
@@ -113,13 +93,13 @@ class OrdersController extends Controller
         if(!$validator->fails()){
             $order = Order::find($id);
             $order->update([
-                'status' => 'CANCELLED_BY_CUSTOMER',
+                'status' => 'CANCELLED_BY_VENDOR',
             ]);
             $data = [
                 'order_id' => $order->id,
-                'customer_id' => Auth::user()->id,
-                'vendor_id' => $order->vendor_id,
-                'status' => 'CANCELLED_BY_CUSTOMER',
+                'customer_id' => $order->customer_id,
+                'vendor_id' => Auth::user()->id,
+                'status' => 'CANCELLED_BY_VENDOR',
             ];
             if($request->note){
                 $data ['note'] = $request->note;
@@ -132,17 +112,4 @@ class OrdersController extends Controller
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
-
-    public function reorder(Request $request, ReOrderService $reOrderService , $id)
-    {
-        try {
-            $reOrderService->handle($id);
-        } catch (Throwable $e) {
-            return response([
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-        return ControllersService::generateProcessResponse(true, 'REORDER_SUCCESS', 200);
-    }
-
 }

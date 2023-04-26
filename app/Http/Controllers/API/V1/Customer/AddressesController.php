@@ -57,7 +57,6 @@ class AddressesController extends Controller
                 return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
             }
             return ControllersService::generateProcessResponse(false, 'CREATE_FAILED', 400);
-
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
