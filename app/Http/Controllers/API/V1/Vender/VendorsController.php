@@ -4,8 +4,11 @@ namespace App\Http\Controllers\API\V1\Vender;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
+use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class VendorsController extends Controller
 {
@@ -50,7 +53,38 @@ class VendorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric|unique:users,phone,' . Auth::user()->id,
+            'commercial_name' => 'required|string|max:255',
+            'governorate_id' => 'required|exists:locations,id',
+            'region_id' => 'required|exists:locations,id',
+        ], [
+            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
+            'phone.unique' => 'لا يمكن أستخدام هذا الرقم',
+            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
+            'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
+            'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
+            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
+            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
+        ]);
+
+        if(!$validator->fails()){
+            $user = User::find(Auth::user()->id)->update([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'password' => $request->phone,
+            ]);
+            $vender = Vendor::find($user->id)->update([
+                'name' => $request->name,
+                'phone' => $request->phone,
+                'commercial_name' => $request->commercial_name,
+                'governorate_id' => $request->governorate_id,
+                'region_id' => $request->region_id,
+            ]);
+            return $this->generateToken(null, 'USER_UPDATED_SUCCESS');
+        }
+        return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
     }
 
     /**
