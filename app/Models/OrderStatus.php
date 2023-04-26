@@ -12,7 +12,18 @@ class OrderStatus extends Model
 
     protected $table = "order_status";
 
-    protected $guarded = [];
+    protected $fillable = ['order_id' , 'customer_id' , 'vendor_id' , 'reason_id' , 'status' , 'note'];
+
+    const STATUS_PENDING = 'PENDING';
+    const STATUS_ACCEPTED = 'ACCEPTED';
+    const STATUS_DECLINED = 'DECLINED';
+    const STATUS_ONWAY = 'ONWAY';
+    const STATUS_PROCESSING = 'PROCESSING';
+    const STATUS_FILLED = 'FILLED';
+    const STATUS_DELIVERED = 'DELIVERED';
+    const STATUS_COMPLETED = 'COMPLETED';
+    const STATUS_CANCELLED_BY_VENDOR = 'CANCELLED_BY_VENDOR';
+    const STATUS_CANCELLED_BY_CUSTOMER = 'CANCELLED_BY_CUSTOMER';
 
     public function reason()
     {
