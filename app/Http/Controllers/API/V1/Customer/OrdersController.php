@@ -34,7 +34,7 @@ class OrdersController extends Controller
         ->when($status , function ($q) use ($status) {
             $q->where('status' , $status);
         })
-        ->where('customer_id' , Auth::user()->id)
+        ->where('customer_id' , Auth::user()->custmer->id)
         ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
         , 'total' , 'start_time' , 'end_time' , 'time'
         , 'created_at')
@@ -77,7 +77,7 @@ class OrdersController extends Controller
     public function show($id)
     {
         $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
-        ->where('customer_id' , Auth::user()->id)->where('id' , $id)
+        ->where('customer_id' , Auth::user()->custmer->id)->where('id' , $id)
         ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
         , 'total' , 'start_time' , 'end_time' , 'time'
         , 'created_at')
@@ -117,7 +117,7 @@ class OrdersController extends Controller
             ]);
             $data = [
                 'order_id' => $order->id,
-                'customer_id' => Auth::user()->id,
+                'customer_id' => Auth::user()->custmer->id,
                 'vendor_id' => $order->vendor_id,
                 'status' => 'CANCELLED_BY_CUSTOMER',
             ];

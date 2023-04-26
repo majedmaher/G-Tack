@@ -19,7 +19,7 @@ class CreateOrderService
         DB::beginTransaction();
         try {
             $newOrder = Order::create([
-                'customer_id' => Auth::user()->id,
+                'customer_id' => Auth::user()->custmer->id,
                 'vendor_id' => $data['vendor_id'],
                 'note' => $data['note'],
                 'total' => $data['total'],

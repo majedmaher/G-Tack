@@ -50,7 +50,7 @@ class Order extends Model
         static::created(function (Order $order) {
             OrderStatus::create([
                 'order_id' => $order->id,
-                'customer_id' => Auth::user()->id,
+                'customer_id' => Auth::user()->custmer->id,
                 'vendor_id' => $order->vendor_id,
                 'status' => 'PENDING',
                 'note' => "1",
@@ -96,7 +96,7 @@ class Order extends Model
         $this->save();
         OrderStatus::create([
             'order_id' => $this->id,
-            'customer_id' => Auth::user()->id,
+            'customer_id' => Auth::user()->custmer->id,
             'vendor_id' => $this->vendor_id,
             'status' => $status,
             'note' => "1",

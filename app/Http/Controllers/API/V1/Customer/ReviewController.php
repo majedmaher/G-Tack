@@ -18,7 +18,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        $review = Review::where('customer_id' , Auth::user()->id)->with('vendor' , 'customer' , 'order')->get();
+        $review = Review::where('customer_id' , Auth::user()->custmer->id)->with('vendor' , 'customer' , 'order')->get();
         return (new ReviewCollection($review))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
@@ -45,7 +45,7 @@ class ReviewController extends Controller
             'order_id.exists' => 'لا يوجد طلب بهذا الأسم',
         ]);
         if (!$validator->fails()) {
-            $data['customer_id'] = Auth::user()->id;
+            $data['customer_id'] = Auth::user()->custmer->id;
             $isSaved = Review::create($data);
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);

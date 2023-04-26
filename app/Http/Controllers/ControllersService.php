@@ -16,7 +16,6 @@ class ControllersService
         return response()->json($responseArray, $statusCode);
     }
 
-
     public static function generateProcessResponse($processStatus, $processCode = null, $statusCode = null, $details = null, $info = null)
     {
 
@@ -33,7 +32,6 @@ class ControllersService
         return self::generateResponse($responseArray, $statusCode);
     }
 
-
     public static function generateObjectSuccessResponse($model, $message, $key = "object", $modal, $i = 'object')
     {
         return response()->json(array(
@@ -43,6 +41,7 @@ class ControllersService
             $modal => $i
         ), 200);
     }
+
     public static function generateObjectSuccessResponses($model, $message, $key = "object")
     {
         return response()->json(array(
@@ -125,5 +124,10 @@ class ControllersService
             }
         }
         return false;
+    }
+
+    public static function getMessage($processCode)
+    {
+        return Messages::getMessage($processCode);
     }
 }
