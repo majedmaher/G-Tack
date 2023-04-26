@@ -74,6 +74,18 @@ class Messages
         'NO_ACCESS_PERMISSION' => 'ليس لديك صلاحية وصول لهذا العنصر',
         'NOT_FOUND' => 'العنصر غير موجود',
         'REORDER_SUCCESS' => 'تم أعادة الطلب بنجاح',
+
+        // Order Status
+        'PENDING' => 'تم إنشاء طلبك بنجاح ',
+        'ACCEPTED' => 'تم قبول طلبك من طرف موزع : ',
+        'DECLINED' => 'نعتذر تم رفض طلبك من قبل موزع : ',
+        'ONWAY' => 'الموزع في الطريقك الك',
+        'PROCESSING' => 'الطلب الخاص بك قيد التعبئة',
+        'FILLED' => 'تم الإنتهاء من تعبأت طلبك',
+        'DELIVERED' => 'هل تم توصيل طلبك يرجى تأكيد التسليم',
+        'COMPLETED' => 'نحن هنا لخدمتكم',
+        'CANCELLED_BY_VENDOR' => 'نعتذر تم إلغاء طلبك من قبل موزع : ',
+        'CANCELLED_BY_CUSTOMER' => 'تم رفض طلب من قبل الزبون :',
     ];
 
     private static $enMessages = [
@@ -147,6 +159,19 @@ class Messages
         'NO_ACCESS_PERMISSION' => 'You dont have access permission to this component',
         'NOT_FOUND' => 'Object not fount',
         'REORDER_SUCCESS' => 'The request was successfully re-order',
+
+
+        // Order Status
+        'PENDING' => 'Your request was created successfully',
+        'ACCEPTED' => 'Your request has been accepted by a distributor: ',
+        'DECLINED' => 'Sorry, your order was rejected by a distributor:',
+        'ONWAY' => 'The dealer is on your way',
+        'PROCESSING' => 'Your order is being packed',
+        'FILLED' => 'Your request has been filled',
+        'DELIVERED' => 'Has your order been delivered, please confirm delivery',
+        'COMPLETED' => 'We are here to serve you',
+        'CANCELLED_BY_VENDOR' => 'We apologize your order has been canceled by a distributor :',
+        'CANCELLED_BY_CUSTOMER' => 'The request was rejected by the customer:',
 
     ];
 
