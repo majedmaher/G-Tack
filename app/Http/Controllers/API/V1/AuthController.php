@@ -169,7 +169,7 @@ class AuthController extends AuthBaseController
         // ارسال توكن
         $roles = [
             'otp' => 'required|numeric|digits:4',
-            'phone' => 'required|numeric|exists:users,phone',
+            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
         ];
         $customMessages = [
             'otp.numeric' => 'يجب أن يكون الكود رقم',
@@ -201,7 +201,7 @@ class AuthController extends AuthBaseController
     public function sendCodePassword(Request $request)
     {
         $roles = [
-            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'phone' => 'required|numeric|exists:users,phone',
         ];
         $customMessages = [
             'phone.numeric' => ' الرقم يجب ان يكون رقمي',
