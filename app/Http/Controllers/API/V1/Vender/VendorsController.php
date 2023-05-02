@@ -60,7 +60,7 @@ class VendorsController extends Controller
             'governorate_id' => 'required|exists:locations,id',
             'region_id' => 'required|exists:locations,id',
         ], [
-            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
+            'phone.required' => __('يرجى ادخال رقم الهاتف الخاص بك'),
             'phone.unique' => 'لا يمكن أستخدام هذا الرقم',
             'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
             'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
@@ -69,7 +69,7 @@ class VendorsController extends Controller
             'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
         ]);
 
-        if(!$validator->fails()){
+        if(!$validator->fails()) {
             $user = User::find(Auth::user()->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,

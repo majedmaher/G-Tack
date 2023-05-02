@@ -29,16 +29,13 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-        $status = $request->status;
         $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
-        ->when($status , function ($q) use ($status) {
-            $q->where('status' , $status);
-        })
-        ->where('customer_id' , Auth::user()->custmer->id)
-        ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
-        , 'total' , 'start_time' , 'end_time' , 'time'
-        , 'created_at')
-        ->latest()->get();
+        ->filter([
+            'status' => $request->status,
+            'customer_id' =>  Auth::user()->custmer->id,
+        ])
+        ->select('id' , 'vendor_id' , 'number' , 'status' , 'note', 'total' , 'start_time' , 'end_time' , 'time', 'created_at')->latest()->get();
+
         return response()->json([
             'code' => 200,
             'status' => true,

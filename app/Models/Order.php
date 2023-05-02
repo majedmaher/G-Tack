@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -87,6 +88,22 @@ class Order extends Model
         return $this->hasOne(OrderAddress::class , 'order_id' , 'id');
     }
 
+    public function scopeFilter(Builder $builder, $filters)
+    {
+        $filters = array_merge([
+            'status' => null,
+            'customer_id' => null,
+        ], $filters);
+
+        $builder->when($filters['status'], function($builder, $value) {
+            $builder->where('status', '=', $value);
+        });
+
+        $builder->when($filters['customer_id'], function($builder, $value) {
+            $builder->where('customer_id', '=', $value);
+        });
+    }
+
     public function updateStatus($status)
     {
         if ($this->status == $status) {
@@ -99,7 +116,6 @@ class Order extends Model
             'customer_id' => Auth::user()->custmer->id,
             'vendor_id' => $this->vendor_id,
             'status' => $status,
-            'note' => "1",
         ]);
 
     }
