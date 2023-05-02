@@ -10,7 +10,6 @@ use App\Http\Controllers\API\V1\Customer\OrdersController;
 use App\Http\Controllers\API\V1\Customer\ReasonsController;
 use App\Http\Controllers\API\V1\Vendor\ReasonsController as VendorReasonsController;
 use App\Http\Controllers\API\V1\Customer\ReviewController;
-use App\Http\Controllers\API\V1\Customer\UserApiAuthController;
 use App\Http\Controllers\API\V1\Customer\VendorsController as CustomerVendorsController;
 use App\Http\Controllers\API\V1\LayoutsController;
 use App\Http\Controllers\API\V1\Vendor\AttachmentsController;
@@ -55,10 +54,8 @@ Route::prefix('V1')->group(function () {
         Route::resource('order', OrdersController::class);
         Route::post('reorder/{id}', [OrdersController::class, 'reorder']);
         Route::resource('address', AddressesController::class);
-        Route::put('update/profile', [UserApiAuthController::class, 'updateInfo']);
-        Route::delete('delete/profile', [UserApiAuthController::class , 'deleteAcount']);
+        Route::put('update/profile', [AuthController::class, 'updateInfo']);
         Route::get('reason', ReasonsController::class);
-        Route::get('logout', [AuthBaseController::class , 'logout']);
     });
 
     Route::prefix('vendor')->middleware(['auth:sanctum'])->group(function () {
@@ -74,6 +71,8 @@ Route::prefix('V1')->group(function () {
         Route::get('location', LocationsController::class);
         Route::get('layout', LayoutsController::class);
         Route::resource('notification', NotificationsController::class);
+        Route::delete('delete/profile', [AuthController::class , 'deleteAcount']);
+        Route::get('logout', [AuthBaseController::class , 'logout']);
     });
 });
 
