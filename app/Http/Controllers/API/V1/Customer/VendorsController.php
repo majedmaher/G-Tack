@@ -39,7 +39,7 @@ class VendorsController extends Controller
         ->whereHas('governorate' , function($q){
             $q->where('status' , 'ACTIVE');
         })
-        ->with('governorate' , 'user')
+        ->with('governorate' , 'region' , 'user')
         ->withCount('reviews')
         ->withSum('reviews' , 'rate')
         ->withSum('orders' , 'time')
