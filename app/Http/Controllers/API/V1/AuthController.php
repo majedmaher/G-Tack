@@ -94,7 +94,6 @@ class AuthController extends AuthBaseController
                 $customer->user_id = $user->id;
                 $isSaved = $customer->save();
             }
-
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             } else {
@@ -102,6 +101,7 @@ class AuthController extends AuthBaseController
             }
         } else {
             $user = User::where('phone' , $request->get('phone'))->onlyTrashed()->first();
+            // return $user;
             if($user){
                 $user->restore();
                 if ($user->customer()->withTrashed()->exists()) {
