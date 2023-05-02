@@ -153,7 +153,7 @@ class AuthController extends AuthBaseController
             $vendor->delete();
             $user->delete();
         }
-            return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS');
+            return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS' , 200);
     }
 
     public function submitCode(Request $request)
