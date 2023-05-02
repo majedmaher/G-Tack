@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Vender;
+namespace App\Http\Controllers\API\V1\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;

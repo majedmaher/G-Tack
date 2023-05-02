@@ -32,7 +32,7 @@ class OrdersController extends Controller
         $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
         ->filter([
             'status' => $request->status,
-            'customer_id' =>  Auth::user()->custmer->id,
+            'customer_id' =>  Auth::user()->customer->id,
         ])
         ->select('id' , 'vendor_id' , 'number' , 'status' , 'note', 'total' , 'start_time' , 'end_time' , 'time', 'created_at')->latest()->get();
 
@@ -74,7 +74,7 @@ class OrdersController extends Controller
     public function show($id)
     {
         $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
-        ->where('customer_id' , Auth::user()->custmer->id)->where('id' , $id)
+        ->where('customer_id' , Auth::user()->customer->id)->where('id' , $id)
         ->select('id' , 'vendor_id' , 'number' , 'status' , 'note'
         , 'total' , 'start_time' , 'end_time' , 'time'
         , 'created_at')
@@ -114,7 +114,7 @@ class OrdersController extends Controller
             ]);
             $data = [
                 'order_id' => $order->id,
-                'customer_id' => Auth::user()->custmer->id,
+                'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $order->vendor_id,
                 'status' => 'CANCELLED_BY_CUSTOMER',
             ];

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Vender;
+namespace App\Http\Controllers\API\V1\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
@@ -75,7 +75,7 @@ class VendorsController extends Controller
                 'phone' => $request->phone,
                 'password' => $request->phone,
             ]);
-            $vender = Vendor::find($user->id)->update([
+            $vendor = Vendor::find($user->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'commercial_name' => $request->commercial_name,

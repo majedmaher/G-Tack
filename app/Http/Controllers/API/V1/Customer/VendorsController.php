@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API\V1\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
-use App\Http\Resources\VenderCollection;
+use App\Http\Resources\VendorCollection;
 use App\Models\Review;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
@@ -46,7 +46,7 @@ class VendorsController extends Controller
         ->withCount('orders')
         ->withAvg('orders' , 'time')
         ->get();
-        return (new VenderCollection($vendor))->additional(['message' => 'تمت العملية بنجاح']);
+        return (new VendorCollection($vendor))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
     /**

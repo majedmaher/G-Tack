@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API\V1\Vender;
+namespace App\Http\Controllers\API\V1\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
@@ -38,8 +38,8 @@ class AttachmentsController extends Controller
                 $file = $attachmentStoreRequest->file($value->value);
                 $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
                 if($value->type == "IMAGE"){
-                    $file->move('image/venders', $fileName);
-                    $data['file_path'] = 'image/venders/' . $fileName;
+                    $file->move('image/vendors', $fileName);
+                    $data['file_path'] = 'image/vendors/' . $fileName;
                 }else{
                     $file->move('file/users', $fileName);
                     $data['file_path'] = 'file/users/' . $fileName;
