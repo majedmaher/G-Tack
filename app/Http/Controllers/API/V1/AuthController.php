@@ -201,7 +201,7 @@ class AuthController extends AuthBaseController
     public function sendCodePassword(Request $request)
     {
         $roles = [
-            'phone' => 'required|numeric|exists:users,phone',
+            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
         ];
         $customMessages = [
             'phone.numeric' => ' الرقم يجب ان يكون رقمي',
