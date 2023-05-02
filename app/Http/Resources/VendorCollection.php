@@ -4,9 +4,9 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class VenderCollection extends ResourceCollection
+class VendorCollection extends ResourceCollection
 {
-    public $collects = VenderResource::class;
+    public $collects = VendorResource::class;
 
     public function toArray($request)
     {

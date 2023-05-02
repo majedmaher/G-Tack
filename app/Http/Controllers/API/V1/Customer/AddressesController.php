@@ -19,7 +19,7 @@ class AddressesController extends Controller
      */
     public function index(Request $request)
     {
-        $addresses = Address::where('customer_id' , Auth::user()->custmer->id)->get();
+        $addresses = Address::where('customer_id' , Auth::user()->customer->id)->get();
         return (new AddressCollection($addresses))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
@@ -51,7 +51,7 @@ class AddressesController extends Controller
             'description.max' => 'يجب ان لا يزيد الوصف عن 255 خانة',
         ]);
         if (!$validator->fails()) {
-            $data['customer_id'] = Auth::user()->custmer->id;
+            $data['customer_id'] = Auth::user()->customer->id;
             $isSaved = Address::create($data);
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
@@ -69,7 +69,7 @@ class AddressesController extends Controller
      */
     public function show($id)
     {
-        $addresses = Address::where('customer_id' , Auth::user()->custmer->id)->where('id' , $id)
+        $addresses = Address::where('customer_id' , Auth::user()->customer->id)->where('id' , $id)
         ->select('id' , 'customer_id' , 'lat' , 'lng' , 'map_address' , 'description')->first();
         return parent::success($addresses , 'تمت العملية بنجاح');
     }
@@ -103,7 +103,7 @@ class AddressesController extends Controller
             'description.max' => 'يجب ان لا يزيد الوصف عن 255 خانة',
         ]);
         if (!$validator->fails()) {
-            $data['customer_id'] = Auth::user()->custmer->id;
+            $data['customer_id'] = Auth::user()->customer->id;
             $isSaved = Address::find($id)->update($data);
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);

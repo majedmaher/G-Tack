@@ -50,7 +50,7 @@ class AuthController extends AuthBaseController
         $roles = [
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users',
-            'type' => 'required|in:CUSTMER,VENDER',
+            'type' => 'required|in:CUSTOMER,VENDOR',
             'commercial_name' => 'nullable|string|max:255',
             'governorate_id' => 'nullable|exists:locations,id',
             'region_id' => 'nullable|exists:locations,id',
@@ -72,26 +72,26 @@ class AuthController extends AuthBaseController
             $user->email = $request->get('phone');
             $user->phone = $request->get('phone');
             $user->password = $request->get('phone');
-            $user->status  = 'WAITING';
+            $user->status  = 'ACTIVE';
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $user->type = $request->get('type');
             $isSaved = $user->save();
-            if ($user->type == 'VENDER') {
-                $vender = new Vendor();
-                $vender->name = $request->name;
-                $vender->commercial_name = $request->commercial_name;
-                $vender->phone = $request->phone;
-                $vender->user_id  = $user->id;
-                $vender->governorate_id = $request->governorate_id;
-                $vender->region_id  = $request->region_id;
-                $isSaved = $vender->save();
-            } elseif ($user->type == 'CUSTMER') {
-                $custmer = new Customer();
-                $custmer->name = $user->name;
-                $custmer->phone = $user->phone;
-                $custmer->user_id = $user->id;
-                $isSaved = $custmer->save();
+            if ($user->type == 'VENDOR') {
+                $vendor = new Vendor();
+                $vendor->name = $request->name;
+                $vendor->commercial_name = $request->commercial_name;
+                $vendor->phone = $request->phone;
+                $vendor->user_id  = $user->id;
+                $vendor->governorate_id = $request->governorate_id;
+                $vendor->region_id  = $request->region_id;
+                $isSaved = $vendor->save();
+            } elseif ($user->type == 'CUSTOMER') {
+                $customer = new Customer();
+                $customer->name = $user->name;
+                $customer->phone = $user->phone;
+                $customer->user_id = $user->id;
+                $isSaved = $customer->save();
             }
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
@@ -118,14 +118,14 @@ class AuthController extends AuthBaseController
 
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = User::where('id', Auth::user()->id)->with('custmer')->first();
+            $user = User::where('id', Auth::user()->id)->with('customer')->first();
             $user->name = $request->name;
             $user->phone = $request->phone;
             $isSaved = $user->save();
-            $custmer = Customer::where('user_id', $user->id)->first();
-            $custmer->name = $user->name;
-            $custmer->phone = $user->phone;
-            $isSaved = $custmer->save();
+            $customer = Customer::where('user_id', $user->id)->first();
+            $customer->name = $user->name;
+            $customer->phone = $user->phone;
+            $isSaved = $customer->save();
             if ($isSaved) {
                 return $this->generateToken($user, 'USER_UPDATED_SUCCESS');
             } else {
@@ -139,9 +139,9 @@ class AuthController extends AuthBaseController
     public function deleteAcount(Request $request)
     {
         $user = User::where('id', Auth::user()->id)->first();
-        if ($user->type == 'CUSTMER') {
-            $custmer = Customer::where('user_id', $user->id)->first();
-            $custmer->delete();
+        if ($user->type == 'CUSTOMER') {
+            $customer = Customer::where('user_id', $user->id)->first();
+            $customer->delete();
             $user->delete();
         } else {
             $vendor = Vendor::whereHas('orders' , function($q){

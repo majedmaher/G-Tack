@@ -25,7 +25,7 @@ class CreateOrderRequest extends FormRequest
      */
     public function rules()
     {
-        $customer_id = Auth::user()->custmer->id;
+        $customer_id = Auth::user()->customer->id;
         return [
             'vendor_id' => 'required|exists:vendors,id',
             'total' => 'required|numeric|integer',
