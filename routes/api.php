@@ -17,7 +17,10 @@ use App\Http\Controllers\API\V1\Vender\AttachmentsController;
 use App\Http\Controllers\API\V1\Vender\OrdersController as VenderOrdersController;
 use App\Http\Controllers\API\V1\Vender\ReviewController as VenderReviewController;
 use App\Http\Controllers\API\V1\Vender\VendorsController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +33,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function () {
-// });
+Route::get('/user', function () {
+    $users = QueryBuilder::for(User::class)
+    // ->join('customers' , 'customers.user_id' , 'users.id')
+    ->allowedIncludes('custmer')
+    // ->allowedFilters(AllowedFilter::exact('customers.name', null, false))
+    ->get();
+    return $users;
+});
 Route::prefix('V1')->group(function () {
 
     Route::post('register', [AuthController::class, 'register']);

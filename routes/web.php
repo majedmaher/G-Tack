@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\OrderTracking;
 use App\Models\Document;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    event(new OrderTracking("adsd"));
     return view('welcome');
 });
