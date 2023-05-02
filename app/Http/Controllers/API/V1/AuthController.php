@@ -30,7 +30,6 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
             $user = User::where('phone', $request->phone)->first();
-            return $user;
             if($user->status != "ACTIVE"){
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
@@ -102,9 +101,12 @@ class AuthController extends AuthBaseController
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
         } else {
-            $user = User::onlyTrashed()->first();
+            $user = User::where('phone' , $request->get('phone'))->onlyTrashed()->first();
             if($user){
                 $user->restore();
+                if ($user->customer()->withTrashed()->exists()) {
+                    $user->customer()->withTrashed()->restore();
+                }
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             }
             return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
