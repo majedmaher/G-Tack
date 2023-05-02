@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class AuthController extends AuthBaseController
 {
     public function login(Request $request)
     {
         $roles = [
-            'phone' => 'required|numeric|exists:users,phone',
+            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
         ];
         $customMessages = [
             'phone.required' => 'يرجى إدخال رقم الهاتف',
@@ -29,6 +30,7 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
             $user = User::where('phone', $request->phone)->first();
+            return $user;
             if($user->status != "ACTIVE"){
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
@@ -93,12 +95,18 @@ class AuthController extends AuthBaseController
                 $customer->user_id = $user->id;
                 $isSaved = $customer->save();
             }
+
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             } else {
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
         } else {
+            $user = User::onlyTrashed()->first();
+            if($user){
+                $user->restore();
+                return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
+            }
             return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
         }
     }
@@ -153,7 +161,7 @@ class AuthController extends AuthBaseController
             $vendor->delete();
             $user->delete();
         }
-            return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS');
+            return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS' , 200);
     }
 
     public function submitCode(Request $request)
