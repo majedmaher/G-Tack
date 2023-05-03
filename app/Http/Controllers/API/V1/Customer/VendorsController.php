@@ -28,7 +28,7 @@ class VendorsController extends Controller
             $q->where('status' , 'ACTIVE');
         })
         ->when($name , function ($q) use($name){
-            $q->where('name' , $name);
+            $q->where('name' , 'LIKE' , '%'.$name.'%');
         })
         ->when($governorate_id , function ($q) use($governorate_id){
             $q->where('governorate_id' , $governorate_id);
@@ -37,6 +37,9 @@ class VendorsController extends Controller
             $q->where('region_id' , $region_id);
         })
         ->whereHas('governorate' , function($q){
+            $q->where('status' , 'ACTIVE');
+        })
+        ->whereHas('region' , function($q){
             $q->where('status' , 'ACTIVE');
         })
         ->with('governorate' , 'region' , 'user')
