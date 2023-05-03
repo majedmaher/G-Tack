@@ -23,7 +23,7 @@ class OrdersController extends Controller
         $order = Order::with('items', 'customer', 'address', 'statuses')
         ->filter([
             'status' => $request->status,
-            'customer_id' =>  Auth::user()->vendor->id,
+            'vendor_id' =>  Auth::user()->vendor->id,
         ])->select('id','customer_id','vendor_id','number','status','note','total','start_time','end_time','time','created_at')->latest()->get();
 
         return response()->json([

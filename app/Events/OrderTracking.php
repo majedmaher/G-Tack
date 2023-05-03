@@ -13,16 +13,17 @@ use Illuminate\Queue\SerializesModels;
 class OrderTracking implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-    public $message;
+    public $order , $data;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($order , $data)
     {
-        $this->message = $message;
+        $this->order = $order;
+        $this->data = $data;
     }
 
     /**
@@ -32,11 +33,11 @@ class OrderTracking implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('channel-5');
+        return new Channel('order-tracking-'.$this->order->id);
     }
 
     public function broadcastAs()
     {
-        return 'event';
+        return 'new-vendor-location';
     }
 }

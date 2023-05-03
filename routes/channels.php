@@ -17,6 +17,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel('channel-5' , function (){
+Broadcast::channel('order-tracking-{id}' , function (){
     return ['d' => 'dsad'];
 });

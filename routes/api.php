@@ -15,11 +15,11 @@ use App\Http\Controllers\API\V1\LayoutsController;
 use App\Http\Controllers\API\V1\Vendor\AttachmentsController;
 use App\Http\Controllers\API\V1\Vendor\OrdersController as VendorOrdersController;
 use App\Http\Controllers\API\V1\Vendor\ReviewController as VendorReviewController;
+use App\Http\Controllers\API\V1\Vendor\TracingVendorCntroller;
 use App\Http\Controllers\API\V1\Vendor\VendorsController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Spatie\QueryBuilder\QueryBuilder;
-use Spatie\QueryBuilder\AllowedFilter;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,7 +32,7 @@ use Spatie\QueryBuilder\AllowedFilter;
 |
 */
 
-Route::get('/user', function () {
+Route::get('/test', function () {
     $users = QueryBuilder::for(User::class)
     // ->join('customers' , 'customers.user_id' , 'users.id')
     ->allowedIncludes('customer')
@@ -40,6 +40,7 @@ Route::get('/user', function () {
     ->get();
     return $users;
 });
+
 Route::prefix('V1')->group(function () {
 
     Route::post('register', [AuthController::class, 'register']);
@@ -65,6 +66,7 @@ Route::prefix('V1')->group(function () {
         Route::get('reason', VendorReasonsController::class);
         Route::get('review', VendorReviewController::class);
         Route::put('status/{id}', [VendorsController::class , 'status']);
+        Route::post('location', TracingVendorCntroller::class);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
