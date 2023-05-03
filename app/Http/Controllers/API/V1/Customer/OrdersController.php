@@ -62,7 +62,6 @@ class OrdersController extends Controller
             ], 500);
         }
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
-
     }
 
     /**
