@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('jars', function (Blueprint $table) {
             $table->id();
+            $table->enum('type' , ['GAS' , 'WATER']);
             $table->string('name');
             $table->string('price');
             $table->float('size');

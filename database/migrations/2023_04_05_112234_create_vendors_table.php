@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('vendors', function (Blueprint $table) {
             $table->id();
+            $table->enum('type' , ['GAS' , 'WATER']);
             $table->string('name');
             $table->string('commercial_name');
             $table->string('phone');

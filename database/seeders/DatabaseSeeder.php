@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             JarsSeeder::class,
+            AdminSeeder::class,
         ]);
 
         $GOVERNORATE = \App\Models\Location::create([
