@@ -20,6 +20,7 @@ class CreateOrderService
     {
         DB::beginTransaction();
         try {
+
             $newOrder = Order::create([
                 'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $data['vendor_id'],
@@ -37,11 +38,20 @@ class CreateOrderService
                 'map_address' =>  $data['map_address'] ?? $addressOrder->map_address,
                 'description' =>  $data['description'] ?? $addressOrder->description,
             ]);
-            foreach ($data['items'] as $value){
+            if($data['items']){
+                foreach ($data['items'] as $value){
+                    $newOrder->items()->create([
+                        'product_id' => $value['id'],
+                        'quantity' => $value['quantity'],
+                        'price' => $value['price'],
+                    ]);
+                }
+            }
+            if(isset($data['custom']) && !empty($data['custom'])){
                 $newOrder->items()->create([
-                    'product_id' => $value['id'],
-                    'quantity' => $value['quantity'],
-                    'price' => $value['price'],
+                    'quantity' => 1,
+                    'custom' => $data['custom'],
+                    'price' => 1,
                 ]);
             }
             DB::commit();

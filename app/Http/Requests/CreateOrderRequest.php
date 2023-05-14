@@ -30,6 +30,7 @@ class CreateOrderRequest extends FormRequest
             'vendor_id' => 'required|exists:vendors,id',
             'total' => 'required|numeric|integer',
             'note' => 'nullable|string',
+            'custom' => 'nullable|string',
             'address_id' => [
                 'required',
                 Rule::exists('addresses', 'id')->where(function ($query) use ($customer_id) {

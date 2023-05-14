@@ -12,7 +12,9 @@ class HomeController extends Controller
 {
     public function home(Request $request)
     {
-        $products = Product::get();
+        $products = Product::when($request->type , function($q) use ($request){
+            $q->where('type' , $request->type);
+        })->get();
         return (new ProductCollection($products))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
