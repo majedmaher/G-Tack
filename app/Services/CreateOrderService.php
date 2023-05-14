@@ -25,6 +25,7 @@ class CreateOrderService
                 'vendor_id' => $data['vendor_id'],
                 'note' => $data['note'],
                 'total' => $data['total'],
+                'type' => $data['type'],
             ]);
             $addressOrder = Address::find($data['address_id']);
             $newOrder->address()->create([
@@ -38,7 +39,7 @@ class CreateOrderService
             ]);
             foreach ($data['items'] as $value){
                 $newOrder->items()->create([
-                    'jar_id' => $value['id'],
+                    'product_id' => $value['id'],
                     'quantity' => $value['quantity'],
                     'price' => $value['price'],
                 ]);

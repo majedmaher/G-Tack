@@ -17,10 +17,10 @@ class ItemsOrderResource extends JsonResource
         return [
             'id' => $this->id,
             'order_id' => $this->order_id,
-            'jar_id' => $this->jar_id,
+            'product_id' => $this->product_id,
             'quantity' => $this->quantity,
             'price' => $this->price,
-            'jars' => new JarResource($this->whenLoaded('jars')),
+            'products' => new ProductResource($this->whenLoaded('products')),
         ];
     }
 }

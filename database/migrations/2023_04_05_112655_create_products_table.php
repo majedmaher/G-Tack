@@ -13,8 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('jars', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->enum('type' , ['GAS' , 'WATER']);
             $table->string('name');
             $table->string('price');
             $table->float('size');
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jars');
+        Schema::dropIfExists('products');
     }
 };

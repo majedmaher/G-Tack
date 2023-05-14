@@ -12,9 +12,9 @@ class OrderItem extends Model
 
     protected $guarded = [];
 
-    public function jars()
+    public function products()
     {
-        return $this->belongsTo(Jar::class , 'jar_id' , 'id');
+        return $this->belongsTo(Product::class , 'product_id' , 'id');
     }
 
     public function order()

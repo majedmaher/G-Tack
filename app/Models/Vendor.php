@@ -11,7 +11,7 @@ class Vendor extends Model
 {
     use HasFactory , Notifiable, SoftDeletes;
 
-    protected $fillable = ['name' , 'commercial_name' , 'phone' , 'user_id' , 'governorate_id' , 'region_id' , 'max_orders' , 'max_jar' , 'active'];
+    protected $fillable = ['name' , 'commercial_name' , 'phone' , 'user_id' , 'governorate_id' , 'region_id' , 'max_orders' , 'max_product' , 'active'];
 
     public function user()
     {

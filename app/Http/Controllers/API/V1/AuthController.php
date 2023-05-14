@@ -80,6 +80,7 @@ class AuthController extends AuthBaseController
             $isSaved = $user->save();
             if ($user->type == 'VENDOR') {
                 $vendor = new Vendor();
+                $vendor->type = $request->type;
                 $vendor->name = $request->name;
                 $vendor->commercial_name = $request->commercial_name;
                 $vendor->phone = $request->phone;
