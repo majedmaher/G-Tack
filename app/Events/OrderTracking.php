@@ -13,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 class OrderTracking implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
     public $order , $data;
 
     /**

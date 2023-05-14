@@ -37,7 +37,7 @@ class CreateOrderRequest extends FormRequest
                 })
             ],
             'items' => 'required|array',
-            'items.*.id' => 'required|integer|exists:jars,id',
+            'items.*.id' => 'required|integer|exists:products,id',
             'items.*.quantity' => 'required|integer',
             'items.*.price' => 'required|integer',
         ];

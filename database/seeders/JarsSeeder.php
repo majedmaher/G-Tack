@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Jar;
+use App\Models\Product;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class JarsSeeder extends Seeder
+class ProductsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -47,7 +47,7 @@ class JarsSeeder extends Seeder
         ];
 
         foreach ($data as $key => $value) {
-            Jar::create([
+            Product::create([
                 'name' => $value['name'],
                 'price' => $value['price'],
                 'size' => $value['size'],
