@@ -22,6 +22,7 @@ class ProductsSeeder extends Seeder
                 'size' => '12',
                 'image' => 'image/image-2.png',
                 'status' => 'ACTIVE',
+                'type' => 'GAS',
             ],
             [
                 'name' => 'جره 60 كيلو',
@@ -29,6 +30,7 @@ class ProductsSeeder extends Seeder
                 'size' => '12',
                 'image' => 'image/image-1.png',
                 'status' => 'ACTIVE',
+                'type' => 'GAS',
             ],
             [
                 'name' => 'جره 12 كيلو',
@@ -36,6 +38,7 @@ class ProductsSeeder extends Seeder
                 'size' => '12',
                 'image' => 'image/image-3.png',
                 'status' => 'ACTIVE',
+                'type' => 'GAS',
             ],
             [
                 'name' => 'جره 45 كيلو',
@@ -43,6 +46,39 @@ class ProductsSeeder extends Seeder
                 'size' => '12',
                 'image' => 'image/image-4.png',
                 'status' => 'ACTIVE',
+                'type' => 'GAS',
+            ],
+            [
+                'name' => 'جره 12 كيلو',
+                'price' => '70',
+                'size' => '12',
+                'image' => 'image/image-2.png',
+                'status' => 'ACTIVE',
+                'type' => 'WATER',
+            ],
+            [
+                'name' => 'جره 60 كيلو',
+                'price' => '700',
+                'size' => '12',
+                'image' => 'image/image-1.png',
+                'status' => 'ACTIVE',
+                'type' => 'WATER',
+            ],
+            [
+                'name' => 'جره 12 كيلو',
+                'price' => '70',
+                'size' => '12',
+                'image' => 'image/image-3.png',
+                'status' => 'ACTIVE',
+                'type' => 'WATER',
+            ],
+            [
+                'name' => 'جره 45 كيلو',
+                'price' => '400',
+                'size' => '12',
+                'image' => 'image/image-4.png',
+                'status' => 'ACTIVE',
+                'type' => 'WATER',
             ],
         ];
 
@@ -53,6 +89,7 @@ class ProductsSeeder extends Seeder
                 'size' => $value['size'],
                 'image' => $value['image'],
                 'status' => $value['status'],
+                'type' => $value['type'],
             ]);
         }
     }

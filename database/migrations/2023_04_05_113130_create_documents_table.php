@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->enum('type' , ['GAS' , 'WATER']);
             $table->string('name');
             $table->boolean('is_required');
-            $table->enum('type' , ['IMAGE' , 'FILE']);
+            $table->enum('file' , ['IMAGE' , 'FILE']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
             $table->softDeletes();

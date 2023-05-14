@@ -62,7 +62,7 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class , 'order_id' , 'id')
-        ->select('id' , 'order_id' , 'product_id' , 'quantity' , 'price')
+        ->select('id' , 'order_id' , 'product_id' , 'quantity' , 'custom' , 'price')
         ->with(['products:id,name,size,price,image']);
     }
 
@@ -74,7 +74,7 @@ class Order extends Model
     public function vendor()
     {
         return $this->belongsTo(Vendor::class , 'vendor_id' , 'id')
-        ->select('id' , 'name' , 'user_id' , 'commercial_name' , 'phone' , 'active');
+        ->select('id' , 'type' , 'name' , 'user_id' , 'commercial_name' , 'phone' , 'active');
     }
 
     public function customer()
