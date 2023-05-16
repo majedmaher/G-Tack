@@ -15,11 +15,12 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-            $table->enum('type' , ['GAS' , 'WATER']);
+            $table->enum('type' , ['ALL' , 'GAS' , 'WATER']);
             $table->string('name');
             $table->boolean('is_required');
             $table->enum('file' , ['IMAGE' , 'FILE']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
+            $table->unsignedInteger('validity')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

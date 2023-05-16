@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('order_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('address_id')->constrained('addresses', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->decimal('lat');
-            $table->decimal('lng');
+            $table->foreignId('address_id')->nullable()->constrained('addresses', 'id')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('user_name');
+            $table->string('user_phone');
+            $table->double('lat');
+            $table->double('lng');
             $table->string('label');
             $table->string('map_address');
             $table->string('description');

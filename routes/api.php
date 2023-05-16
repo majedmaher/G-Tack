@@ -12,6 +12,9 @@ use App\Http\Controllers\API\V1\Vendor\ReasonsController as VendorReasonsControl
 use App\Http\Controllers\API\V1\Customer\ReviewController;
 use App\Http\Controllers\API\V1\Customer\VendorsController as CustomerVendorsController;
 use App\Http\Controllers\API\V1\Dashboard\OrdersController as DashboardOrdersController;
+use App\Http\Controllers\API\V1\Dashboard\VendorOrdersController as DashboardVendorOrdersController;
+use App\Http\Controllers\API\V1\Dashboard\VendorReviewsController;
+use App\Http\Controllers\API\V1\Dashboard\VendorsController as DashboardVendorsController;
 use App\Http\Controllers\API\V1\LayoutsController;
 use App\Http\Controllers\API\V1\Vendor\AttachmentsController;
 use App\Http\Controllers\API\V1\Vendor\OrdersController as VendorOrdersController;
@@ -72,6 +75,9 @@ Route::prefix('V1')->group(function () {
 
     Route::prefix('dashboard')->middleware(['auth:sanctum'])->group(function () {
         Route::resource('order', DashboardOrdersController::class);
+        Route::resource('vendor', DashboardVendorsController::class);
+        Route::get('vendororders/{id}', DashboardVendorOrdersController::class);
+        Route::get('vendorreviews/{id}', VendorReviewsController::class);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
