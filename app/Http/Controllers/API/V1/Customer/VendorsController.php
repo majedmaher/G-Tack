@@ -23,7 +23,7 @@ class VendorsController extends Controller
         $governorate_id = $request->governorate_id;
         $region_id = $request->region_id;
 
-        $vendor = Vendor::where('active' , 'ACTIVE')
+        $vendors = Vendor::where('active' , 'ACTIVE')
         ->whereHas('user' , function($q){
             $q->where('status' , 'ACTIVE');
         })
@@ -49,7 +49,12 @@ class VendorsController extends Controller
         ->withCount('orders')
         ->withAvg('orders' , 'time')
         ->get();
-        return (new VendorCollection($vendor))->additional(['message' => 'تمت العملية بنجاح']);
+        return response()->json([
+            'message' => 'تمت العمليه بنجاح',
+            'code' => 200,
+            'status' => true,
+            'data' => new VendorCollection($vendors),
+        ], 200);
     }
 
     /**
