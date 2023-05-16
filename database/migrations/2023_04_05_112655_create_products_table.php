@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->enum('type' , ['GAS' , 'WATER']);
             $table->string('name');
-            $table->string('price');
+            $table->float('price');
             $table->float('size');
             $table->string('image');
             $table->enum('status' , ['ACTIVE' , 'INACTIVE'])->default('ACTIVE');

@@ -16,9 +16,8 @@ return new class extends Migration
         Schema::create('devices_tokens', function (Blueprint $table) {
             $table->id();
             $table->string('fcm_token');
-            $table->bigInteger('tokenable_id');
-            $table->enum('tokenable_type' , ['']);
-            $table->enum('device_name' , ['']);
+            $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('device_name');
             $table->timestamps();
             $table->softDeletes();
         });

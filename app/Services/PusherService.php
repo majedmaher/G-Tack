@@ -12,7 +12,8 @@ class PusherService
     public function handle($data)
     {
         try {
-            $orders = Order::filter(['status' => 'ONWAY', 'vendor_id' =>  Auth::user()->vendor->id])->get();
+            $orders = Order::filter(['status' => 'ONWAY',
+            'vendor_id' =>  Auth::user()->vendor->id])->get();
             foreach($orders as $order){
                 event(new OrderTracking($order , $data));
             }

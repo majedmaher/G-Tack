@@ -10,4 +10,8 @@ class Attachment extends Model
 {
     use HasFactory , SoftDeletes;
 
+    public function document()
+    {
+        return $this->belongsTo(Document::class , 'document_id' , 'id');
+    }
 }

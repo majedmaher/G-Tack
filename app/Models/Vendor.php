@@ -37,4 +37,11 @@ class Vendor extends Model
     {
         return $this->hasMany(Order::class , 'vendor_id' , 'id');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(Attachment::class , 'vendor_id' , 'id');
+    }
+
+
 }

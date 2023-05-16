@@ -88,6 +88,11 @@ class Order extends Model
         return $this->hasOne(OrderAddress::class , 'order_id' , 'id');
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(Review::class , 'order_id' , 'id');
+    }
+
     public function scopeFilter(Builder $builder, $filters)
     {
         $filters = array_merge([
@@ -97,6 +102,10 @@ class Order extends Model
 
         $builder->when($filters['status'], function($builder, $value) {
             $builder->where('status', '=', $value);
+        });
+
+        $builder->when($filters['type'], function($builder, $value) {
+            $builder->where('type', '=', $value);
         });
 
         $builder->when($filters['customer_id'], function($builder, $value) {
