@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrderCollection;
-use App\Models\Order;
+use App\Http\Resources\ReviewCollection;
+use App\Models\Review;
 use Illuminate\Http\Request;
 
 class VendorReviewsController extends Controller
@@ -18,17 +18,22 @@ class VendorReviewsController extends Controller
     public function __invoke(Request $request , $id)
     {
         $countRow = $request->countRow;
-        $ordersVendor = Order::where('vendor_id' , $id)->with('reviews')
+        $reviewsVendor = Review::where('vendor_id' , $id)->with('customer' , 'order')
         ->latest()->paginate($countRow ?? 15);
 
-        return $ordersVendor;
-
         $data = [
-            'orders_count' => $ordersVendor->count(),
-            'orders_sum_total' => $ordersVendor->sum('total'),
-            'orders_sum_time' => $ordersVendor->sum('time'),
-            'orders_avg_time' => $ordersVendor->avg('time'),
-            'orders' => new OrderCollection($ordersVendor),
+            'orders_count' => $reviewsVendor->count(),
+            'orders_sum_total' => $reviewsVendor->sum('total'),
+            'orders_sum_time' => $reviewsVendor->sum('time'),
+            'orders_avg_time' => $reviewsVendor->avg('time'),
+            'reviews' => new ReviewCollection($reviewsVendor),
+            'pages' => [
+                'current_page' => $reviewsVendor->currentPage(),
+                'total' => $reviewsVendor->total(),
+                'page_size' => $reviewsVendor->perPage(),
+                'next_page' => $reviewsVendor->nextPageUrl(),
+                'last_page' => $reviewsVendor->lastPage(),
+            ]
         ];
 
         return parent::success($data , 'تمت العملية بنجاح');

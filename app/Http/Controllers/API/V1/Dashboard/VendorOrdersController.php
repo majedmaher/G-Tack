@@ -32,6 +32,13 @@ class VendorOrdersController extends Controller
             'orders_sum_time' => $ordersVendor->sum('time'),
             'orders_avg_time' => $ordersVendor->avg('time'),
             'orders' => new OrderCollection($ordersVendor),
+            'pages' => [
+                'current_page' => $ordersVendor->currentPage(),
+                'total' => $ordersVendor->total(),
+                'page_size' => $ordersVendor->perPage(),
+                'next_page' => $ordersVendor->nextPageUrl(),
+                'last_page' => $ordersVendor->lastPage(),
+            ]
         ];
 
         return parent::success($data , 'تمت العملية بنجاح');

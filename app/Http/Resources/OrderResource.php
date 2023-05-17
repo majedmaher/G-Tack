@@ -16,6 +16,7 @@ class OrderResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'type' => $this->type,
             'customer_id' => $this->customer_id,
             'vendor_id' => $this->vendor_id,
             'number' => $this->number,
@@ -30,6 +31,7 @@ class OrderResource extends JsonResource
             'vendor' => new VendorResource($this->whenLoaded('vendor')),
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'address' => new AddressResource($this->whenLoaded('address')),
+            'reviews' => new ReviewResource($this->whenLoaded('reviews')),
         ];
     }
 }

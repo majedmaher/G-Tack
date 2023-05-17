@@ -8,12 +8,12 @@ class ReviewCollection extends ResourceCollection
 {
     public $collects = ReviewResource::class;
 
-    public function toArray($request)
-    {
-        return [
-            'code' => 200,
-            'status' => true,
-            'data' => $this->collection,
-        ];
-    }
+    // public function toArray($request)
+    // {
+    //     return [
+    //         'code' => 200,
+    //         'status' => true,
+    //         'data' => $this->collection,
+    //     ];
+    // }
 }

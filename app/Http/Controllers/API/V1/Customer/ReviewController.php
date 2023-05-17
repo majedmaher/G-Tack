@@ -19,7 +19,7 @@ class ReviewController extends Controller
     public function index()
     {
         $review = Review::where('customer_id' , Auth::user()->customer->id)->with('vendor' , 'customer' , 'order')->get();
-        return (new ReviewCollection($review))->additional(['message' => 'تمت العملية بنجاح']);
+        return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
     /**
@@ -33,6 +33,7 @@ class ReviewController extends Controller
         $data = $request->all();
         $validator = Validator($data, [
             'rate' => 'required',
+            'type' => 'required|in:CUSTOMER,VENDOR',
             'vendor_id' => 'required|exists:vendors,id',
             'order_id' => 'required|exists:orders,id',
             'feedback' => 'nullable|max:255',
@@ -43,6 +44,8 @@ class ReviewController extends Controller
             'vendor_id.exists' => 'لا يوجد موزع بهذا الأسم',
             'order_id.required' => 'يرجى أدخال رقم الطلب',
             'order_id.exists' => 'لا يوجد طلب بهذا الأسم',
+            'type.required' => 'يرجى إرسال من هوه المقيم',
+            'type.in' => 'يجب تحديد من النوع من خلال اختيار CUSTOMER,VENDOR',
         ]);
         if (!$validator->fails()) {
             $data['customer_id'] = Auth::user()->customer->id;
