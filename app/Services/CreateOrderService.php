@@ -35,6 +35,8 @@ class CreateOrderService
                 'order_id' => $newOrder->id,
                 'address_id' => $addressOrder->id,
                 'label' => $addressOrder->label,
+                'user_name' => Auth::user()->customer->name,
+                'user_phone' => Auth::user()->customer->phone,
                 'lat' =>  $data['lat'] ?? $addressOrder->lat,
                 'lng' =>  $data['lng'] ?? $addressOrder->lng,
                 'map_address' =>  $data['map_address'] ?? $addressOrder->map_address,
@@ -44,6 +46,7 @@ class CreateOrderService
             foreach ($data['items'] as $value){
                 $newOrder->items()->create([
                     'product_id' => $value['id'],
+                    'product_name' => $value['product_name'],
                     'quantity' => $value['quantity'],
                     'price' => $value['price'],
                     'custom' => $value['custom'],
