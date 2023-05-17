@@ -32,9 +32,11 @@ class OrdersController extends Controller
         $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
         ->filter([
             'status' => $request->status,
+            'type' => $request->type,
             'customer_id' =>  Auth::user()->customer->id,
         ])
-        ->select('id' , 'vendor_id' , 'number' , 'status' , 'note', 'total' , 'start_time' , 'end_time' , 'time', 'created_at')->latest()->get();
+        ->select('id' , 'vendor_id' , 'number' , 'status' ,
+         'note', 'total' , 'start_time' , 'end_time' , 'time', 'created_at')->latest()->get();
 
         return response()->json([
             'code' => 200,

@@ -38,22 +38,23 @@ class CreateOrderService
                 'map_address' =>  $data['map_address'] ?? $addressOrder->map_address,
                 'description' =>  $data['description'] ?? $addressOrder->description,
             ]);
-            if($data['items']){
-                foreach ($data['items'] as $value){
-                    $newOrder->items()->create([
-                        'product_id' => $value['id'],
-                        'quantity' => $value['quantity'],
-                        'price' => $value['price'],
-                    ]);
-                }
-            }
-            if(isset($data['custom']) && !empty($data['custom'])){
+            foreach ($data['items'] as $value){
                 $newOrder->items()->create([
-                    'quantity' => 1,
+                    'product_id' => $value['id'],
+                    'quantity' => $value['quantity'],
+                    'price' => $value['price'],
                     'custom' => $data['custom'],
-                    'price' => 1,
                 ]);
             }
+            // if($data['items']){
+
+            // }
+            // if(isset($data['custom']) && !empty($data['custom'])){
+            //     $newOrder->items()->create([
+            //         'quantity' => 1,
+            //         'price' => 1,
+            //     ]);
+            // }
             DB::commit();
             event(new OrderCreated($newOrder));
         } catch (Throwable $e) {
