@@ -93,6 +93,16 @@ class Order extends Model
         return $this->hasMany(Review::class , 'order_id' , 'id');
     }
 
+    public function custmer_reviews()
+    {
+        return $this->hasMany(Review::class , 'order_id' , 'id')->where('type' , 'CUSTOMER');
+    }
+
+    public function vendor_reviews()
+    {
+        return $this->hasMany(Review::class , 'order_id' , 'id')->where('type' , 'VENDOR');
+    }
+
     public function scopeFilter(Builder $builder, $filters)
     {
         $filters = array_merge([
