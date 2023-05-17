@@ -18,14 +18,16 @@ class VendorReviewsController extends Controller
     public function __invoke(Request $request , $id)
     {
         $countRow = $request->countRow;
-        $reviewsVendor = Review::where('vendor_id' , $id)->with('customer' , 'order')
+        $reviewsVendor = Review::where('vendor_id' , $id)
+        ->when($request->type , function($q) use($request){
+            $q->where('type' , $request->type);
+        })
+        ->with('vendor' , 'customer' , 'order')
         ->latest()->paginate($countRow ?? 15);
 
         $data = [
-            'orders_count' => $reviewsVendor->count(),
-            'orders_sum_total' => $reviewsVendor->sum('total'),
-            'orders_sum_time' => $reviewsVendor->sum('time'),
-            'orders_avg_time' => $reviewsVendor->avg('time'),
+            'reviews_count' => $reviewsVendor->count(),
+            'reviews_sum_total' => $reviewsVendor->sum('rate'),
             'reviews' => new ReviewCollection($reviewsVendor),
             'pages' => [
                 'current_page' => $reviewsVendor->currentPage(),

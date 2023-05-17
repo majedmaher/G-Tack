@@ -62,7 +62,7 @@ class Order extends Model
     public function items()
     {
         return $this->hasMany(OrderItem::class , 'order_id' , 'id')
-        ->select('id' , 'order_id' , 'product_id' , 'quantity' , 'custom' , 'price')
+        ->select('id' , 'order_id' , 'product_id' , 'product_name' , 'quantity' , 'custom' , 'price')
         ->with(['products:id,name,size,price,image']);
     }
 
