@@ -28,7 +28,9 @@ class CreateOrderService
                 'total' => $data['total'],
                 'type' => $data['type'],
             ]);
+
             $addressOrder = Address::find($data['address_id']);
+
             $newOrder->address()->create([
                 'order_id' => $newOrder->id,
                 'address_id' => $addressOrder->id,
@@ -38,23 +40,15 @@ class CreateOrderService
                 'map_address' =>  $data['map_address'] ?? $addressOrder->map_address,
                 'description' =>  $data['description'] ?? $addressOrder->description,
             ]);
+
             foreach ($data['items'] as $value){
                 $newOrder->items()->create([
                     'product_id' => $value['id'],
                     'quantity' => $value['quantity'],
                     'price' => $value['price'],
-                    'custom' => $data['custom'],
+                    'custom' => $value['custom'],
                 ]);
             }
-            // if($data['items']){
-
-            // }
-            // if(isset($data['custom']) && !empty($data['custom'])){
-            //     $newOrder->items()->create([
-            //         'quantity' => 1,
-            //         'price' => 1,
-            //     ]);
-            // }
             DB::commit();
             event(new OrderCreated($newOrder));
         } catch (Throwable $e) {

@@ -29,8 +29,8 @@ class CreateOrderRequest extends FormRequest
         return [
             'vendor_id' => 'required|exists:vendors,id',
             'total' => 'required|numeric|integer',
+            'type' => 'required|in:GAS,WATER',
             'note' => 'nullable|string',
-            'custom' => 'nullable|string',
             'address_id' => [
                 'required',
                 Rule::exists('addresses', 'id')->where(function ($query) use ($customer_id) {
@@ -38,9 +38,10 @@ class CreateOrderRequest extends FormRequest
                 })
             ],
             'items' => 'required|array',
-            'items.*.id' => 'required|integer|exists:products,id',
+            'items.*.id' => 'nullable|integer|exists:products,id',
             'items.*.quantity' => 'required|integer',
             'items.*.price' => 'required|integer',
+            'items.*.custom' => 'nullable|integer',
         ];
     }
 
@@ -63,6 +64,7 @@ class CreateOrderRequest extends FormRequest
             'items.*.quantity.integer' => 'يحب أن يكون الكمية الأنبوبة رقم وليس نص',
             'items.*.price.required' => 'يرجى أدخال السعر الخاصة ب الأنبوبة',
             'items.*.price.integer' => 'يحب أن يكون سعر الأنبوبة رقم وليس نص',
+            'items.*.custom.integer' => 'يحب أن يكون الكستم الأنبوبة رقم وليس نص',
         ];
     }
 }
