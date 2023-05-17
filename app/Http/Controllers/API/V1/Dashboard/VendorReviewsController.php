@@ -18,7 +18,13 @@ class VendorReviewsController extends Controller
     public function __invoke(Request $request , $id)
     {
         $countRow = $request->countRow;
+        $start = $request->start;
+        $end = $request->end;
+
         $reviewsVendor = Review::where('vendor_id' , $id)
+        ->when($start, function ($query) use ($start, $end) {
+            $query->whereBetween('created_at', [$start, $end]);
+        })
         ->when($request->type , function($q) use($request){
             $q->where('type' , $request->type);
         })
