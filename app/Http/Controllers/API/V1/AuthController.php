@@ -8,6 +8,7 @@ use App\Http\Controllers\ControllersService;
 use App\Models\Customer;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Services\DivecTokensService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -167,7 +168,7 @@ class AuthController extends AuthBaseController
             return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS' , 200);
     }
 
-    public function submitCode(Request $request)
+    public function submitCode(Request $request , DivecTokensService $divecTokensService)
     {
         // ارسال توكن
         $roles = [
@@ -184,14 +185,21 @@ class AuthController extends AuthBaseController
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
         $user = User::where('phone', $request->phone)->first();
+        $dataForToken = [
+            'fcm_token' => $request->fcm_token,
+            'user_id' => $user->id,
+            'device_name' => $request->device_name,
+        ];
         if ($user) {
             if ($request->otp == $user->otp) {
                 $user->email_verified_at = Carbon::now();
                 $user->save();
+                $divecTokensService->handle($dataForToken);
                 return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
             } elseif ($request->otp == 1234) {
                 $user->email_verified_at = Carbon::now();
                 $user->save();
+                $divecTokensService->handle($dataForToken);
                 return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
             } else {
                 return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
