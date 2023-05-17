@@ -9,4 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class DevicesToken extends Model
 {
     use HasFactory , SoftDeletes;
+
+    protected $fillable = ['fcm_token' , 'user_id' , 'device_name'];
 }
