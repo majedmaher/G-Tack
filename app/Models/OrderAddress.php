@@ -10,7 +10,7 @@ class OrderAddress extends Model
 {
     use HasFactory , SoftDeletes;
 
-    protected $fillable = ['order_id' , 'address_id' , 'lat' , 'lng' , 'label' , 'map_address' , 'description'];
+    protected $fillable = ['order_id' , 'address_id' , 'lat' , 'lng' , 'label' , 'map_address' , 'description' , 'user_name' , 'user_phone'];
 
     public function order()
     {
