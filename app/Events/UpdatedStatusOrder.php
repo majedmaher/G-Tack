@@ -15,7 +15,7 @@ class UpdatedStatusOrder
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public readonly Order $order;
+    public Order $order;
     /**
      * Create a new event instance.
      *
