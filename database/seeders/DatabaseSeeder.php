@@ -32,6 +32,20 @@ class DatabaseSeeder extends Seeder
             'parent_id' => $GOVERNORATE->id,
         ]);
 
+        $Reason = \App\Models\Reason::create([
+            'name' => 'Remal',
+            'type' => 'CUSTOMER',
+            'context' => 'REJECTION',
+            'status' => 'ACTIVE',
+        ]);
+
+        $Reason = \App\Models\Reason::create([
+            'name' => 'Remal',
+            'type' => 'VENDOR',
+            'context' => 'CANCELATION',
+            'status' => 'ACTIVE',
+        ]);
+
         for($i = 0 ; $i <= 10 ; $i++){
         $user = \App\Models\User::create([
                 'name' => 'Test User',
