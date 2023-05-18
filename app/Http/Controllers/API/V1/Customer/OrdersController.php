@@ -35,7 +35,7 @@ class OrdersController extends Controller
             'type' => $request->type,
             'customer_id' =>  Auth::user()->customer->id,
         ])
-        ->select('id' , 'vendor_id' , 'number' , 'status' ,
+        ->select('id' , 'vendor_id' , 'type' , 'number' , 'status' ,
          'note', 'total' , 'start_time' , 'end_time' , 'time', 'created_at')->latest()->get();
 
         return response()->json([

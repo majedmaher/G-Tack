@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('document_id')->constrained('documents', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('vendor_id')->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->string('file_name');
             $table->string('file_path');
             $table->enum('status' , ['PENDING' , 'REJECTED' , 'APPROVED']);
             $table->timestamps();
