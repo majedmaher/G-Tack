@@ -16,9 +16,12 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $review = Review::where('customer_id' , Auth::user()->customer->id)->with('vendor' , 'customer' , 'order')->get();
+        $review = Review::where('customer_id' , Auth::user()->customer->id)
+        ->when($request->type , function($q) use($request){
+            $q->where('type' , $request->type);
+        })->with('vendor' , 'customer' , 'order')->get();
         return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 

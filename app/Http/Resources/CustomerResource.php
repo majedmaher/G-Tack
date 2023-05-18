@@ -18,6 +18,8 @@ class CustomerResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'phone' => $this->phone,
+            'orders_count' => $this->orders_count,
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }
