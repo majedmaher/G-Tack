@@ -10,6 +10,8 @@ class Attachment extends Model
 {
     use HasFactory , SoftDeletes;
 
+    protected $fillable = ['document_id' , 'vendor_id' , 'file_path' , 'status'];
+
     public function document()
     {
         return $this->belongsTo(Document::class , 'document_id' , 'id');

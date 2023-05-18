@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ControllersService;
 use App\Http\Resources\VendorCollection;
+use App\Models\User;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class VendorsController extends Controller
 {
@@ -58,7 +61,48 @@ class VendorsController extends Controller
      */
     public function store(Request $request)
     {
+        $roles = [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric|unique:users',
+            'type' => 'required|in:CUSTOMER,VENDOR',
+            'vendor_type' => 'required|in:GAS,WATER',
+            'commercial_name' => 'nullable|string|max:255',
+            'governorate_id' => 'nullable|exists:locations,id',
+            'region_id' => 'nullable|exists:locations,id',
+        ];
 
+        $customMessages = [
+            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
+            'phone.unique' => 'هذا الرقم موجود مسبقا',
+            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
+            'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
+            'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
+            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
+            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
+        ];
+
+        $validator = Validator::make($request->all(), $roles, $customMessages);
+        if ($validator->fails()) {
+            return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
+        }
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->phone;
+        $user->phone = $request->phone;
+        $user->password = $request->phone;
+        $user->otp = mt_rand(1000, 9999);
+        $user->type = $request->type;
+        $user->save();
+        $vendor = new Vendor();
+        $vendor->type = $request->vendor_type;
+        $vendor->name = $request->name;
+        $vendor->commercial_name = $request->commercial_name;
+        $vendor->phone = $request->phone;
+        $vendor->user_id  = $user->id;
+        $vendor->governorate_id = $request->governorate_id;
+        $vendor->region_id  = $request->region_id;
+        $vendor->save();
+        return ControllersService::generateProcessResponse(true,  'CREATE_SUCCESS', 200 , $vendor->id);
     }
 
     /**
@@ -84,7 +128,45 @@ class VendorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $roles = [
+            'name' => 'required|string|max:255',
+            'phone' => 'required|numeric|unique:vendors,phone,' . $id,
+            'commercial_name' => 'nullable|string|max:255',
+            'governorate_id' => 'nullable|exists:locations,id',
+            'region_id' => 'nullable|exists:locations,id',
+        ];
+
+        $customMessages = [
+            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
+            'phone.unique' => 'هذا الرقم موجود مسبقا',
+            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
+            'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
+            'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
+            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
+            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
+        ];
+
+        $validator = Validator::make($request->all(), $roles, $customMessages);
+        if ($validator->fails()) {
+            return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
+        }
+
+        $vendor = Vendor::find($id);
+        $vendor->name = $request->name;
+        $vendor->commercial_name = $request->commercial_name;
+        $vendor->phone = $request->phone;
+        $vendor->active = $request->active;
+        $vendor->governorate_id = $request->governorate_id;
+        $vendor->region_id  = $request->region_id;
+        $vendor->update();
+        $user = User::find($vendor->user_id);
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        if($request->status){
+            $user->status = $request->status;
+        }
+        $user->save();
+        return ControllersService::generateProcessResponse(true,  'UPDATE_SUCCESS', 200 , $vendor->id);
     }
 
     /**
