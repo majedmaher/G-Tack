@@ -16,9 +16,12 @@ class ReviewController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $review = Review::where('customer_id' , Auth::user()->customer->id)->with('vendor' , 'customer' , 'order')->get();
+        $review = Review::where('customer_id' , Auth::user()->customer->id)
+        ->when($request->type , function($q) use($request){
+            $q->where('type' , $request->type);
+        })->with('vendor' , 'customer' , 'order')->get();
         return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
@@ -58,6 +61,28 @@ class ReviewController extends Controller
         } else {
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
         }
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function rateCustmer()
+    {
+        $reviews = Review::where('customer_id' , Auth::user()->customer->id);
+        $rateWater = $reviews->whereHas('vendor' , function($q){ $q->where('type' , 'WATER');})->get();
+        $rateGas = $reviews->whereHas('vendor' , function($q){ $q->where('type' , 'GAS');})->get();
+        $data = [
+            'rateSumWater' => $rateWater->sum('rate'),
+            'rateCountWater' => $rateWater->count(),
+            'rateSumGas' => $rateGas->sum('rate'),
+            'rateCountGas' => $rateGas->count(),
+        ];
+
+        return parent::success($data , 'تمت العملية بنجاح');
     }
 
     /**

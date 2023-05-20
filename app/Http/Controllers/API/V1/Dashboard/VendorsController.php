@@ -177,7 +177,8 @@ class VendorsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Vendor::find($id)->delete();
+        return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 
 

@@ -5,10 +5,9 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderCollection;
 use App\Models\Order;
-use App\Models\Vendor;
 use Illuminate\Http\Request;
 
-class VendorOrdersController extends Controller
+class CustomerOrdersController extends Controller
 {
     /**
      * Handle the incoming request.
@@ -21,13 +20,14 @@ class VendorOrdersController extends Controller
         $start = $request->start;
         $end = $request->end;
         $countRow = $request->countRow;
-        $ordersVendor = Order::where('vendor_id' , $id)->
+        $ordersVendor = Order::where('customer_id' , $id)->
         filter([
             'status' => $request->status,
             'type' => $request->type,
-        ])->when($start, function ($query) use ($start, $end) {
+        ])
+        ->when($start, function ($query) use ($start, $end) {
             $query->whereBetween('created_at', [$start, $end]);
-        })->with('customer')
+        })->with('vendor')
         ->latest()->paginate($countRow ?? 15);
 
         $data = [
