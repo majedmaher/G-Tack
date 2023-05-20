@@ -21,6 +21,7 @@ class ReviewResource extends JsonResource
             'vendor_id' => $this->vendor_id,
             'rate' => $this->rate,
             'feedback' => $this->feedback,
+            'created_at' => $this->created_at,
             'vendor' => new VendorResource($this->whenLoaded('vendor')),
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'order' => new OrderResource($this->whenLoaded('order')),
