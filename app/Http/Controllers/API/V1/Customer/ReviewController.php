@@ -19,6 +19,18 @@ class ReviewController extends Controller
     public function index(Request $request)
     {
         $review = Review::where('customer_id' , Auth::user()->customer->id)
+        ->when($request->vendorType , function($q) use($request){
+            $vendorType = $request->vendorType;
+            $q->whereHas('vendor' , function($q) use ($vendorType){
+                $q->where('type' , $vendorType);
+            });
+        })
+        ->when($request->order_id , function($q) use($request){
+            $order_id = $request->order_id;
+            $q->whereHas('order' , function($q) use ($order_id){
+                $q->where('id' , $order_id);
+            });
+        })
         ->when($request->type , function($q) use($request){
             $q->where('type' , $request->type);
         })->with('vendor' , 'customer' , 'order')->get();
