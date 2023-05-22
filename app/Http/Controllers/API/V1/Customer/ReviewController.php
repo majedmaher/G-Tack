@@ -28,7 +28,7 @@ class ReviewController extends Controller
         ->when($request->order_id , function($q) use($request){
             $order_id = $request->order_id;
             $q->whereHas('order' , function($q) use ($order_id){
-                $q->where('id' , $order_id);
+                $q->where('id' , 'LIKE' , '%'.$order_id.'%');
             });
         })
         ->when($request->type , function($q) use($request){
