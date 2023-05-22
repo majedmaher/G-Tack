@@ -59,7 +59,7 @@ Route::prefix('V1')->group(function () {
         Route::get('settings', [HomeController::class, 'settings']);
         Route::resource('vendor', CustomerVendorsController::class);
         Route::resource('review', ReviewController::class);
-        Route::get('rate-custmer', [ReviewController::class , 'rateCustmer']);
+        Route::get('rate-customer', [ReviewController::class , 'rateCustomer']);
         Route::resource('order', OrdersController::class);
         Route::post('reorder/{id}', [OrdersController::class, 'reorder']);
         Route::resource('address', AddressesController::class);
