@@ -15,7 +15,7 @@ class OrderCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    readonly public Order $order;
+    public Order $order;
 
     /**
      * Create a new event instance.
