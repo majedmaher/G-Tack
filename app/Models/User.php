@@ -61,6 +61,11 @@ class User extends Authenticatable
         return $this->hasMany(DevicesToken::class, 'user_id');
     }
 
+    public function role_has_user()
+    {
+        return $this->hasOne(RoleHasUser::class, 'user_id');
+    }
+
     /**
      * Specifies the user's FCM token
      *

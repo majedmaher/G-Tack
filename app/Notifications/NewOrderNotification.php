@@ -41,7 +41,7 @@ class NewOrderNotification extends Notification
     {
         return [
             'database',
-            // FcmChannel::class,
+            FcmChannel::class,
         ];
     }
 
@@ -65,8 +65,7 @@ class NewOrderNotification extends Notification
             ->setData(['data1' => 'value', 'data2' => 'value2'])
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle('Account Activated')
-                ->setBody('Your account has been activated.')
-                ->setImage('http://example.com/url-to-image-here.png'))
+                ->setBody('Your account has been activated.'))
             ->setAndroid(
                 AndroidConfig::create()
                     ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
