@@ -82,11 +82,14 @@ class ReviewController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function rateCustmer()
+    public function rateCustomer()
     {
-        $reviews = Review::where('customer_id' , Auth::user()->customer->id);
-        $rateWater = $reviews->whereHas('vendor' , function($q){ $q->where('type' , 'WATER');})->get();
-        $rateGas = $reviews->whereHas('vendor' , function($q){ $q->where('type' , 'GAS');})->get();
+        $rateWater = Review::where('customer_id' , Auth::user()->customer->id)->where('type' , 'VENDOR')
+        ->whereHas('vendor' , function($q){ $q->where('type' , 'WATER');})->get();
+
+        $rateGas = Review::where('customer_id' , Auth::user()->customer->id)->where('type' , 'VENDOR')
+        ->whereHas('vendor' , function($q){ $q->where('type' , 'GAS');})->get();
+
         $data = [
             'rateSumWater' => $rateWater->sum('rate'),
             'rateCountWater' => $rateWater->count(),
