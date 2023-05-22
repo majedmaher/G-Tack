@@ -56,7 +56,7 @@ class NotificationsController extends Controller
         $user = Auth::user();
         $notification = $user->notifications()->find($id);
         $notification->markAsRead();
-        return ControllersService::generateProcessResponse(false, 'UPDATE_SUCCESS', 400);
+        return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
     }
 
     /**
