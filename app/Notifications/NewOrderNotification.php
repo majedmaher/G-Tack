@@ -62,17 +62,10 @@ class NewOrderNotification extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-            ->setData(['data1' => 'value', 'data2' => 'value2'])
-            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-                ->setTitle('Account Activated')
-                ->setBody('Your account has been activated.'))
-            ->setAndroid(
-                AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
-                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
-            )->setApns(
-                ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
+        ->setData(['order_id' => $this->order->id.''])
+        ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+            ->setTitle('طلب جديد')
+            ->setBody('لقد حصلت على طلب جديد'));
     }
 
 
@@ -85,10 +78,8 @@ class NewOrderNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'تطبيق جيتك',
+            'title' => 'طلب جديد',
             'body' => 'تم أنشاء طلبك بنجاح',
-            // 'image' => '',
-            // 'link' => '',
         ];
     }
 

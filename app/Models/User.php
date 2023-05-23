@@ -58,7 +58,7 @@ class User extends Authenticatable
 
     public function devices()
     {
-        return $this->hasMany(DevicesToken::class, 'user_id');
+        return $this->hasMany(DevicesToken::class , 'user_id' , 'id');
     }
 
     public function role_has_user()

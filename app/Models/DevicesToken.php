@@ -10,5 +10,7 @@ class DevicesToken extends Model
 {
     use HasFactory , SoftDeletes;
 
+    protected $table = 'devices_tokens';
+
     protected $fillable = ['fcm_token' , 'user_id' , 'device_name'];
 }

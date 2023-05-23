@@ -30,7 +30,7 @@ class SendNewOrderNotification
         $order = $event->order;
         // Send the notifciation
         $order->vendor->user->notify(new NewOrderNotification($order));
-        $order->customer->user->notify(new NewOrderNotification($order));
+        // $order->customer->user->notify(new NewOrderNotification($order));
 
     }
 }
