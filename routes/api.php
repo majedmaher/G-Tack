@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\V1\AuthBaseController;
 use App\Http\Controllers\API\V1\AuthController;
+use App\Http\Controllers\API\V1\ComplaintsController;
 use App\Http\Controllers\API\V1\LocationsController;
 use App\Http\Controllers\API\V1\NotificationsController;
 use App\Http\Controllers\API\V1\Customer\HomeController;
@@ -91,6 +92,7 @@ Route::prefix('V1')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('location', LocationsController::class);
+        Route::post('complaint', ComplaintsController::class);
         Route::get('layout', LayoutsController::class);
         Route::resource('notification', NotificationsController::class);
         Route::delete('delete/profile', [AuthController::class , 'deleteAcount']);

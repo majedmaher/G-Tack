@@ -1,7 +1,7 @@
 <?php
 
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
+use App\Models\Order;
+use App\Notifications\NewOrderNotification;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,16 +20,6 @@ Route::get('/', function () {
 });
 
 Route::get('/backup', function() {
-    $file = Carbon::now()->format('Y-m-d-H-i-s') . '-mybackup.sql';
-    dd(Artisan::call('db:backup', [
-        'file' => $file,
-    ]));
-
-    //dd(Artisan::call('db:restore 2023-05-20-09-29-23.sql'));
-    // $config = config('database.connections.mysql');
-    //     $filename = storage_path('app/backups/' . Carbon::now()->format('Y-m-d-H-i-s') . '.sql');
-
-    //     $command = "mysqldump -u {$config['username']} {$config['database']} > {$filename}";
-    //     exec($command);
-    //     dd($filename);
+    $order = Order::first();
+    $order->vendor->user->notify(new NewOrderNotification($order));
 });
