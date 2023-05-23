@@ -52,10 +52,10 @@ class Handler extends ExceptionHandler
         $this->renderable(function (ValidationException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(array(
-                    'code' => $e->getCode(),
+                    'code' => 200,
                     'status' => false,
                     'message' => $e->getMessage(),
-                ), 422);
+                ), 200);
             }
         });
     }
