@@ -20,7 +20,9 @@ class HomeController extends Controller
 
     public function settings(Request $request)
     {
-        $setting = Setting::where('key' , $request->key)->first();
+        $setting = Setting::when($request->key , function($q) use ($request){
+            $q->where('key' , $request->key);
+        })->first();
         return parent::success($setting , 'تمت العملية بنجاح');
     }
 }

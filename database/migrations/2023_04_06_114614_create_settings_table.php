@@ -16,10 +16,8 @@ return new class extends Migration
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('key')->unique();
+            $table->string('label');
             $table->longText('value')->nullable();
-            $table->string('label_en');
-            $table->string('label_ar');
-            $table->string('type');
             $table->string('group');
             $table->timestamps();
             $table->softDeletes();
