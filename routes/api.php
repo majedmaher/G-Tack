@@ -55,10 +55,10 @@ Route::prefix('V1')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('submitcode', [AuthController::class, 'submitCode']);
+    Route::get('settings', [HomeController::class, 'settings']);
 
     Route::prefix('customer')->middleware(['auth:sanctum'])->group(function () {
         Route::get('home', [HomeController::class, 'home']);
-        Route::get('settings', [HomeController::class, 'settings']);
         Route::resource('vendor', CustomerVendorsController::class);
         Route::resource('review', ReviewController::class);
         Route::get('rate-customer', [ReviewController::class , 'rateCustomer']);
