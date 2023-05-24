@@ -22,7 +22,7 @@ class HomeController extends Controller
     {
         $setting = Setting::when($request->key , function($q) use ($request){
             $q->where('key' , $request->key);
-        })->first();
+        })->get();
         return parent::success($setting , 'تمت العملية بنجاح');
     }
 }
