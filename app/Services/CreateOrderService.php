@@ -20,8 +20,7 @@ class CreateOrderService
     {
         DB::beginTransaction();
         try {
-
-            $newOrder = Order::create([
+                $newOrder = Order::create([
                 'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $data['vendor_id'],
                 'note' => $data['note'],
@@ -53,7 +52,7 @@ class CreateOrderService
                 ]);
             }
             DB::commit();
-            event(new OrderCreated($newOrder));
+            // event(new OrderCreated($newOrder));
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;

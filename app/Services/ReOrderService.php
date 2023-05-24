@@ -31,7 +31,7 @@ class ReOrderService
             $newOrder->address()->save($newAddress);
             $newOrder = $oldOrder->address->replicate();
             DB::commit();
-            event(new ReOrdered());
+            // event(new ReOrdered());
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
