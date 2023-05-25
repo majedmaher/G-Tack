@@ -24,7 +24,7 @@ class OrdersController extends Controller
         $start = $request->start;
         $end = $request->end;
         $countRow = $request->countRow;
-        $order = Order::with('vendor', 'customer')
+        $order = Order::with('vendor', 'customer' , 'address')
             ->filter([
                 'status' => $request->status,
                 'type' => $request->type,

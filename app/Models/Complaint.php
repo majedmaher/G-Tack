@@ -10,4 +10,14 @@ class Complaint extends Model
     use HasFactory;
 
     protected $fillable = ['type' , 'customer_id' , 'vendor_id' , 'order_id' , 'content' , 'image'];
+
+    public function getImageAttribute()
+    {
+        if (isset($this->attributes['image']) && is_string($this->attributes['image'])) {
+            $imageUrl =  url('/') . '/' . $this->attributes['image'];
+            return $imageUrl;
+        }
+        return null;
+    }
+
 }
