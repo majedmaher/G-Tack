@@ -23,6 +23,7 @@ class CreateOrderService
                 $newOrder = Order::create([
                 'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $data['vendor_id'],
+                'location_id' => $data['location_id'],
                 'note' => $data['note'],
                 'total' => $data['total'],
                 'type' => $data['type'],

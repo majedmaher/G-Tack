@@ -15,7 +15,9 @@ use App\Http\Controllers\API\V1\Customer\VendorsController as CustomerVendorsCon
 use App\Http\Controllers\API\V1\Dashboard\CustomerOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\CustomerReviewsController;
 use App\Http\Controllers\API\V1\Dashboard\CustomersController;
+use App\Http\Controllers\API\V1\Dashboard\HomeController as DashboardHomeController;
 use App\Http\Controllers\API\V1\Dashboard\OrdersController as DashboardOrdersController;
+use App\Http\Controllers\API\V1\Dashboard\ProductsController;
 use App\Http\Controllers\API\V1\Dashboard\UsersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorOrdersController as DashboardVendorOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorReviewsController;
@@ -87,12 +89,14 @@ Route::prefix('V1')->group(function () {
         Route::resource('customer', CustomersController::class);
         Route::get('customerorders/{id}', CustomerOrdersController::class);
         Route::get('customerreviews/{id}', CustomerReviewsController::class);
+        Route::get('home', DashboardHomeController::class);
         Route::resource('user', UsersController::class);
+        Route::resource('product', ProductsController::class);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('location', LocationsController::class);
-        Route::post('complaint', ComplaintsController::class);
+        Route::resource('complaint', ComplaintsController::class);
         Route::get('layout', LayoutsController::class);
         Route::resource('notification', NotificationsController::class);
         Route::delete('delete/profile', [AuthController::class , 'deleteAcount']);

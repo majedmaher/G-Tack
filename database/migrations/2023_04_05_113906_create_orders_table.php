@@ -18,6 +18,7 @@ return new class extends Migration
             $table->enum('type' , ['GAS' , 'WATER']);
             $table->integer('number');
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('location_id')->nullable()->constrained('locations', 'id')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('vendor_id')->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'DECLINED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED' , 'COMPLETED' , 'CANCELLED_BY_VENDOR' , 'CANCELLED_BY_CUSTOMER']);
             $table->time('start_time')->nullable();

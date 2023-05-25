@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Location extends Model
 {
@@ -13,5 +14,15 @@ class Location extends Model
     public function regions()
     {
         return $this->hasMany(Location::class , 'parent_id' , 'id');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class , 'location_id' , 'id');
+    }
+
+    public function vendor()
+    {
+        return $this->hasMany(Vendor::class , 'governorate_id' , 'id');
     }
 }

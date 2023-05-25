@@ -74,7 +74,7 @@ class Order extends Model
     public function vendor()
     {
         return $this->belongsTo(Vendor::class , 'vendor_id' , 'id')
-        ->select('id' , 'type' , 'name' , 'user_id' , 'commercial_name' , 'phone' , 'active');
+        ->select('id' , 'type' , 'name' , 'user_id' , 'commercial_name' , 'governorate_id' , 'phone' , 'active');
     }
 
     public function customer()
@@ -101,6 +101,11 @@ class Order extends Model
     public function vendor_reviews()
     {
         return $this->hasMany(Review::class , 'order_id' , 'id')->where('type' , 'VENDOR');
+    }
+
+    public function locations()
+    {
+        return $this->belongsTo(Location::class , 'location_id' , 'id');
     }
 
     public function scopeFilter(Builder $builder, $filters)
