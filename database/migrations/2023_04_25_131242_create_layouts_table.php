@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('layouts', function (Blueprint $table) {
             $table->id();
+            $table->enum('type' , ['CUSTOMER' , 'VENDOR']);
             $table->string('image');
             $table->string('title');
             $table->string('description');

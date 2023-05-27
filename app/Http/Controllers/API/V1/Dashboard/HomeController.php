@@ -37,4 +37,5 @@ class HomeController extends Controller
         ];
         return parent::success($data, 'تمت العملية بنجاح');
     }
+    
 }

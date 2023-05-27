@@ -92,7 +92,13 @@ class OrdersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $order = Order::find($id);
+        $items = OrderItem::where('order_id' , $order->id)->whereIn('id' , [$request->list])->get();
+        $order->items()->update([
+            'product_name' => '123',
+            'price' => '123',
+        ]);
+
     }
 
     /**
