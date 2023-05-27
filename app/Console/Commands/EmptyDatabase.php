@@ -29,17 +29,11 @@ class EmptyDatabase extends Command
     public function handle()
     {
         $tables = [
-            // 'users',
-            // 'settings',
-            'orders',
-            'vendors',
-            'customers',
+            'settings',
         ];
         DB::statement("SET foreign_key_checks = 0");
         DB::statement('TRUNCATE ' . implode(', ', $tables));
         DB::statement("SET foreign_key_checks = 1");
-
-
         return Command::SUCCESS;
     }
 }

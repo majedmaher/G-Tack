@@ -11,6 +11,8 @@ class Location extends Model
 {
     use HasFactory , SoftDeletes;
 
+    protected $fillable = ['name' , 'parent_id' , 'type'];
+
     public function regions()
     {
         return $this->hasMany(Location::class , 'parent_id' , 'id');

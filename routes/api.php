@@ -12,10 +12,14 @@ use App\Http\Controllers\API\V1\Customer\ReasonsController;
 use App\Http\Controllers\API\V1\Vendor\ReasonsController as VendorReasonsController;
 use App\Http\Controllers\API\V1\Customer\ReviewController;
 use App\Http\Controllers\API\V1\Customer\VendorsController as CustomerVendorsController;
+use App\Http\Controllers\API\V1\Dashboard\AttachmentsController as DashboardAttachmentsController;
 use App\Http\Controllers\API\V1\Dashboard\CustomerOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\CustomerReviewsController;
 use App\Http\Controllers\API\V1\Dashboard\CustomersController;
+use App\Http\Controllers\API\V1\Dashboard\DatabasesController;
 use App\Http\Controllers\API\V1\Dashboard\HomeController as DashboardHomeController;
+use App\Http\Controllers\API\V1\Dashboard\LayoutsController as DashboardLayoutsController;
+use App\Http\Controllers\API\V1\Dashboard\LocationsController as DashboardLocationsController;
 use App\Http\Controllers\API\V1\Dashboard\OrdersController as DashboardOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\ProductsController;
 use App\Http\Controllers\API\V1\Dashboard\UsersController;
@@ -28,6 +32,7 @@ use App\Http\Controllers\API\V1\Vendor\OrdersController as VendorOrdersControlle
 use App\Http\Controllers\API\V1\Vendor\ReviewController as VendorReviewController;
 use App\Http\Controllers\API\V1\Vendor\TracingVendorCntroller;
 use App\Http\Controllers\API\V1\Vendor\VendorsController;
+use App\Http\Controllers\API\V1\Dashboard\SettingsController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -92,6 +97,13 @@ Route::prefix('V1')->group(function () {
         Route::get('home', DashboardHomeController::class);
         Route::resource('user', UsersController::class);
         Route::resource('product', ProductsController::class);
+        Route::resource('location', DashboardLocationsController::class);
+        Route::resource('layout', DashboardLayoutsController::class);
+        Route::apiResource('attachment', DashboardAttachmentsController::class);
+        Route::apiResource('setting', SettingsController::class);
+        Route::post('backup', [DatabasesController::class , 'backup']);
+        Route::post('restore' , [DatabasesController::class , 'restore']);
+        Route::post('empty', [DatabasesController::class , 'empty']);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
