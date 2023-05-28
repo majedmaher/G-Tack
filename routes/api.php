@@ -22,6 +22,7 @@ use App\Http\Controllers\API\V1\Dashboard\LayoutsController as DashboardLayoutsC
 use App\Http\Controllers\API\V1\Dashboard\LocationsController as DashboardLocationsController;
 use App\Http\Controllers\API\V1\Dashboard\OrdersController as DashboardOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\ProductsController;
+use App\Http\Controllers\API\V1\Dashboard\ReportsController;
 use App\Http\Controllers\API\V1\Dashboard\UsersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorOrdersController as DashboardVendorOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorReviewsController;
@@ -63,6 +64,7 @@ Route::prefix('V1')->group(function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::post('submitcode', [AuthController::class, 'submitCode']);
     Route::get('settings', [HomeController::class, 'settings']);
+    Route::get('location', LocationsController::class);
 
     Route::prefix('customer')->middleware(['auth:sanctum'])->group(function () {
         Route::get('home', [HomeController::class, 'home']);
@@ -104,10 +106,10 @@ Route::prefix('V1')->group(function () {
         Route::post('backup', [DatabasesController::class , 'backup']);
         Route::post('restore' , [DatabasesController::class , 'restore']);
         Route::post('empty', [DatabasesController::class , 'empty']);
+        Route::get('report', ReportsController::class);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('location', LocationsController::class);
         Route::resource('complaint', ComplaintsController::class);
         Route::get('layout', LayoutsController::class);
         Route::resource('notification', NotificationsController::class);

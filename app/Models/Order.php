@@ -74,7 +74,8 @@ class Order extends Model
     public function vendor()
     {
         return $this->belongsTo(Vendor::class , 'vendor_id' , 'id')
-        ->select('id' , 'type' , 'name' , 'user_id' , 'commercial_name' , 'governorate_id' , 'phone' , 'active');
+        ->select('id' , 'type' , 'name' , 'user_id' , 'commercial_name' ,
+        'governorate_id' , 'phone' , 'active');
     }
 
     public function customer()
