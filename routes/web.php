@@ -14,12 +14,3 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/backup', function() {
-    $order = Order::first();
-    $order->vendor->user->notify(new NewOrderNotification($order));
-});
