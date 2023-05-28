@@ -30,7 +30,7 @@ class AuthController extends AuthBaseController
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = User::where('phone', $request->phone)->first();
+            $user = User::where('phone', $request->phone)->where('type' , $request->type)->first();
             if($user->status != "ACTIVE"){
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
@@ -184,7 +184,7 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
-        $user = User::where('phone', $request->phone)->with('customer' , 'vendor')->first();
+        $user = User::where('phone', $request->phone)->where('type' , $request->type)->with('customer' , 'vendor')->first();
         $dataForToken = [
             'fcm_token' => $request->fcm_token,
             'user_id' => $user->id,
