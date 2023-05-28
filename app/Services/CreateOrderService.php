@@ -20,7 +20,7 @@ class CreateOrderService
     {
         DB::beginTransaction();
         try {
-                $newOrder = Order::create([
+            $newOrder = Order::create([
                 'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $data['vendor_id'],
                 'governorate_id' => $data['governorate_id'],
@@ -44,7 +44,7 @@ class CreateOrderService
                 'description' =>  $data['description'] ?? $addressOrder->description,
             ]);
 
-            foreach ($data['items'] as $value){
+            foreach ($data['items'] as $value) {
                 $newOrder->items()->create([
                     'product_id' => $value['id'],
                     'product_name' => $value['product_name'],
