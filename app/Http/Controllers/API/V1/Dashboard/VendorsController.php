@@ -32,6 +32,15 @@ class VendorsController extends Controller
                 $qu->where('status' , 'ACTIVE');
             });
         })
+        ->when($request->governorate, function($q) use($request){
+                $q->where('governorate_id' , $request->governorate);
+        })
+        ->when($request->region, function($q) use($request){
+            $q->where('region_id' , $request->region);
+        })
+        ->when($request->start, function ($query) use ($request) {
+            $query->whereBetween('created_at', [$request->start, $request->end]);
+        })
         ->with('governorate' , 'region' , 'user')
         ->latest()->paginate($countRow ?? 15);
 

@@ -28,6 +28,8 @@ class CreateOrderRequest extends FormRequest
         $customer_id = Auth::user()->customer->id;
         return [
             'vendor_id' => 'required|exists:vendors,id',
+            'governorate_id' => 'required|exists:locations,id',
+            'region_id' => 'required|exists:locations,id',
             'total' => 'required|numeric|integer',
             'type' => 'required|in:GAS,WATER',
             'note' => 'nullable|string',
@@ -50,6 +52,10 @@ class CreateOrderRequest extends FormRequest
         return [
             'vendor_id.required' => 'يرجى أدخال الموزع',
             'vendor_id.exists' => 'لا يوجد موزع بهذا الأسم',
+            'governorate_id.exists' => 'لا يوجد منطقة بهذا الأسم',
+            'governorate_id.required' => 'يرجى أدخال منطقة',
+            'region_id.exists' => 'لا يوجد الحي بهذا الأسم',
+            'region_id.required' => 'يرجى أدخال الحي',
             'address_id.required' => 'يرجى أدخال العنوان الخاص بك',
             'address_id.exists' => 'لا يوجد عنوان بهذا الأسم',
             'total.required' => 'يرجى أدخال المجموع الخاص ب الطلب',

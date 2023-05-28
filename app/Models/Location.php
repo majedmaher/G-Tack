@@ -20,7 +20,12 @@ class Location extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class , 'location_id' , 'id');
+        return $this->hasMany(Order::class , 'governorate_id' , 'id');
+    }
+
+    public function orders2()
+    {
+        return $this->hasMany(Order::class , 'region_id' , 'id');
     }
 
     public function vendor()

@@ -23,7 +23,8 @@ class CreateOrderService
                 $newOrder = Order::create([
                 'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $data['vendor_id'],
-                'location_id' => $data['location_id'],
+                'governorate_id' => $data['governorate_id'],
+                'region_id' => $data['region_id'],
                 'note' => $data['note'],
                 'total' => $data['total'],
                 'type' => $data['type'],
@@ -53,7 +54,7 @@ class CreateOrderService
                 ]);
             }
             DB::commit();
-            
+
             event(new OrderCreated($newOrder));
         } catch (Throwable $e) {
             DB::rollBack();
