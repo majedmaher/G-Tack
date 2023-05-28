@@ -20,13 +20,25 @@ class SettingsSeeber extends Seeder
                 'key' => 'privacy',
                 'label' => 'سياسات وخصوصية',
                 'value' => 'سياسات وخصوصية',
-                'group' => 'group',
+                'group' => 'social',
             ],
             [
                 'key' => 'whats-app',
                 'label' => 'واتس اب',
                 'value' => '+969858747123',
-                'group' => 'group',
+                'group' => 'social',
+            ],
+            [
+                'key' => 'gas-activation',
+                'label' => 'تفعيل تطبيق الغاز ',
+                'value' => 'سياسات وخصوصية',
+                'group' => 'social',
+            ],
+            [
+                'key' => 'water-activation',
+                'label' => 'تفعيل تطبيق الماء',
+                'value' => '+969858747123',
+                'group' => 'social',
             ],
         ];
 
