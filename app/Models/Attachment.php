@@ -10,7 +10,7 @@ class Attachment extends Model
 {
     use HasFactory , SoftDeletes;
 
-    protected $fillable = ['document_id' , 'vendor_id' , 'file_path' , 'status'];
+    protected $fillable = ['document_id' , 'vendor_id' , 'file_path' , 'file_name' , 'status'];
 
     public function document()
     {
