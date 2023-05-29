@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('otp');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('status' , ['ACTIVE' , 'INACTIVE' , 'WAITING' , 'BLOCK'])->default('ACTIVE');
+            $table->enum('status' , ['ACTIVE' , 'INACTIVE' , 'WAITING' , 'BLOCK'])->default('INACTIVE');
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
