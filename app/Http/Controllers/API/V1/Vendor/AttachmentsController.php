@@ -21,7 +21,7 @@ class AttachmentsController extends Controller
     public function index(Request $request)
     {
         $document = Document::when($request->type, function($q) use($request) {
-            $q->where('type' , $request->type);
+            $q->whereIn('type' , [$request->type , 'ALL']);
         })->where('status' , 'ACTIVE')->get();
         return parent::success($document , "تم العملية بنجاح");
     }
