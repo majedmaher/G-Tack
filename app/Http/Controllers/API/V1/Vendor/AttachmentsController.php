@@ -52,12 +52,13 @@ class AttachmentsController extends Controller
                 }
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
-                $user = User::find(Auth::user()->id)->update([
+                User::find(Auth::user()->id)->update([
                     'status' => 'WAITING',
                 ]);
                 Attachment::create($data);
             }
         }
+        $user = User::where('id', Auth::user()->id)->with('vendor')->first();
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200 , $user , "");
     }
 
