@@ -22,6 +22,7 @@ class AuthController extends AuthBaseController
     {
         $roles = [
             'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'type' => 'required|in:CUSTOMER,VENDOR',
         ];
         $customMessages = [
             'phone.required' => 'يرجى إدخال رقم الهاتف',
@@ -173,6 +174,7 @@ class AuthController extends AuthBaseController
         $roles = [
             'otp' => 'required|numeric|digits:4',
             'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'type' => 'required|in:CUSTOMER,VENDOR',
         ];
         $customMessages = [
             'otp.numeric' => 'يجب أن يكون الكود رقم',
