@@ -37,12 +37,11 @@ class AttachmentsController extends Controller
         $data = $attachmentStoreRequest->all();
         $document = Document::where('status' , 'ACTIVE')->get();
         foreach($document as $document){
-                $data['vendor_id'] = $attachmentStoreRequest->vendor_id;
                 foreach($data['data'] as $value){
                 if ($attachmentStoreRequest->hasFile($document->name)) {
                     $file = $attachmentStoreRequest->file($document->name);
                     $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
-                    if($value->type == "IMAGE"){
+                    if($value->file == "IMAGE"){
                         $file->move('image/vendors', $fileName);
                         $data['file_path'] = 'image/vendors/' . $fileName;
                     }else{
@@ -52,9 +51,11 @@ class AttachmentsController extends Controller
                 }
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
+                $data['file_name'] = $document->name;
                 User::find(Auth::user()->id)->update([
                     'status' => 'WAITING',
                 ]);
+                $data['vendor_id'] = Auth::user()->vendor->id;
                 Attachment::create($data);
             }
         }
