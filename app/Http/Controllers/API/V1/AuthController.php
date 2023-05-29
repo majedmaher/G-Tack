@@ -22,7 +22,7 @@ class AuthController extends AuthBaseController
     {
         $roles = [
             'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
-            'type' => 'required|in:CUSTOMER,VENDOR',
+            'type' => 'required|in:CUSTOMER,VENDOR,ADMIN,USER',
         ];
         $customMessages = [
             'phone.required' => 'يرجى إدخال رقم الهاتف',
