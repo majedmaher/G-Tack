@@ -192,11 +192,13 @@ class AuthController extends AuthBaseController
         if ($user) {
             if ($request->otp == $user->otp) {
                 $user->email_verified_at = Carbon::now();
+                $user->is_phone_verified = 1;
                 $user->save();
                 $divecTokensService->handle($dataForToken);
                 return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
             } elseif ($request->otp == 1234) {
                 $user->email_verified_at = Carbon::now();
+                $user->is_phone_verified = 1;
                 $user->save();
                 $divecTokensService->handle($dataForToken);
                 return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');

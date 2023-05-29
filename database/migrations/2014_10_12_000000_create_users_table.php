@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->unique();
             $table->string('otp');
+            $table->boolean('is_phone_verified')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('status' , ['ACTIVE' , 'INACTIVE' , 'WAITING' , 'BLOCK'])->default('INACTIVE');
