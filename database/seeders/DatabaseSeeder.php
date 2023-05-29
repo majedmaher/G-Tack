@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ProductsSeeder::class,
             AdminSeeder::class,
             SettingsSeeber::class,
+            AttachmentSeeder::class,
         ]);
 
         $GOVERNORATE = \App\Models\Location::create([
