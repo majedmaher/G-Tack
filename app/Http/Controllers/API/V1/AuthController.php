@@ -31,9 +31,9 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
             $user = User::where('phone', $request->phone)->where('type' , $request->type)->first();
-            if($user->status != "ACTIVE"){
-                return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
-            }
+            // if($user->status != "ACTIVE"){
+            //     return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
+            // }
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $isSaved = $user->save();
@@ -70,18 +70,17 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
             $user = new User();
-            $user->name = $request->get('name');
-            $user->email = $request->get('phone');
-            $user->phone = $request->get('phone');
-            $user->password = $request->get('phone');
-            $user->status  = 'ACTIVE';
+            $user->name = $request->name;
+            $user->email = $request->phone;
+            $user->phone = $request->phone;
+            $user->password = $request->phone;
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
-            $user->type = $request->get('type');
+            $user->type = $request->type;
             $isSaved = $user->save();
             if ($user->type == 'VENDOR') {
                 $vendor = new Vendor();
-                $vendor->type = $request->type;
+                $vendor->type = $request->vendor_type;
                 $vendor->name = $request->name;
                 $vendor->commercial_name = $request->commercial_name;
                 $vendor->phone = $request->phone;

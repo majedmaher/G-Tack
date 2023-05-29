@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Requests\AttachmentStoreRequest;
 use App\Models\Attachment;
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -51,6 +52,9 @@ class AttachmentsController extends Controller
                 }
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
+                User::find(Auth::user()->id)->update([
+                    'status' => 'WAITING',
+                ]);
                 Attachment::create($data);
             }
         }
