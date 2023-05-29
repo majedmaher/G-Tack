@@ -32,23 +32,24 @@ class AttachmentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(AttachmentStoreRequest $attachmentStoreRequest)
+    public function store(Request $attachmentStoreRequest)
     {
         $data = $attachmentStoreRequest->all();
         $document = Document::where('status' , 'ACTIVE')->get();
         foreach($document as $document){
                 foreach($data['data'] as $value){
-                if ($attachmentStoreRequest->hasFile($document->name)) {
-                    $file = $attachmentStoreRequest->file($document->name);
-                    $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
-                    if($value->file == "IMAGE"){
-                        $file->move('image/vendors', $fileName);
-                        $data['file_path'] = 'image/vendors/' . $fileName;
-                    }else{
-                        $file->move('file/vendors', $fileName);
-                        $data['file_path'] = 'file/vendors/' . $fileName;
-                    }
-                }
+                // if ($attachmentStoreRequest->hasFile($document->name)) {
+                //     $file = $attachmentStoreRequest->file($document->name);
+                //     $fileNadsame = time() . '_' . '.' . $file->getClientOriginalExtension();
+                //     if($value->file == "IMAGE"){
+                //         $file->move('image/vendors', $fileName);
+                //         $data['file_path'] = 'image/vendors/' . $fileName;
+                //     }else{
+                //         $file->move('file/vendors', $fileName);
+                //         $data['file_path'] = 'file/vendors/' . $fileName;
+                //     }
+                // }
+                $data['file_path'] = 'image/vendors/';
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
                 $data['file_name'] = $document->name;
