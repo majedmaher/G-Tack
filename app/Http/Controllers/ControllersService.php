@@ -22,7 +22,7 @@ class ControllersService
         if ($details == null) {
             $responseArray = array("status" => $processStatus, "message" => Messages::getMessage($processCode), 'code' => $statusCode);
         } else {
-            $responseArray = array("status" => $processStatus, "message" => Messages::getMessage($processCode), 'code' => $statusCode, 'details' => $details, 'info' => $info);
+            $responseArray = array("status" => $processStatus, "message" => Messages::getMessage($processCode), 'code' => $statusCode, 'data' => $details, 'info' => $info);
         }
 
         if ($statusCode == null) {
