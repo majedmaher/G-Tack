@@ -32,24 +32,22 @@ class AttachmentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $attachmentStoreRequest)
+    public function store(AttachmentStoreRequest $attachmentStoreRequest)
     {
         $data = $attachmentStoreRequest->all();
-        $document = Document::where('status' , 'ACTIVE')->get();
-        foreach($document as $document){
                 foreach($data['data'] as $value){
-                // if ($attachmentStoreRequest->hasFile($document->name)) {
-                //     $file = $attachmentStoreRequest->file($document->name);
-                //     $fileNadsame = time() . '_' . '.' . $file->getClientOriginalExtension();
-                //     if($value->file == "IMAGE"){
-                //         $file->move('image/vendors', $fileName);
-                //         $data['file_path'] = 'image/vendors/' . $fileName;
-                //     }else{
-                //         $file->move('file/vendors', $fileName);
-                //         $data['file_path'] = 'file/vendors/' . $fileName;
-                //     }
-                // }
-                $data['file_path'] = 'image/vendors/';
+                    $document = Document::where('id' , $value['document_id'])->first();
+                if ($attachmentStoreRequest->hasFile($document->name)) {
+                    $file = $attachmentStoreRequest->file($document->name);
+                    $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
+                    if($value['file'] == "IMAGE"){
+                        $file->move('image/vendors', $fileName);
+                        $data['file_path'] = 'image/vendors/' . $fileName;
+                    }else{
+                        $file->move('file/vendors', $fileName);
+                        $data['file_path'] = 'file/vendors/' . $fileName;
+                    }
+                }
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
                 $data['file_name'] = $document->name;
@@ -59,7 +57,6 @@ class AttachmentsController extends Controller
                 $data['vendor_id'] = Auth::user()->vendor->id;
                 Attachment::create($data);
             }
-        }
         $user = User::where('id', Auth::user()->id)->with('vendor')->first();
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200 , $user , "");
     }
