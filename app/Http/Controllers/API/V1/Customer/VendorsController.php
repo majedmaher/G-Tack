@@ -30,6 +30,9 @@ class VendorsController extends Controller
         ->when($name , function ($q) use($name){
             $q->where('name' , 'LIKE' , '%'.$name.'%');
         })
+        ->when($request->type , function ($q) use($request){
+            $q->where('type' , $request->type);
+        })
         ->when($governorate_id , function ($q) use($governorate_id){
             $q->where('governorate_id' , $governorate_id);
         })
