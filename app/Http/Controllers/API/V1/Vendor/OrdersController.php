@@ -113,19 +113,20 @@ class OrdersController extends Controller
     {
         $validator = Validator($request->all(), [
             'reason_id' => 'nullable|exists:reasons,id',
+            'status' => 'required|in:DECLINED,CANCELLED_BY_VENDOR',
         ], [
             'reason_id.exists' => 'لا يوجد سبب بهذا الكلام',
         ]);
         if (!$validator->fails()) {
             $order = Order::find($id);
             $order->update([
-                'status' => 'CANCELLED_BY_VENDOR',
+                'status' => $request->status,
             ]);
             $data = [
                 'order_id' => $order->id,
                 'customer_id' => $order->customer_id,
                 'vendor_id' => Auth::user()->vendor->id,
-                'status' => 'CANCELLED_BY_VENDOR',
+                'status' => $request->status,
             ];
             if ($request->note) {
                 $data['note'] = $request->note;
