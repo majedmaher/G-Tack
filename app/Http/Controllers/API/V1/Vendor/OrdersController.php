@@ -84,7 +84,7 @@ class OrdersController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator($request->all(), [
-            'status' => 'nullable|in:ACCEPTED,DECLINED,ONWAY,PROCESSING,FILLED,DELIVERED,COMPLETED,CANCELLED_BY_VENDOR,CANCELLED_BY_CUSTOMER',
+            'status' => 'nullable|in:ACCEPTED,DECLINED,ONWAY,RECEIVED,PROCESSING,FILLED,DELIVERED,COMPLETED,CANCELLED_BY_VENDOR,CANCELLED_BY_CUSTOMER',
         ], [
             'status.in' => 'يرجى التأكد من الحالة الرسالة',
         ]);

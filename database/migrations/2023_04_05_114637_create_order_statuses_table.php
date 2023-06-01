@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('vendor_id')->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('reason_id')->nullable()->constrained('reasons', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'DECLINED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED' , 'COMPLETED' , 'CANCELLED_BY_VENDOR' , 'CANCELLED_BY_CUSTOMER']);
+            $table->enum('status' , ['PENDING' , 'ACCEPTED' , 'RECEIVED' , 'DECLINED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED' , 'COMPLETED' , 'CANCELLED_BY_VENDOR' , 'CANCELLED_BY_CUSTOMER']);
             $table->text('note')->nullable();
             $table->timestamps();
             $table->softDeletes();
