@@ -84,7 +84,7 @@ class OrdersController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator($request->all(), [
-            'status' => 'nullable|in:ACCEPTED,DECLINED,ONWAY,PROCESSING,FILLED,DELIVERED,COMPLETED,CANCELLED_BY_VENDOR,CANCELLED_BY_CUSTOMER',
+            'status' => 'nullable|in:ACCEPTED,DECLINED,ONWAY,RECEIVED,PROCESSING,FILLED,DELIVERED,COMPLETED,CANCELLED_BY_VENDOR,CANCELLED_BY_CUSTOMER',
         ], [
             'status.in' => 'يرجى التأكد من الحالة الرسالة',
         ]);
@@ -92,14 +92,7 @@ class OrdersController extends Controller
             if (!$validator->fails()) {
                 $order = Order::find($id);
                 $order->updateStatus($request->status);
-                // $order->update(['status' => $request->status]);
-                // OrderStatus::create([
-                //     'order_id' => $order->id,
-                //     'customer_id' => $order->customer_id,
-                //     'vendor_id' => Auth::user()->vendor->id,
-                //     'status' => $request->status,
-                // ]);
-                event(new UpdatedStatusOrder($order));
+                // event(new UpdatedStatusOrder($order));
                 return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
             }
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
@@ -120,19 +113,20 @@ class OrdersController extends Controller
     {
         $validator = Validator($request->all(), [
             'reason_id' => 'nullable|exists:reasons,id',
+            'status' => 'required|in:DECLINED,CANCELLED_BY_VENDOR',
         ], [
             'reason_id.exists' => 'لا يوجد سبب بهذا الكلام',
         ]);
         if (!$validator->fails()) {
             $order = Order::find($id);
             $order->update([
-                'status' => 'CANCELLED_BY_VENDOR',
+                'status' => $request->status,
             ]);
             $data = [
                 'order_id' => $order->id,
                 'customer_id' => $order->customer_id,
                 'vendor_id' => Auth::user()->vendor->id,
-                'status' => 'CANCELLED_BY_VENDOR',
+                'status' => $request->status,
             ];
             if ($request->note) {
                 $data['note'] = $request->note;

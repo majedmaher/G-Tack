@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->enum('type' , ['CUSTOMER' , 'VENDOR']);
-            $table->enum('context' , ['REJECTION' , 'CANCELATION']);
+            $table->enum('context' , ['REJECTION' , 'CANCELLATION']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
             $table->softDeletes();
