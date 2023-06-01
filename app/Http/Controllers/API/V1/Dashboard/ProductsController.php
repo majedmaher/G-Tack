@@ -35,8 +35,8 @@ class ProductsController extends Controller
     public function store(ProductStoreRequest $productStoreRequest)
     {
         try {
-            Product::create($productStoreRequest->userData());
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
+            $product = Product::create($productStoreRequest->userData());
+            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200 , $product , "");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),

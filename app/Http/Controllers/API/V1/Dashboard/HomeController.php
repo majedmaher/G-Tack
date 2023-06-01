@@ -19,13 +19,30 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $vendorsCount = Vendor::count();
-        $customersCount = Customer::count();
+        $vendorsCount = Vendor::when($request->type, function ($query) use ($request) {
+            $query->where('type', $request->type);
+        })->count();
+
+        $customersCount = Customer::when($request->type, function ($query) use ($request) {
+            $query->where('type', $request->type);
+        })->count();
+
         $vendorLocation = Location::withCount('vendor')->get();
-        $ordersCount = Order::count();
+
+        $ordersCount = Order::when($request->type, function ($query) use ($request) {
+            $query->where('type', $request->type);
+        })->count();
+
         $ordersLocation = Location::withCount('orders')->get();
-        $orders = Order::latest()->take(8)->get();
-        $vendors = Vendor::latest()->take(8)->get();
+
+        $orders = Order::when($request->type, function ($query) use ($request) {
+            $query->where('type', $request->type);
+        })->latest()->take(8)->get();
+
+        $vendors = Vendor::when($request->type, function ($query) use ($request) {
+            $query->where('type', $request->type);
+        })->latest()->take(8)->get();
+        
         $data = [
             'ordersLocation' => $ordersLocation,
             'ordersCount' => $ordersCount,
@@ -37,5 +54,5 @@ class HomeController extends Controller
         ];
         return parent::success($data, 'تمت العملية بنجاح');
     }
-    
+
 }

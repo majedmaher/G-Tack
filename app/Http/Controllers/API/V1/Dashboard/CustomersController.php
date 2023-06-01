@@ -103,7 +103,7 @@ class CustomersController extends Controller
     {
         $roles = [
             'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|unique:users,phone,' . $id,
+            'phone' => 'required|numeric|unique:customers,phone,' . $id,
             'type' => 'required|in:CUSTOMER,VENDOR',
         ];
 
@@ -117,14 +117,15 @@ class CustomersController extends Controller
         if ($validator->fails()) {
             return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
         }
-        $user = new User();
-        $user->name = $request->get('name');
-        $user->phone = $request->get('phone');
-        $user->save();
-        $customer = new Customer();
-        $customer->name = $user->name;
-        $customer->phone = $user->phone;
+
+        $customer = Customer::find($id);
+        $customer->name = $request->name;
+        $customer->phone = $request->phone;
         $customer->save();
+        $user = User::find($customer->user_id);
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->save();
         return ControllersService::generateProcessResponse(true,  'UPDATE_SUCCESS', 200);
     }
 
