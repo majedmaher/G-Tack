@@ -92,14 +92,7 @@ class OrdersController extends Controller
             if (!$validator->fails()) {
                 $order = Order::find($id);
                 $order->updateStatus($request->status);
-                // $order->update(['status' => $request->status]);
-                // OrderStatus::create([
-                //     'order_id' => $order->id,
-                //     'customer_id' => $order->customer_id,
-                //     'vendor_id' => Auth::user()->vendor->id,
-                //     'status' => $request->status,
-                // ]);
-                event(new UpdatedStatusOrder($order));
+                // event(new UpdatedStatusOrder($order));
                 return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
             }
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
