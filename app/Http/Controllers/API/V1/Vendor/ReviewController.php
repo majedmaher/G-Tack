@@ -14,7 +14,10 @@ class ReviewController extends Controller
 
     public function __invoke(Request $request)
     {
-        $review = Review::where('vendor_id' , Auth::user()->vendor->id)->with('customer' , 'order')->get();
+        $review = Review::where('vendor_id' , Auth::user()->vendor->id)
+        ->when($request->type , function($q) use($request){
+            $q->where('type' , $request->type);
+        })->with('customer' , 'order')->get();
         return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 }
