@@ -25,7 +25,7 @@ class OrdersController extends Controller
             'status' => $request->status,
             'type' => $request->type,
             'vendor_id' =>  Auth::user()->vendor->id,
-        ])->select('id','customer_id','vendor_id','number','status','note','total','start_time','end_time','time','created_at')->latest()->get();
+        ])->select('id','type','customer_id','vendor_id','number','status','note','total','start_time','end_time','time','created_at')->latest()->get();
 
         return response()->json([
             'code' => 200,
