@@ -138,7 +138,7 @@ class Order extends Model
         $this->save();
         OrderStatus::create([
             'order_id' => $this->id,
-            'customer_id' => Auth::user()->customer->id,
+            'customer_id' => $this->customer_id,
             'vendor_id' => $this->vendor_id,
             'status' => $status,
         ]);
