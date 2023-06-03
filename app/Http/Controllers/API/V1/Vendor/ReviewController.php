@@ -52,5 +52,23 @@ class ReviewController extends Controller
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
         }
     }
+
+    public function rateCustomer()
+    {
+        $rateWater = Review::where('vendor_id' , Auth::user()->vendor->id)->where('type' , 'CUSTOMER')
+        ->whereHas('vendor' , function($q){ $q->where('type' , 'WATER');})->get();
+
+        $rateGas = Review::where('vendor_id' , Auth::user()->customer->id)->where('type' , 'CUSTOMER')
+        ->whereHas('vendor' , function($q){ $q->where('type' , 'GAS');})->get();
+
+        $data = [
+            'rateSumWater' => $rateWater->sum('rate'),
+            'rateCountWater' => $rateWater->count(),
+            'rateSumGas' => $rateGas->sum('rate'),
+            'rateCountGas' => $rateGas->count(),
+        ];
+
+        return parent::success($data , 'تمت العملية بنجاح');
+    }
 }
 
