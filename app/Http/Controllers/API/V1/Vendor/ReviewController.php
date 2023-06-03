@@ -17,7 +17,14 @@ class ReviewController extends Controller
         $review = Review::where('vendor_id' , Auth::user()->vendor->id)
         ->when($request->type , function($q) use($request){
             $q->where('type' , $request->type);
-        })->with('customer' , 'order')->get();
+        })
+        ->when($request->order_id , function($q) use($request){
+            $order_id = $request->order_id;
+            $q->whereHas('order' , function($q) use ($order_id){
+                $q->where('id' , 'LIKE' , '%'.$order_id.'%');
+            });
+        })
+        ->with('customer' , 'order')->get();
         return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
