@@ -26,7 +26,7 @@ class ComplaintStoreRequest extends FormRequest
     {
         return [
             'vendor_type' => 'required|in:GAS,WATER',
-            'type' => 'required|in:CUSTMER,VENDOR',
+            'type' => 'required|in:CUSTOMER,VENDOR',
             'customer_id' => 'nullable|exists:customers,id',
             'vendor_id' => 'nullable|exists:vendors,id',
             'order_id' => 'required|exists:orders,id',
