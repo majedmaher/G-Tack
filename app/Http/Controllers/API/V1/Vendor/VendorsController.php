@@ -75,7 +75,7 @@ class VendorsController extends Controller
                 'phone' => $request->phone,
                 'password' => $request->phone,
             ]);
-            $vendor = Vendor::find($user->id)->update([
+            $vendor = Vendor::find(Auth::user()->vendor->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'commercial_name' => $request->commercial_name,
