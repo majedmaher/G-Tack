@@ -83,7 +83,7 @@ Route::prefix('V1')->group(function () {
         Route::resource('vendor', VendorsController::class);
         Route::resource('order', VendorOrdersController::class);
         Route::get('reason', VendorReasonsController::class);
-        Route::get('review', VendorReviewController::class);
+        Route::resource('review', VendorReviewController::class);
         Route::put('status/{id}', [VendorsController::class , 'status']);
         Route::post('location', TracingVendorCntroller::class);
     });
