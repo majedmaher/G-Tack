@@ -21,7 +21,7 @@ class ReOrderService
                 $newOrder->items()->save($newItem);
             }
             foreach ($oldOrder->statuses as $status) {
-                if($status->status != 'PENDING'){
+                if($status->status == 'PENDING'){
                     $newStatus = $status->replicate();
                     $newOrder->statuses()->save($newStatus);
                 }
