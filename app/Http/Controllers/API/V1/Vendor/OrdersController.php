@@ -56,7 +56,7 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with('items', 'customer', 'address', 'statuses')
+        $order = Order::with('items', 'customer', 'address', 'statuses' , 'reviews')
         ->where('vendor_id', Auth::user()->vendor->id)->where('id', $id)
             ->select(
                 'id',
