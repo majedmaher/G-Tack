@@ -53,7 +53,7 @@ class ReviewController extends Controller
         }
     }
 
-    public function rateCustomer()
+    public function rateVendor()
     {
         $rateWater = Review::where('vendor_id' , Auth::user()->vendor->id)->where('type' , 'CUSTOMER')
         ->whereHas('vendor' , function($q){ $q->where('type' , 'WATER');})->get();
