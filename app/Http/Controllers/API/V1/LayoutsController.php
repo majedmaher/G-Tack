@@ -17,7 +17,9 @@ class LayoutsController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $layouts = Layout::where('status' , 'ACTIVE')->get();
+        $layouts = Layout::where('status' , 'ACTIVE')->when($request->type , function ($q) use($request){
+            $q->where('type' , $request->type);
+        })->get();
         return (new LayoutCollection($layouts))->additional(['message' => 'تمت العملية بنجاح']);
     }
 }

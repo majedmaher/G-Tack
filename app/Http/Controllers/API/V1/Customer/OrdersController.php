@@ -29,7 +29,7 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-        $order = Order::with('items' , 'vendor' , 'address' , 'statuses')
+        $order = Order::with('items' , 'vendor' , 'address' , 'statuses' , 'reviews')
         ->filter([
             'status' => $request->status,
             'type' => $request->type,
