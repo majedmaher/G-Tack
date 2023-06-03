@@ -33,6 +33,7 @@ class OrdersController extends Controller
         ->filter([
             'status' => $request->status,
             'type' => $request->type,
+            'map' => $request->map,
             'customer_id' =>  Auth::user()->customer->id,
         ])
         ->select('id' , 'vendor_id' , 'type' , 'number' , 'status' ,
