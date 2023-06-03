@@ -58,7 +58,7 @@ class ReviewController extends Controller
         $rateWater = Review::where('vendor_id' , Auth::user()->vendor->id)->where('type' , 'CUSTOMER')
         ->whereHas('vendor' , function($q){ $q->where('type' , 'WATER');})->get();
 
-        $rateGas = Review::where('vendor_id' , Auth::user()->customer->id)->where('type' , 'CUSTOMER')
+        $rateGas = Review::where('vendor_id' , Auth::user()->vendor->id)->where('type' , 'CUSTOMER')
         ->whereHas('vendor' , function($q){ $q->where('type' , 'GAS');})->get();
 
         $data = [
