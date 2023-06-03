@@ -14,6 +14,7 @@ class ReOrderService
         DB::beginTransaction();
         try {
             $oldOrder = Order::with('address' , 'items')->find($id);
+            $oldOrder->status = 'PENDING';
             $newOrder = $oldOrder->replicate();
             $newOrder->save();
             foreach ($oldOrder->items as $item) {
