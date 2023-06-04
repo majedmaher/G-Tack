@@ -23,9 +23,7 @@ class HomeController extends Controller
             $query->where('type', $request->type);
         })->count();
 
-        $customersCount = Customer::when($request->type, function ($query) use ($request) {
-            $query->where('type', $request->type);
-        })->count();
+        $customersCount = Customer::count();
 
         $vendorLocation = Location::withCount('vendor')->get();
 
