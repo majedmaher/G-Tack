@@ -37,12 +37,12 @@ class HomeController extends Controller
 
         $orders = Order::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
-        })->latest()->take(8)->get();
+        })->with('vendor' , 'customer')->latest()->take(8)->get();
 
         $vendors = Vendor::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
         })->latest()->take(8)->get();
-        
+
         $data = [
             'ordersLocation' => $ordersLocation,
             'ordersCount' => $ordersCount,
