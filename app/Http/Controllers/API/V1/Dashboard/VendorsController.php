@@ -38,6 +38,9 @@ class VendorsController extends Controller
         ->when($request->region, function($q) use($request){
             $q->where('region_id' , $request->region);
         })
+        ->when($request->type, function($q) use($request){
+            $q->where('type' , $request->type);
+        })
         ->when($request->start, function ($query) use ($request) {
             $query->whereBetween('created_at', [$request->start, $request->end]);
         })
