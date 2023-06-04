@@ -1,5 +1,6 @@
 <?php
 
+use App\Exports\VendorsExport;
 use App\Http\Controllers\API\V1\AuthBaseController;
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\ComplaintsController;
@@ -34,9 +35,8 @@ use App\Http\Controllers\API\V1\Vendor\ReviewController as VendorReviewControlle
 use App\Http\Controllers\API\V1\Vendor\TracingVendorCntroller;
 use App\Http\Controllers\API\V1\Vendor\VendorsController;
 use App\Http\Controllers\API\V1\Dashboard\SettingsController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
-use Spatie\QueryBuilder\QueryBuilder;
+use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,14 +49,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 |
 */
 
-Route::get('/test', function () {
-    $users = QueryBuilder::for(User::class)
-    // ->join('customers' , 'customers.user_id' , 'users.id')
-    ->allowedIncludes('customer')
-    // ->allowedFilters(AllowedFilter::exact('customers.name', null, false))
-    ->get();
-    return $users;
-});
 
 Route::prefix('V1')->group(function () {
 
