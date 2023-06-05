@@ -84,12 +84,11 @@ class VendorsController extends Controller
                 'region_id' => $request->region_id,
                 'max_product' => $request->max_product,
             ]);
-            $vendor = User::find(Auth::user()->id)->with('vendor')->first();
             return response()->json([
                 'status' => true,
                 'code' => 200,
                 'message' => Messages::getMessage('UPDATE_SUCCESS'),
-                'data' => $vendor,
+                'data' => User::where( 'id' ,Auth::user()->id)->with('vendor')->first(),
             ]);
         }
         return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
