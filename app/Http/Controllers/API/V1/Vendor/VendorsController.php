@@ -83,11 +83,12 @@ class VendorsController extends Controller
                 'governorate_id' => $request->governorate_id,
                 'region_id' => $request->region_id,
             ]);
+            $vendor = Vendor::find(Auth::user()->vendor->id)->first();
             return response()->json([
                 'status' => true,
                 'code' => 200,
                 'message' => Messages::getMessage('UPDATE_SUCCESS'),
-                'data' => $user,
+                'data' => $vendor,
             ]);
         }
         return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
