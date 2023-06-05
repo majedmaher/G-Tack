@@ -84,7 +84,7 @@ class VendorsController extends Controller
                 'region_id' => $request->region_id,
                 'max_product' => $request->max_product,
             ]);
-            $vendor = Vendor::find(Auth::user()->vendor->id)->first();
+            $vendor = User::find(Auth::user()->id)->with('vendor')->first();
             return response()->json([
                 'status' => true,
                 'code' => 200,
