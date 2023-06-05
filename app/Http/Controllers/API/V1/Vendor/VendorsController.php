@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\V1\Vendor;
 
+use App\Helpers\Messages;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
 use App\Models\User;
@@ -82,7 +83,12 @@ class VendorsController extends Controller
                 'governorate_id' => $request->governorate_id,
                 'region_id' => $request->region_id,
             ]);
-            return $this->generateToken(null, 'USER_UPDATED_SUCCESS');
+            return response()->json([
+                'status' => true,
+                'code' => 200,
+                'message' => Messages::getMessage('UPDATE_SUCCESS'),
+                'data' => $user,
+            ]);
         }
         return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
     }
@@ -109,4 +115,5 @@ class VendorsController extends Controller
         $vendor = Vendor::find($id)->update(['active' => $request->status]);
         return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
     }
+
 }
