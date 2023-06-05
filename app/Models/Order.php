@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
-    use HasFactory , Notifiable, SoftDeletes;
+    use HasFactory, Notifiable, SoftDeletes;
 
     // const STATUS_PENDING = 'PENDING';
     // const STATUS_ACCEPTED = 'ACCEPTED';
@@ -61,52 +61,60 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany(OrderItem::class , 'order_id' , 'id')
-        ->select('id' , 'order_id' , 'product_id' , 'product_name' , 'quantity' , 'custom' , 'price')
-        ->with(['products:id,name,size,price,image']);
+        return $this->hasMany(OrderItem::class, 'order_id', 'id')
+            ->select('id', 'order_id', 'product_id', 'product_name', 'quantity', 'custom', 'price')
+            ->with(['products:id,name,size,price,image']);
     }
 
     public function statuses()
     {
-        return $this->hasMany(OrderStatus::class , 'order_id' , 'id')->with('reason');
+        return $this->hasMany(OrderStatus::class, 'order_id', 'id')->with('reason');
     }
 
     public function vendor()
     {
-        return $this->belongsTo(Vendor::class , 'vendor_id' , 'id')
-        ->select('id' , 'type' , 'name' , 'user_id' , 'commercial_name' ,
-        'governorate_id' , 'phone' , 'active');
+        return $this->belongsTo(Vendor::class, 'vendor_id', 'id')
+            ->select(
+                'id',
+                'type',
+                'name',
+                'user_id',
+                'commercial_name',
+                'governorate_id',
+                'phone',
+                'active'
+            );
     }
 
     public function customer()
     {
-        return $this->belongsTo(Customer::class , 'customer_id' , 'id')
-        ->select('id' , 'name' , 'user_id' , 'phone');
+        return $this->belongsTo(Customer::class, 'customer_id', 'id')
+            ->select('id', 'name', 'user_id', 'phone');
     }
 
     public function address()
     {
-        return $this->hasOne(OrderAddress::class , 'order_id' , 'id');
+        return $this->hasOne(OrderAddress::class, 'order_id', 'id');
     }
 
     public function reviews()
     {
-        return $this->hasMany(Review::class , 'order_id' , 'id');
+        return $this->hasMany(Review::class, 'order_id', 'id');
     }
 
     public function custmer_reviews()
     {
-        return $this->hasMany(Review::class , 'order_id' , 'id')->where('type' , 'CUSTOMER');
+        return $this->hasMany(Review::class, 'order_id', 'id')->where('type', 'CUSTOMER');
     }
 
     public function vendor_reviews()
     {
-        return $this->hasMany(Review::class , 'order_id' , 'id')->where('type' , 'VENDOR');
+        return $this->hasMany(Review::class, 'order_id', 'id')->where('type', 'VENDOR');
     }
 
     public function locations()
     {
-        return $this->belongsTo(Location::class , 'location_id' , 'id');
+        return $this->belongsTo(Location::class, 'location_id', 'id');
     }
 
     public function scopeFilter(Builder $builder, $filters)
@@ -116,18 +124,18 @@ class Order extends Model
             'customer_id' => null,
         ], $filters);
 
-        $builder->when($filters['status'], function($builder, $value) {
+        $builder->when($filters['status'], function ($builder, $value) {
             $builder->where('status', '=', $value);
         });
 
-        $builder->when($filters['type'], function($builder, $value) {
+        $builder->when($filters['type'], function ($builder, $value) {
             $builder->where('type', '=', $value);
         });
 
-        $builder->when($filters['customer_id'], function($builder, $value) {
+        $builder->when($filters['customer_id'], function ($builder, $value) {
             $builder->where('customer_id', '=', $value);
         });
-        $builder->when($filters['map'], function($builder, $value) {
+        $builder->when($filters['map'], function ($builder, $value) {
             $builder->where('status', '!=', 'PENDING');
         });
     }
@@ -145,6 +153,14 @@ class Order extends Model
             'vendor_id' => $this->vendor_id,
             'status' => $status,
         ]);
+    }
 
+    public function getNumberAttribute()
+    {
+        if ($this->type == 'GAS') {
+            return 'G-' . $this->attributes['number'];
+        } else {
+            return 'W-' . $this->attributes['number'];
+        }
     }
 }
