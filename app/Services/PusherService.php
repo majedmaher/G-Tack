@@ -15,7 +15,6 @@ class PusherService
             $orders = Order::filter([
                 'status' => 'ONWAY',
                 'vendor_id' =>  Auth::user()->vendor->id,
-                'type' => '',
             ])->get();
             foreach($orders as $order){
                 event(new OrderTracking($order , $data));
