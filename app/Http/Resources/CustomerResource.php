@@ -20,6 +20,8 @@ class CustomerResource extends JsonResource
             'phone' => $this->phone,
             'orders_count' => $this->orders_count,
             'user' => new UserResource($this->whenLoaded('user')),
+            'governorate' => new GovernorateResource($this->whenLoaded('governorate')),
+            'region' => new GovernorateResource($this->whenLoaded('region')),
         ];
     }
 }

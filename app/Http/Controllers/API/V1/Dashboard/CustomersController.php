@@ -20,7 +20,7 @@ class CustomersController extends Controller
     public function index(Request $request)
     {
         $countRow = $request->countRow;
-        $customers = Customer::with('user')->withCount('orders')
+        $customers = Customer::with('user' , 'governorate' , 'region')->withCount('orders')
         ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
@@ -87,7 +87,7 @@ class CustomersController extends Controller
      */
     public function show($id)
     {
-        $customer = Customer::with('user')->withCount('orders')->find($id);
+        $customer = Customer::with('user' , 'governorate' , 'region')->withCount('orders')->find($id);
 
         return parent::success($customer , 'تمت العملية بنجاح');
     }

@@ -8,12 +8,12 @@ class CustomerCollection extends ResourceCollection
 {
     public $collects = CustomerResource::class;
 
-    public function toArray($request)
-    {
-        return [
-            'code' => 200,
-            'status' => true,
-            'data' => $this->collection,
-        ];
-    }
+    // public function toArray($request)
+    // {
+    //     return [
+    //         // 'code' => 200,
+    //         // 'status' => true,
+    //         'data' => $this->collection,
+    //     ];
+    // }
 }

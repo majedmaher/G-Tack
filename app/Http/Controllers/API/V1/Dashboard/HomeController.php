@@ -19,19 +19,22 @@ class HomeController extends Controller
      */
     public function __invoke(Request $request)
     {
+
+        $vendorLocation = Location::where('type' , 'GOVERNORATE')->withCount('vendor')->get();
+
         $vendorsCount = Vendor::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
         })->count();
 
-        $customersCount = Customer::count();
+        $customersLocation = Location::where('type' , 'GOVERNORATE')->withCount('customer')->get();
 
-        $vendorLocation = Location::withCount('vendor')->get();
+        $customersCount = Customer::count();
 
         $ordersCount = Order::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
         })->count();
 
-        $ordersLocation = Location::withCount('orders')->get();
+        $ordersLocation = Location::where('type' , 'GOVERNORATE')->withCount('orders')->get();
 
         $orders = Order::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
@@ -46,6 +49,8 @@ class HomeController extends Controller
             'ordersCount' => $ordersCount,
             'vendorLocation' => $vendorLocation,
             'vendorsCount' => $vendorsCount,
+            'customersLocation' => $customersLocation,
+            'customersCount' => $customersCount,
             'users' => $vendorsCount  + $customersCount,
             'orders' => $orders,
             'vendors' => $vendors,
