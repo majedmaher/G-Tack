@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->enum('type' , ['GAS' , 'WATER']);
-            $table->string('number');
+            $table->integer('number');
             $table->foreignId('customer_id')->constrained('customers', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('governorate_id')->nullable()->constrained('locations', 'id')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('region_id')->nullable()->constrained('locations', 'id')->nullOnDelete()->cascadeOnUpdate();
