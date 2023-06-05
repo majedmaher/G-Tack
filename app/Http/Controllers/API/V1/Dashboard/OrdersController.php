@@ -28,6 +28,7 @@ class OrdersController extends Controller
             ->filter([
                 'status' => $request->status,
                 'type' => $request->type,
+                'map' => $request->map,
             ])
             ->when($start, function ($query) use ($start, $end) {
                 $query->whereBetween('created_at', [$start, $end]);
