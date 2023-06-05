@@ -122,6 +122,8 @@ class Order extends Model
         $filters = array_merge([
             'status' => null,
             'customer_id' => null,
+            'type' => null,
+            'map' => null,
         ], $filters);
 
         $builder->when($filters['status'], function ($builder, $value) {
