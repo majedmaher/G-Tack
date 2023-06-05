@@ -144,6 +144,7 @@ class AuthController extends AuthBaseController
             $customer->governorate_id = $request->governorate_id;
             $customer->region_id = $request->region_id;
             $isSaved = $customer->save();
+            $user = User::where('id', Auth::user()->id)->with('customer')->first();
             if ($isSaved) {
                 return $this->generateToken($user, 'USER_UPDATED_SUCCESS');
             } else {
