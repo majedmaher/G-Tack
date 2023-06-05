@@ -32,4 +32,9 @@ class Location extends Model
     {
         return $this->hasMany(Vendor::class , 'governorate_id' , 'id');
     }
+
+    public function customer()
+    {
+        return $this->hasMany(Customer::class , 'governorate_id' , 'id');
+    }
 }

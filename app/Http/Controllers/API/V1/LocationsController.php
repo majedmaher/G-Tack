@@ -23,6 +23,6 @@ class LocationsController extends Controller
         }, function ($q){
             $q->where('parent_id' , null);
         })->get();
-        return (new GovernorateCollection($locations))->additional(['message' => 'تمت العملية بنجاح']);
+        return (new GovernorateCollection($locations))->additional(['message' => 'تمت العملية بنجاح' , 'code' => 200 , 'status' => true]);
     }
 }

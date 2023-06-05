@@ -25,7 +25,7 @@ class LocationsController extends Controller
         })->when($request->type , function ($q) use($request) {
             $q->where('type' , $request->type);
         })->get();
-        return (new GovernorateCollection($locations))->additional(['message' => 'تمت العملية بنجاح']);
+        return (new GovernorateCollection($locations))->additional(['message' => 'تمت العملية بنجاح' , 'code' => 200 , 'status' => true]);
     }
 
     /**
