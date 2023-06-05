@@ -44,7 +44,7 @@ class DatabaseSeeder extends Seeder
         $Reason = \App\Models\Reason::create([
             'name' => 'Remal',
             'type' => 'VENDOR',
-            'context' => 'CANCELATION',
+            'context' => 'CANCELLATION',
             'status' => 'ACTIVE',
         ]);
 

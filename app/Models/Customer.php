@@ -22,4 +22,14 @@ class Customer extends Model
     {
         return $this->hasMany(Order::class , 'customer_id' , 'id');
     }
+
+    public function governorate()
+    {
+        return $this->belongsTo(Location::class , 'governorate_id' , 'id');
+    }
+
+    public function region()
+    {
+        return $this->belongsTo(Location::class , 'region_id' , 'id');
+    }
 }

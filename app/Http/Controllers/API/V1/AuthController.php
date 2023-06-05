@@ -94,6 +94,8 @@ class AuthController extends AuthBaseController
                 $customer->name = $user->name;
                 $customer->phone = $user->phone;
                 $customer->user_id = $user->id;
+                $customer->governorate_id = $request->governorate_id;
+                $customer->region_id  = $request->region_id;
                 $isSaved = $customer->save();
             }
             if ($isSaved) {
