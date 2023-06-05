@@ -122,6 +122,8 @@ class AuthController extends AuthBaseController
         $roles = [
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users,phone,' . Auth::user()->id,
+            'governorate_id' => 'required|exists:locations,id',
+            'region_id' => 'required|exists:locations,id',
         ];
         $customMessages = [
             'phone.required' => 'يرجى إدخال رقم الهاتف',
@@ -139,6 +141,8 @@ class AuthController extends AuthBaseController
             $customer = Customer::where('user_id', $user->id)->first();
             $customer->name = $user->name;
             $customer->phone = $user->phone;
+            $customer->governorate_id = $request->governorate_id;
+            $customer->region_id = $request->region_id;
             $isSaved = $customer->save();
             if ($isSaved) {
                 return $this->generateToken($user, 'USER_UPDATED_SUCCESS');
