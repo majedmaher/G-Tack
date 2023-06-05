@@ -49,7 +49,6 @@ use Maatwebsite\Excel\Facades\Excel;
 |
 */
 
-
 Route::prefix('V1')->group(function () {
 
     Route::post('register', [AuthController::class, 'register']);
@@ -77,7 +76,6 @@ Route::prefix('V1')->group(function () {
         Route::get('reason', VendorReasonsController::class);
         Route::resource('review', VendorReviewController::class);
         Route::get('rate-vendor', [VendorReviewController::class , 'rateVendor']);
-
         Route::put('status/{id}', [VendorsController::class , 'status']);
         Route::post('location', TracingVendorCntroller::class);
     });
