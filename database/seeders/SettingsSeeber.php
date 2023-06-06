@@ -31,13 +31,13 @@ class SettingsSeeber extends Seeder
             [
                 'key' => 'gas-activation',
                 'label' => 'تفعيل تطبيق الغاز ',
-                'value' => 'سياسات وخصوصية',
+                'value' => '1',
                 'group' => 'social',
             ],
             [
                 'key' => 'water-activation',
                 'label' => 'تفعيل تطبيق الماء',
-                'value' => '+969858747123',
+                'value' => '1',
                 'group' => 'social',
             ],
         ];
