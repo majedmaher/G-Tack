@@ -16,56 +16,65 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            ProductsSeeder::class,
-            AdminSeeder::class,
-            SettingsSeeber::class,
-            AttachmentSeeder::class,
-        ]);
+
 
         $GOVERNORATE = \App\Models\Location::create([
-            'name' => 'Gaza',
+            'name' => 'غزة',
             'type' => 'GOVERNORATE',
         ]);
 
-        $REGION = \App\Models\Location::create([
-            'name' => 'Remal',
+        \App\Models\Location::create([
+            'name' => 'رمال',
+            'type' => 'REGION',
+            'parent_id' => $GOVERNORATE->id,
+        ]);
+
+        \App\Models\Location::create([
+            'name' => 'جندي',
             'type' => 'REGION',
             'parent_id' => $GOVERNORATE->id,
         ]);
 
         $Reason = \App\Models\Reason::create([
-            'name' => 'Remal',
+            'name' => 'قام الموزع بفعل غير لابق',
             'type' => 'CUSTOMER',
             'context' => 'REJECTION',
             'status' => 'ACTIVE',
         ]);
 
         $Reason = \App\Models\Reason::create([
-            'name' => 'Remal',
+            'name' => 'قام الزبون بفعل غير لابق',
             'type' => 'VENDOR',
             'context' => 'CANCELLATION',
             'status' => 'ACTIVE',
         ]);
+        
+        $this->call([
+            ProductsSeeder::class,
+            AdminSeeder::class,
+            SettingsSeeber::class,
+            AttachmentSeeder::class,
+            VenderSeeder::class,
+        ]);
 
-        for($i = 0 ; $i <= 10 ; $i++){
-        $user = \App\Models\User::create([
-                'name' => 'Test User',
-                'type' => 'VENDOR',
-                'phone' => '52314679'.$i,
-                'otp' => '1234',
-                'email' => 'test@example.com'.$i,
-                'password' => 'test@example.com'.$i,
-            ]);
-            $vendor = new Vendor();
-            $vendor->name = 'Test User';
-            $vendor->commercial_name = 'commercial_name';
-            $vendor->phone = '52314679'.$i;
-            $vendor->user_id  = $user->id;
-            $vendor->governorate_id = 1;
-            $vendor->region_id  = 2;
-            $vendor->save();
-        }
+        // for($i = 0 ; $i <= 10 ; $i++){
+        // $user = \App\Models\User::create([
+        //         'name' => 'Test User',
+        //         'type' => 'VENDOR',
+        //         'phone' => '52314679'.$i,
+        //         'otp' => '1234',
+        //         'email' => 'test@example.com'.$i,
+        //         'password' => 'test@example.com'.$i,
+        //     ]);
+        //     $vendor = new Vendor();
+        //     $vendor->name = 'Test User';
+        //     $vendor->commercial_name = 'commercial_name';
+        //     $vendor->phone = '52314679'.$i;
+        //     $vendor->user_id  = $user->id;
+        //     $vendor->governorate_id = 1;
+        //     $vendor->region_id  = 2;
+        //     $vendor->save();
+        // }
 
     }
 }
