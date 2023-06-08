@@ -32,9 +32,9 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
             $user = User::where('phone', $request->phone)->where('type' , $request->type)->first();
-            // if($user->status != "ACTIVE"){
-            //     return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
-            // }
+            if(!$user){
+                return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
+            }
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $isSaved = $user->save();
@@ -88,6 +88,7 @@ class AuthController extends AuthBaseController
                 $vendor->user_id  = $user->id;
                 $vendor->governorate_id = $request->governorate_id;
                 $vendor->region_id  = $request->region_id;
+                $vendor->max_product  = $request->max_product;
                 $isSaved = $vendor->save();
             } elseif ($user->type == 'CUSTOMER') {
                 $customer = new Customer();
