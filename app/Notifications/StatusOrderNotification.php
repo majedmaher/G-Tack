@@ -41,8 +41,8 @@ class StatusOrderNotification extends Notification
     {
         return [
             'database',
+            FcmChannel::class,
         ];
-        // return ['mail'];
     }
 
     /**
