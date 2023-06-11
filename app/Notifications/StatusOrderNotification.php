@@ -67,9 +67,7 @@ class StatusOrderNotification extends Notification
         return FcmMessage::create()
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle($title)
-                ->setBody($body)
-                // ->setImage('http://example.com/url-to-image-here.png')
-                )
+                ->setBody($body))
             ->setAndroid(
                 AndroidConfig::create()
                     ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
