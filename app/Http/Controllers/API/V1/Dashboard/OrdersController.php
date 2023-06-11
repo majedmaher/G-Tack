@@ -21,7 +21,6 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-        
         $start = $request->start;
         $end = $request->end;
         $countRow = $request->countRow;
@@ -34,9 +33,7 @@ class OrdersController extends Controller
             ->when($start, function ($query) use ($start, $end) {
                 $query->whereBetween('created_at', [$start, $end]);
             })
-            ->select('id', 'vendor_id', 'customer_id', 'number', 'status', 'note',
-            'total', 'start_time', 'end_time', 'time', 'created_at')->latest()->paginate($countRow ?? 15);
-
+            ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
             'code' => 200,
