@@ -75,10 +75,14 @@ class Messages
         'NOT_FOUND' => 'العنصر غير موجود',
         'REORDER_SUCCESS' => 'تم أعادة الطلب بنجاح',
 
+        // 'PENDING','ACCEPTED','DECLINED','DELIVERING','RECEIVED','ONWAY','PROCESSING','FILLED','DELIVERED','COMPLETED','CANCELLED_BY_VENDOR','CANCELLED_BY_CUSTOMER'
+
         // Order Status
         'PENDING' => 'تم إنشاء طلبك بنجاح ',
         'ACCEPTED' => 'تم قبول طلبك من طرف موزع : ',
         'DECLINED' => 'نعتذر تم رفض طلبك من قبل موزع : ',
+        'DELIVERING' => 'أناني في الطريق أليك',
+        'RECEIVED' => 'تم أستلام الأنبوبة من طرف الموزع',
         'ONWAY' => 'الموزع في الطريقك الك',
         'PROCESSING' => 'الطلب الخاص بك قيد التعبئة',
         'FILLED' => 'تم الإنتهاء من تعبأت طلبك',
@@ -160,11 +164,14 @@ class Messages
         'NOT_FOUND' => 'Object not fount',
         'REORDER_SUCCESS' => 'The request was successfully re-order',
 
+        // 'PENDING','ACCEPTED','DECLINED','DELIVERING','RECEIVED','ONWAY','PROCESSING','FILLED','DELIVERED','COMPLETED','CANCELLED_BY_VENDOR','CANCELLED_BY_CUSTOMER'
 
         // Order Status
         'PENDING' => 'Your request was created successfully',
         'ACCEPTED' => 'Your request has been accepted by a distributor: ',
         'DECLINED' => 'Sorry, your order was rejected by a distributor:',
+        'DELIVERING' => 'Im on my way to you',
+        'RECEIVED' => 'The tube has been received by the distributor',
         'ONWAY' => 'The dealer is on your way',
         'PROCESSING' => 'Your order is being packed',
         'FILLED' => 'Your request has been filled',
