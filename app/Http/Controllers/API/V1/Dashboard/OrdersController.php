@@ -21,6 +21,7 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
+        
         $start = $request->start;
         $end = $request->end;
         $countRow = $request->countRow;
