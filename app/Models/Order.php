@@ -129,6 +129,9 @@ class Order extends Model
         $builder->when($filters['status'], function ($builder, $value) {
             $builder->where('status', '=', $value);
         });
+        $builder->when($filters['status2'], function ($builder, $value) {
+            $builder->where('status', '=', $value);
+        });
 
         $builder->when($filters['type'], function ($builder, $value) {
             $builder->where('type', '=', $value);
