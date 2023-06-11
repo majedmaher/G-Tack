@@ -14,6 +14,7 @@ class PusherService
         try {
             $orders = Order::filter([
                 'status' => 'ONWAY',
+                'status2' => 'DELIVERING',
                 'vendor_id' =>  Auth::user()->vendor->id,
             ])->get();
             foreach($orders as $order){
