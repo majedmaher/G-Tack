@@ -24,7 +24,7 @@ class OrdersController extends Controller
         $start = $request->start;
         $end = $request->end;
         $countRow = $request->countRow;
-        $order = Order::with('vendor', 'customer' , 'address')
+        $order = Order::with('items', 'vendor', 'customer', 'address', 'statuses')
             ->filter([
                 'status' => $request->status,
                 'type' => $request->type,
@@ -33,8 +33,8 @@ class OrdersController extends Controller
             ->when($start, function ($query) use ($start, $end) {
                 $query->whereBetween('created_at', [$start, $end]);
             })
-            ->select('id' , 'vendor_id' , 'customer_id' , 'number' , 'status' , 'note' , 'total' , 'start_time',
-                'end_time' , 'time' , 'created_at')->latest()->paginate($countRow ?? 15);
+            ->select('id', 'vendor_id', 'customer_id', 'number', 'status', 'note',
+            'total', 'start_time', 'end_time', 'time', 'created_at')->latest()->paginate($countRow ?? 15);
 
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
