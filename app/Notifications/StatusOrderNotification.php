@@ -67,14 +67,7 @@ class StatusOrderNotification extends Notification
         return FcmMessage::create()
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle($title)
-                ->setBody($body))
-            ->setAndroid(
-                AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
-                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
-            )->setApns(
-                ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
+                ->setBody($body));
     }
 
     /**
