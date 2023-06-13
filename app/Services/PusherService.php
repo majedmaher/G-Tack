@@ -19,7 +19,7 @@ class PusherService
                 'vendor_id' =>  Auth::user()->vendor->id,
             ])->get();
             foreach($orders as $order){
-                event(new OrderTracking($order , $data));
+                event(new OrderTracking($order , $data , $data['channel_name'] , $data['socket_id']));
             }
         } catch (Throwable $e) {
             throw $e;
