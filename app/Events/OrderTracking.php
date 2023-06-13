@@ -34,7 +34,7 @@ class OrderTracking implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('private-order-tracking-' . $this->order->id);
+        return new Channel('private-order-tracking-' . $this->order->id);
     }
 
     public function broadcastAs()
