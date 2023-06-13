@@ -39,6 +39,6 @@ class OrderTracking implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return 'private-new-vendor-location';
+        return 'new-vendor-location';
     }
 }
