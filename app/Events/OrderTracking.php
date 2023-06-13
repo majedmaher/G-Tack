@@ -14,19 +14,17 @@ class OrderTracking implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $order , $data , $channelName , $socketId;
+    public $order , $data;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($order , $data , $channelName , $socketId)
+    public function __construct($order , $data)
     {
         $this->order = $order;
         $this->data = $data;
-        $this->channelName = $channelName;
-        $this->socketId = $socketId;
     }
 
     /**
@@ -36,24 +34,11 @@ class OrderTracking implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel($this->channelName);
+        return new PrivateChannel('order-teacking-' . $this->order->id);
     }
 
     public function broadcastAs()
     {
         return 'new-vendor-location';
-    }
-
-    /**
-     * Get the additional data to broadcast with the event.
-     *
-     * @return array
-     */
-    public function broadcastWith()
-    {
-        return [
-            'channel_name' => $this->channelName,
-            'socket_id' => $this->socketId,
-        ];
     }
 }
