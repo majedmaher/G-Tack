@@ -77,7 +77,8 @@ Route::prefix('V1')->group(function () {
         Route::resource('review', VendorReviewController::class);
         Route::get('rate-vendor', [VendorReviewController::class , 'rateVendor']);
         Route::put('status/{id}', [VendorsController::class , 'status']);
-        Route::post('tracing', TracingVendorCntroller::class);
+        Route::post('tracking', [TracingVendorCntroller::class , 'tracking']);
+        Route::post('authPusher', [TracingVendorCntroller::class , 'authPusher']);
     });
 
     Route::prefix('dashboard')->middleware(['auth:sanctum'])->group(function () {

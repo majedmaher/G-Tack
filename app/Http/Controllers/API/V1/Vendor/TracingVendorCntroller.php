@@ -16,7 +16,7 @@ class TracingVendorCntroller extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request, PusherService $pusherService)
+    public function tracking(Request $request, PusherService $pusherService)
     {
         $data = $request->all();
         try {
@@ -25,5 +25,14 @@ class TracingVendorCntroller extends Controller
             return response(['message' => $e->getMessage(),], 500);
         }
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
+    }
+
+    public function authPusher(Request $request, PusherService $pusherService){
+        $data = $request->all();
+        try {
+            return $pusherService->auth($data);
+        } catch (Throwable $e) {
+            return response(['message' => $e->getMessage(),], 500);
+        }
     }
 }
