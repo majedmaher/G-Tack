@@ -125,6 +125,7 @@ class Order extends Model
             'type' => null,
             'map' => null,
             'status2' => null,
+            'vendor_id' => null,
         ], $filters);
 
         $builder->when($filters['status'], function ($builder, $value) {
