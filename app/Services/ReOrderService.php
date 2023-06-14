@@ -33,6 +33,7 @@ class ReOrderService
             $newOrder->address()->save($newAddress);
             $newOrder = $oldOrder->address->replicate();
             DB::commit();
+            $newOrder = Order::find($newAddress->order_id);
             event(new OrderCreated($newOrder));
         } catch (Throwable $e) {
             DB::rollBack();
