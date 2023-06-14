@@ -55,7 +55,7 @@ class CreateOrderService
             }
             DB::commit();
 
-            // event(new OrderCreated($newOrder));
+            event(new OrderCreated($newOrder));
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;

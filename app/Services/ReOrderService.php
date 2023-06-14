@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Events\OrderCreated;
 use App\Events\ReOrdered;
 use App\Models\Address;
 use App\Models\Order;
@@ -32,7 +33,7 @@ class ReOrderService
             $newOrder->address()->save($newAddress);
             $newOrder = $oldOrder->address->replicate();
             DB::commit();
-            // event(new ReOrdered());
+            event(new OrderCreated($newOrder));
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
