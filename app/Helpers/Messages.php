@@ -89,7 +89,7 @@ class Messages
         'DELIVERED' => 'هل تم توصيل طلبك يرجى تأكيد التسليم',
         'COMPLETED' => 'نحن هنا لخدمتكم',
         'CANCELLED_BY_VENDOR' => 'نعتذر تم إلغاء طلبك من قبل موزع : ',
-        'CANCELLED_BY_CUSTOMER' => 'تم رفض طلب من قبل الزبون :',
+        'CANCELLED_BY_CUSTOMER' => 'تم إلغاء طلب من قبل الزبون :',
     ];
 
     private static $enMessages = [
@@ -178,7 +178,7 @@ class Messages
         'DELIVERED' => 'Has your order been delivered, please confirm delivery',
         'COMPLETED' => 'We are here to serve you',
         'CANCELLED_BY_VENDOR' => 'We apologize your order has been canceled by a distributor :',
-        'CANCELLED_BY_CUSTOMER' => 'The request was rejected by the customer:',
+        'CANCELLED_BY_CUSTOMER' => 'The request was canceled by the customer:',
 
     ];
 
