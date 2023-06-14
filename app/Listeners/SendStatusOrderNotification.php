@@ -28,6 +28,12 @@ class SendStatusOrderNotification
     public function handle(UpdatedStatusOrder $event)
     {
         $order = $event->order;
-        $order->customer->user->notify(new StatusOrderNotification($order));
+        if ($order->status == 'CANCELLED_BY_CUSTOMER') {
+            $order->vendor->user->notify(new StatusOrderNotification($order));
+        } elseif ($order->status == 'CANCELLED_BY_VENDOR' and $order->status == 'DECLINED') {
+            $order->customer->user->notify(new StatusOrderNotification($order));
+        } else {
+            $order->customer->user->notify(new StatusOrderNotification($order));
+        }
     }
 }

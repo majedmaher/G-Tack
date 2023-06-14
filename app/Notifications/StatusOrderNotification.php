@@ -64,6 +64,12 @@ class StatusOrderNotification extends Notification
     {
         $title = $this->order->vendor->commercial_name;
         $body = ControllersService::getMessage($this->order->status) .' ' . $this->order->vendor->commercial_name;
+        if($this->order->status == 'CANCELLED_BY_CUSTOMER'){
+            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->customer->name;
+        }
+        if($this->order->status == 'CANCELLED_BY_VENDOR' and $this->order->status == 'DECLINED'){
+            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->vendor->commercial_name;
+        }
         return FcmMessage::create()
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
                 ->setTitle($title)
@@ -80,6 +86,12 @@ class StatusOrderNotification extends Notification
     {
         $title = $this->order->vendor->commercial_name;
         $body = ControllersService::getMessage($this->order->status) .' ' . $this->order->vendor->commercial_name;
+        if($this->order->status == 'CANCELLED_BY_CUSTOMER'){
+            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->customer->name;
+        }
+        if($this->order->status == 'CANCELLED_BY_VENDOR' and $this->order->status == 'DECLINED'){
+            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->vendor->commercial_name;
+        }
         return [
             'title' => $title,
             'body' => $body,
