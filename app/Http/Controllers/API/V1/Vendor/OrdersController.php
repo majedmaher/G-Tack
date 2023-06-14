@@ -26,7 +26,26 @@ class OrdersController extends Controller
             'map' => $request->map,
             'type' => $request->type,
             'vendor_id' =>  Auth::user()->vendor->id,
-        ])->select('id','type','customer_id','vendor_id','number','status','note','total','start_time','end_time','time','created_at')->latest()->get();
+        ])->select('id','type','customer_id','vendor_id','number',
+        'status','note','total','start_time','end_time','time','created_at')
+        // 'PENDING','ACCEPTED',
+        // 'DECLINED','DELIVERING','RECEIVED',
+        // 'ONWAY','PROCESSING','FILLED','DELIVERED'
+        // ,'COMPLETED','CANCELLED_BY_VENDOR',
+        // 'CANCELLED_BY_CUSTOMER'
+        ->orderByRaw("CASE
+            WHEN status = 'PENDING' THEN 1
+            WHEN status = 'ACCEPTED' THEN 2
+            WHEN status = 'DELIVERING' THEN 3
+            WHEN status = 'ONWAY' THEN 4
+            WHEN status = 'PROCESSING' THEN 5
+            WHEN status = 'DELIVERED' THEN 6
+            WHEN status = 'COMPLETED' THEN 7
+            WHEN status = 'CANCELLED_BY_CUSTOMER' THEN 8
+            WHEN status = 'CANCELLED_BY_VENDOR' THEN 9
+            WHEN status = 'DECLINED' THEN 10
+            ELSE 11
+            END")->get();
 
         return response()->json([
             'code' => 200,
@@ -71,7 +90,19 @@ class OrdersController extends Controller
                 'time',
                 'created_at'
             )
-            ->latest()->get();
+            ->orderByRaw("CASE
+            WHEN status = 'PENDING' THEN 1
+            WHEN status = 'ACCEPTED' THEN 2
+            WHEN status = 'DELIVERING' THEN 3
+            WHEN status = 'ONWAY' THEN 4
+            WHEN status = 'PROCESSING' THEN 5
+            WHEN status = 'DELIVERED' THEN 6
+            WHEN status = 'COMPLETED' THEN 7
+            WHEN status = 'CANCELLED_BY_CUSTOMER' THEN 8
+            WHEN status = 'CANCELLED_BY_VENDOR' THEN 9
+            WHEN status = 'DECLINED' THEN 10
+            ELSE 11
+            END")->get();
         return parent::success($order, 'تمت العملية بنجاح');
     }
 

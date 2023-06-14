@@ -44,6 +44,7 @@ class UsersController extends Controller
         try {
             $user = new User();
             $user->name = $userRequest->get('name');
+            $user->job_title = $userRequest->get('job_title');
             $user->phone = $userRequest->get('phone');
             $user->email = $userRequest->get('email');
             $user->password = $userRequest->get('phone');
@@ -89,6 +90,7 @@ class UsersController extends Controller
     {
         $roles = [
             'name' => 'required|max:255',
+            'job_title' => 'required|max:255',
             'phone' => 'required|numeric|unique:users,phone,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
             'role_id' => 'required|exists:roles,id',
@@ -112,6 +114,7 @@ class UsersController extends Controller
         DB::beginTransaction();
         try {
             $user = User::find($id);
+            $user->job_title = $request->get('job_title');
             $user->name = $request->get('name');
             $user->phone = $request->get('phone');
             $user->email = $request->get('email');
