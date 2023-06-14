@@ -20,11 +20,15 @@ class UsersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $users = User::with('role_has_user.role.permission')->where('type' , 'USER')->get();
-        $users = User::with('role_has_user.role')->where('type' , 'USER')->get();
-
+        $users = User::with('role_has_user.role')->when($request->type, function($q) use($request) {
+            $q->whereHas('role_has_user', function ($builder) use($request) {
+                $builder->whereHas('role', function ($builder2) use($request) {
+                    $builder2->where('type' , $request->type);
+                });
+            });
+        })->where('type' , 'USER')->get();
         return parent::success($users , 'تمت العملية بنجاح');
     }
 
