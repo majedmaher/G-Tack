@@ -16,11 +16,14 @@ class DivecTokensService
     {
         DB::beginTransaction();
         try {
-            DevicesToken::create([
-                'fcm_token' => $data['fcm_token'],
-                'user_id' => $data['user_id'],
-                'device_name' => $data['device_name'],
-            ]);
+            $oldFcm = DevicesToken::where('fcm_token' , $data['fcm_token'])->first();
+            if(!$oldFcm){
+                DevicesToken::create([
+                    'fcm_token' => $data['fcm_token'],
+                    'user_id' => $data['user_id'],
+                    'device_name' => $data['device_name'],
+                ]);
+            }
             DB::commit();
         } catch (Throwable $e) {
             DB::rollBack();
