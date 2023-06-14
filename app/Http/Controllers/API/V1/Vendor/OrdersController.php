@@ -92,21 +92,7 @@ class OrdersController extends Controller
                 'time',
                 'created_at'
             )
-            ->orderByRaw("CASE
-            WHEN status = 'PENDING' THEN 1
-            WHEN status = 'ACCEPTED' THEN 2
-            WHEN status = 'ONWAY' THEN 3
-            WHEN status = 'RECEIVED' THEN 4
-            WHEN status = 'PROCESSING' THEN 5
-            WHEN status = 'FILLED' THEN 6
-            WHEN status = 'DELIVERING' THEN 7
-            WHEN status = 'DELIVERED' THEN 8
-            WHEN status = 'COMPLETED' THEN 9
-            WHEN status = 'CANCELLED_BY_CUSTOMER' THEN 10
-            WHEN status = 'CANCELLED_BY_VENDOR' THEN 11
-            WHEN status = 'DECLINED' THEN 12
-            ELSE 13
-            END")->get();
+            ->orderByRaw("CASE WHEN status = 'PENDING' THEN 1 WHEN status = 'ACCEPTED' THEN 2 WHEN status = 'ONWAY' THEN 3 WHEN status = 'RECEIVED' THEN 4 WHEN status = 'PROCESSING' THEN 5 WHEN status = 'FILLED' THEN 6 WHEN status = 'DELIVERING' THEN 7 WHEN status = 'DELIVERED' THEN 8 WHEN status = 'COMPLETED' THEN 9 WHEN status = 'CANCELLED_BY_CUSTOMER' THEN 10 WHEN status = 'CANCELLED_BY_VENDOR' THEN 11 WHEN status = 'DECLINED' THEN 12 ELSE 13 END")->get();
         return parent::success($order, 'تمت العملية بنجاح');
     }
 
