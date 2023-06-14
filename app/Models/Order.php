@@ -170,9 +170,9 @@ class Order extends Model
     public function getNumberAttribute()
     {
         if ($this->type == 'GAS') {
-            return 'G-' . $this->attributes['number'];
+            return 'G-' . $this->attributes['id'];
         } else {
-            return 'W-' . $this->attributes['number'];
+            return 'W-' . $this->attributes['id'];
         }
     }
 }
