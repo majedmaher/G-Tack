@@ -44,7 +44,7 @@ class VendorsController extends Controller
         ->when($request->start, function ($query) use ($request) {
             $query->whereBetween('created_at', [$request->start, $request->end]);
         })
-        ->with('governorate' , 'region' , 'user')
+        ->with('governorate' , 'region' , 'user' , 'attachments.document')
         ->latest()->paginate($countRow ?? 15);
 
         return response()->json([
@@ -61,8 +61,6 @@ class VendorsController extends Controller
                 'last_page' => $vendors->lastPage(),
             ]
         ], 200);
-
-        return (new VendorCollection($vendors))->additional(['message' => 'تمت العملية بنجاح']);
     }
 
     /**
@@ -125,9 +123,7 @@ class VendorsController extends Controller
      */
     public function show($id)
     {
-        $vendor = Vendor::
-        with('governorate' , 'region', 'user' , 'attachments.document')->find($id);
-
+        $vendor = Vendor::with('governorate' , 'region', 'user' , 'attachments.document')->find($id);
         return parent::success($vendor , 'تمت العملية بنجاح');
     }
 

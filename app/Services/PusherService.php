@@ -40,6 +40,7 @@ class PusherService
         $socketId = $data['socket_id'];
         // Generate the authentication response with the channel name and socket ID
         $auth = $pusher->socket_auth($channel, $socketId);
+        
         return response()->json($auth);
     }
 }
