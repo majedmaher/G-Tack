@@ -141,6 +141,11 @@ class Order extends Model
         $builder->when($filters['customer_id'], function ($builder, $value) {
             $builder->where('customer_id', '=', $value);
         });
+
+        $builder->when($filters['vendor_id'], function ($builder, $value) {
+            $builder->where('vendor_id', '=', $value);
+        });
+
         $builder->when($filters['map'], function ($builder, $value) {
             $builder->where('status', '!=', 'PENDING');
         });
