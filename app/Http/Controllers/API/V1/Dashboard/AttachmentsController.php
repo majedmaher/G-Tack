@@ -19,7 +19,7 @@ class AttachmentsController extends Controller
     public function index(Request $request)
     {
         $document = Document::when($request->type, function($q) use($request) {
-            $q->where('type' , $request->type);
+            $q->where('type' , $request->type)->where('type' , 'ALL');
         })->latest()->get();
         return parent::success($document , "تم العملية بنجاح");
     }

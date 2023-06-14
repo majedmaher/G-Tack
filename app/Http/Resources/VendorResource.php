@@ -31,6 +31,7 @@ class VendorResource extends JsonResource
             'user' => new UserResource($this->whenLoaded('user')),
             'governorate' => new GovernorateResource($this->whenLoaded('governorate')),
             'region' => new GovernorateResource($this->whenLoaded('region')),
+            'attachments' => AttachmentResource::collection($this->whenLoaded('attachments')),
         ];
     }
 }

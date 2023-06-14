@@ -26,7 +26,10 @@ class ComplaintsController extends Controller
             $query->whereBetween('created_at', [$start, $end]);
         })->when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
+        })->when($request->vendor_type, function ($query) use ($request) {
+            $query->where('vendor_type', $request->vendor_type);
         })->latest()->paginate($countRow ?? 15);
+
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
             'code' => 200,
