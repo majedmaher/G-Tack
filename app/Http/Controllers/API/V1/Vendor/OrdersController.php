@@ -136,6 +136,7 @@ class OrdersController extends Controller
                 $data['reason_id'] = $request->reason_id;
             }
             OrderStatus::create($data);
+            event(new UpdatedStatusOrder($order));
             return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
