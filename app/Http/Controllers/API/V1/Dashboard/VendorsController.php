@@ -45,6 +45,11 @@ class VendorsController extends Controller
             $query->whereBetween('created_at', [$request->start, $request->end]);
         })
         ->with('governorate' , 'region' , 'user' , 'attachments.document')
+        ->withCount('reviews')
+        ->withSum('reviews' , 'rate')
+        ->withSum('orders' , 'time')
+        ->withCount('orders')
+        ->withAvg('orders' , 'time')
         ->latest()->paginate($countRow ?? 15);
 
         return response()->json([
