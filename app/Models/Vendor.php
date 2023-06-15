@@ -28,6 +28,11 @@ class Vendor extends Model
         return $this->belongsTo(Location::class , 'region_id' , 'id');
     }
 
+    public function regions()
+    {
+        return $this->hasMany(VendorRegions::class , 'vendor_id' , 'id');
+    }
+
     public function reviews()
     {
         return $this->hasMany(Review::class , 'vendor_id' , 'id');

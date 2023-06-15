@@ -22,6 +22,7 @@ class VendorsController extends Controller
         $name = $request->name;
         $governorate_id = $request->governorate_id;
         $region_id = $request->region_id;
+        $region_ids = $request->region_ids;
 
         $vendors = Vendor::where('active' , 'ACTIVE')
         ->whereHas('user' , function($q){
@@ -39,19 +40,25 @@ class VendorsController extends Controller
         ->when($region_id , function ($q) use($region_id){
             $q->where('region_id' , $region_id);
         })
+        ->when($region_ids , function ($q) use($region_ids){
+            $q->whereHas('regions' , function($q) use($region_ids){
+                $q->whereIn('region_id' , $region_ids);
+            });
+        })
         ->whereHas('governorate' , function($q){
             $q->where('status' , 'ACTIVE');
         })
         ->whereHas('region' , function($q){
             $q->where('status' , 'ACTIVE');
         })
-        ->with('governorate' , 'region' , 'user')
+        ->with('governorate' , 'region' , 'user' , 'regions.region')
         ->withCount('reviews')
         ->withSum('reviews' , 'rate')
         ->withSum('orders' , 'time')
         ->withCount('orders')
         ->withAvg('orders' , 'time')
         ->get();
+        // return $vendors;
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
             'code' => 200,

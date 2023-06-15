@@ -20,7 +20,9 @@ class CustomersController extends Controller
     public function index(Request $request)
     {
         $countRow = $request->countRow;
-        $customers = Customer::with('user' , 'governorate' , 'region')->withCount('orders')
+        $customers = Customer::when($request->start, function ($query) use ($request) {
+            $query->whereBetween('created_at', [$request->start, $request->end]);
+        })->with('user' , 'governorate' , 'region')->withCount('orders')
         ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
