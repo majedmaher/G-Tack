@@ -9,6 +9,8 @@ class RoleHasPermission extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['role_id' , 'permission_id'];
+
     public function permission()
     {
         return $this->hasOne(Permission::class, 'permission_id');

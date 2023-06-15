@@ -22,7 +22,7 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::with('role_has_user.role')->when($request->type, function($q) use($request) {
+        $users = User::with('role_has_user.role.permission')->when($request->type, function($q) use($request) {
             $q->whereHas('role_has_user', function ($builder) use($request) {
                 $builder->whereHas('role', function ($builder2) use($request) {
                     $builder2->where('type' , $request->type);
