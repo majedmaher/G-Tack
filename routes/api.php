@@ -22,8 +22,10 @@ use App\Http\Controllers\API\V1\Dashboard\HomeController as DashboardHomeControl
 use App\Http\Controllers\API\V1\Dashboard\LayoutsController as DashboardLayoutsController;
 use App\Http\Controllers\API\V1\Dashboard\LocationsController as DashboardLocationsController;
 use App\Http\Controllers\API\V1\Dashboard\OrdersController as DashboardOrdersController;
+use App\Http\Controllers\API\V1\Dashboard\PermissionController;
 use App\Http\Controllers\API\V1\Dashboard\ProductsController;
 use App\Http\Controllers\API\V1\Dashboard\ReportsController;
+use App\Http\Controllers\API\V1\Dashboard\RoleController;
 use App\Http\Controllers\API\V1\Dashboard\UsersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorOrdersController as DashboardVendorOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorReviewsController;
@@ -96,6 +98,8 @@ Route::prefix('V1')->group(function () {
         Route::resource('layout', DashboardLayoutsController::class);
         Route::apiResource('attachment', DashboardAttachmentsController::class);
         Route::apiResource('setting', SettingsController::class);
+        Route::apiResource('role', RoleController::class);
+        Route::get('permission', PermissionController::class);
         Route::post('backup', [DatabasesController::class , 'backup']);
         Route::post('restore' , [DatabasesController::class , 'restore']);
         Route::post('empty', [DatabasesController::class , 'empty']);
