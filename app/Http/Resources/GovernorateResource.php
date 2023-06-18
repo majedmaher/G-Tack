@@ -19,6 +19,8 @@ class GovernorateResource extends JsonResource
             'name' => $this->name,
             'status' => $this->status,
             'type' => $this->type,
+            'vendor_id' => $this->vendor_id,
+            'region_id' => $this->region_id,
             'region' => new GovernorateResource($this->whenLoaded('region')),
         ];
     }
