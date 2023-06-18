@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('vendors', function (Blueprint $table) {
             $table->foreignId('governorate_id')->after('user_id')->constrained('locations', 'id')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('region_id')->after('governorate_id')->constrained('locations', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('region_id')->after('governorate_id')->nullable()->constrained('locations', 'id')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

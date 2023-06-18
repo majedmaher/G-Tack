@@ -87,7 +87,7 @@ class AuthController extends AuthBaseController
                 $vendor->phone = $request->phone;
                 $vendor->user_id  = $user->id;
                 $vendor->governorate_id = $request->governorate_id;
-                $vendor->region_id  = $request->region_id;
+                $vendor->region_id  = $request->region_id ?? NULL;
                 $vendor->max_product  = $request->max_product;
                 $isSaved = $vendor->save();
             } elseif ($user->type == 'CUSTOMER') {
