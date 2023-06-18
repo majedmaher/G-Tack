@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->enum('type' , ['ALL' , 'GAS' , 'WATER']);
             $table->string('name');
+            $table->string('slug');
             $table->boolean('is_required');
             $table->enum('file' , ['IMAGE' , 'FILE']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);

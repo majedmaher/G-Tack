@@ -52,6 +52,8 @@ class CustomersController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users',
             'type' => 'required|in:CUSTOMER,VENDOR',
+            'governorate_id' => 'nullable|exists:locations,id',
+            'region_id' => 'nullable|exists:locations,id',
         ];
 
         $customMessages = [
@@ -59,6 +61,8 @@ class CustomersController extends Controller
             'phone.unique' => 'هذا الرقم موجود مسبقا',
             'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
             'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
+            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
+            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails()) {
@@ -77,6 +81,8 @@ class CustomersController extends Controller
         $customer->name = $user->name;
         $customer->phone = $user->phone;
         $customer->user_id = $user->id;
+        $customer->governorate_id = $request->governorate_id;
+        $customer->region_id  = $request->region_id;
         $customer->save();
         return ControllersService::generateProcessResponse(true,  'CREATE_SUCCESS', 200);
     }
