@@ -22,9 +22,7 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-       
-        $start = $request->start;
-        $end = $request->end;
+
         $countRow = $request->countRow;
         $order = Order::with('items', 'vendor', 'customer', 'address', 'statuses')
         ->where('status' , '!=' , 'COMPLETED')
@@ -36,9 +34,6 @@ class OrdersController extends Controller
                 'to' => $request->to,
                 'postingTime' => $request->postingTime,
             ])
-            // ->when($start, function ($query) use ($start, $end) {
-            //     $query->whereBetween('created_at', [$start, $end]);
-            // })
             ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',

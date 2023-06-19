@@ -18,16 +18,15 @@ class VendorOrdersController extends Controller
      */
     public function __invoke(Request $request , $id)
     {
-        $start = $request->start;
-        $end = $request->end;
         $countRow = $request->countRow;
         $ordersVendor = Order::where('vendor_id' , $id)->
         filter([
             'status' => $request->status,
             'type' => $request->type,
-        ])->when($start, function ($query) use ($start, $end) {
-            $query->whereBetween('created_at', [$start, $end]);
-        })->with('customer')
+            'from' => $request->from,
+            'to' => $request->to,
+            'postingTime' => $request->postingTime,
+        ])->with('customer')
         ->latest()->paginate($countRow ?? 15);
 
         $data = [

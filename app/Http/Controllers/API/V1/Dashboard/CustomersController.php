@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Resources\CustomerCollection;
 use App\Models\Customer;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,9 +21,24 @@ class CustomersController extends Controller
     public function index(Request $request)
     {
         $countRow = $request->countRow;
-        $customers = Customer::when($request->start, function ($query) use ($request) {
-            $query->whereBetween('created_at', [$request->start, $request->end]);
-        })->with('user' , 'governorate' , 'region')->withCount('orders')
+        $customers = Customer::
+        when($request->postingTime, function ($builder) use ($request) {
+            $value = $request->postingTime;
+            $weekAgo = Carbon::now()->startOfWeek()->format('Y-m-d H:i:s');
+            $monthAgo = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
+            $yearAgo = Carbon::now()->startOfYear()->format('Y-m-d H:i:s');
+            $last24Hours = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+            if ($value == '24') {
+                $builder->whereBetween('created_at', [$last24Hours, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'week') {
+                $builder->whereBetween('created_at', [$weekAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'month') {
+                $builder->whereBetween('created_at', [$monthAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'year') {
+                $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            }
+        })
+        ->with('user' , 'governorate' , 'region')->withCount('orders')
         ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
