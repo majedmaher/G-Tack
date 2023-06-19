@@ -10,6 +10,7 @@ use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderStatus;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
@@ -21,6 +22,7 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
+       
         $start = $request->start;
         $end = $request->end;
         $countRow = $request->countRow;
@@ -30,10 +32,13 @@ class OrdersController extends Controller
                 'status' => $request->status,
                 'type' => $request->type,
                 'map' => $request->map,
+                'from' => $request->from,
+                'to' => $request->to,
+                'postingTime' => $request->postingTime,
             ])
-            ->when($start, function ($query) use ($start, $end) {
-                $query->whereBetween('created_at', [$start, $end]);
-            })
+            // ->when($start, function ($query) use ($start, $end) {
+            //     $query->whereBetween('created_at', [$start, $end]);
+            // })
             ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
