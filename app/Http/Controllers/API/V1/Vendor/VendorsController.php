@@ -58,7 +58,7 @@ class VendorsController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users,phone,' . Auth::user()->id,
             'commercial_name' => 'required|string|max:255',
-            'governorate_id' => 'required|exists:locations,id',
+            'governorate_id' => 'nullable|exists:locations,id',
             'region_id' => 'nullable|exists:locations,id',
         ], [
             'phone.required' => __('يرجى ادخال رقم الهاتف الخاص بك'),
@@ -80,7 +80,7 @@ class VendorsController extends Controller
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'commercial_name' => $request->commercial_name,
-                'governorate_id' => $request->governorate_id,
+                'governorate_id' => $request->governorate_id ?? Vendor::find(Auth::user()->vendor->id)->governorate_id,
                 'region_id' => $request->region_id ?? NULL,
                 'max_product' => $request->max_product,
             ]);

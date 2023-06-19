@@ -58,6 +58,7 @@ Route::prefix('V1')->group(function () {
     Route::post('submitcode', [AuthController::class, 'submitCode']);
     Route::get('settings', [HomeController::class, 'settings']);
     Route::get('location', LocationsController::class);
+    Route::get('layout', LayoutsController::class);
 
     Route::prefix('customer')->middleware(['auth:sanctum'])->group(function () {
         Route::get('home', [HomeController::class, 'home']);
@@ -108,7 +109,6 @@ Route::prefix('V1')->group(function () {
 
     Route::middleware(['auth:sanctum'])->group(function () {
         Route::resource('complaint', ComplaintsController::class);
-        Route::get('layout', LayoutsController::class);
         Route::resource('notification', NotificationsController::class);
         Route::delete('delete/profile', [AuthController::class , 'deleteAcount']);
         Route::get('logout', [AuthBaseController::class , 'logout']);

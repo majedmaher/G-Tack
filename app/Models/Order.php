@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -126,6 +127,9 @@ class Order extends Model
             'map' => null,
             'status2' => null,
             'vendor_id' => null,
+            'postingTime' => null,
+            'from' => null,
+            'to' => null,
         ], $filters);
 
         $builder->when($filters['status'], function ($builder, $value) {
@@ -149,6 +153,30 @@ class Order extends Model
 
         $builder->when($filters['map'], function ($builder, $value) {
             $builder->where('status', '!=', 'PENDING');
+        });
+
+        $builder->when($filters['from'], function ($builder, $value) {
+            $builder->whereDate('created_at', '>=', $value);
+        });
+
+        $builder->when($filters['to'], function ($builder, $value) {
+            $builder->whereDate('created_at', '<=', $value);
+        });
+
+        $builder->when($filters['postingTime'], function ($builder, $value) {
+            $weekAgo = Carbon::now()->startOfWeek()->format('Y-m-d H:i:s');
+            $monthAgo = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
+            $yearAgo = Carbon::now()->startOfYear()->format('Y-m-d H:i:s');
+            $last24Hours = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+            if ($value == '24') {
+                $builder->whereBetween('created_at', [$last24Hours, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'week') {
+                $builder->whereBetween('created_at', [$weekAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'month') {
+                $builder->whereBetween('created_at', [$monthAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'year') {
+                $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            }
         });
     }
 
