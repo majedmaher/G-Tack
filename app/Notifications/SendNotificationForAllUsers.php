@@ -2,27 +2,26 @@
 
 namespace App\Notifications;
 
-use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 
-class NewOrderNotification extends Notification
+class SendNotificationForAllUsers extends Notification
 {
     use Queueable;
 
-    protected Order $order;
+    protected $data;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct(Order $order)
+    public function __construct($data)
     {
-        $this->order = $order;
+        $this->data = $data;
     }
 
     /**
@@ -56,27 +55,19 @@ class NewOrderNotification extends Notification
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
-        ->setData(['order_id' => $this->order->id.''])
         ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
-            ->setTitle('طلب جديد')
-            ->setBody('لقد حصلت على طلب جديد'));
+            ->setTitle($this->data['title'])
+            ->setBody($this->data['body']));
+
     }
 
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'طلب جديد',
-            'body' => 'تم أنشاء طلبك بنجاح',
+            'title' => $this->data['title'],
+            'body' => $this->data['body'],
         ];
     }
-
 
     /**
      * Get the array representation of the notification.

@@ -29,7 +29,8 @@ class RoleController extends Controller
                     'permission_id' => $value
                 ]);
             }
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS' , 200);
+            $role = Role::with('permission')->find($role->id);
+            return parent::success($role , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -50,7 +51,8 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS' , 200);
+            $role = Role::with('permission')->find($id);
+            return parent::success($role , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),

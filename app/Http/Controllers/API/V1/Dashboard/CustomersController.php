@@ -68,8 +68,8 @@ class CustomersController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users',
             'type' => 'required|in:CUSTOMER,VENDOR',
-            'governorate_id' => 'nullable|exists:locations,id',
-            'region_id' => 'nullable|exists:locations,id',
+            'governorate_id' => 'required|exists:locations,id',
+            'region_id' => 'required|exists:locations,id',
         ];
 
         $customMessages = [
@@ -100,7 +100,8 @@ class CustomersController extends Controller
         $customer->governorate_id = $request->governorate_id;
         $customer->region_id  = $request->region_id;
         $customer->save();
-        return ControllersService::generateProcessResponse(true,  'CREATE_SUCCESS', 200);
+        $user = User::with('customer')->find($user->id);
+        return parent::success($user , "تم العملية بنجاح");
     }
 
     /**
@@ -129,6 +130,8 @@ class CustomersController extends Controller
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:customers,phone,' . $id,
             'type' => 'required|in:CUSTOMER,VENDOR',
+            'governorate_id' => 'required|exists:locations,id',
+            'region_id' => 'required|exists:locations,id',
         ];
 
         $customMessages = [
@@ -136,6 +139,8 @@ class CustomersController extends Controller
             'phone.unique' => 'هذا الرقم موجود مسبقا',
             'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
             'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
+            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
+            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails()) {
@@ -145,12 +150,15 @@ class CustomersController extends Controller
         $customer = Customer::find($id);
         $customer->name = $request->name;
         $customer->phone = $request->phone;
+        $customer->governorate_id = $request->governorate_id;
+        $customer->region_id  = $request->region_id;
         $customer->save();
         $user = User::find($customer->user_id);
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
-        return ControllersService::generateProcessResponse(true,  'UPDATE_SUCCESS', 200);
+        $user = User::with('customer')->find($user->id);
+        return parent::success($user , "تم العملية بنجاح");
     }
 
     /**
@@ -163,5 +171,21 @@ class CustomersController extends Controller
     {
         Customer::find($id)->delete();
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
+    }
+
+    public function status(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $customer = User::with('customer')->find(Customer::find($id)->user_id);
+            $customer->update(['status' => $request->status]);
+            return parent::success($customer , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
 }

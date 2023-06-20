@@ -1,6 +1,5 @@
 <?php
 
-use App\Exports\VendorsExport;
 use App\Http\Controllers\API\V1\AuthBaseController;
 use App\Http\Controllers\API\V1\AuthController;
 use App\Http\Controllers\API\V1\ComplaintsController;
@@ -38,7 +37,6 @@ use App\Http\Controllers\API\V1\Vendor\TracingVendorCntroller;
 use App\Http\Controllers\API\V1\Vendor\VendorsController;
 use App\Http\Controllers\API\V1\Dashboard\SettingsController;
 use Illuminate\Support\Facades\Route;
-use Maatwebsite\Excel\Facades\Excel;
 
 /*
 |--------------------------------------------------------------------------
@@ -87,17 +85,24 @@ Route::prefix('V1')->group(function () {
     Route::prefix('dashboard')->middleware(['auth:sanctum'])->group(function () {
         Route::resource('order', DashboardOrdersController::class);
         Route::resource('vendor', DashboardVendorsController::class);
+        Route::put('vendor/status/{id}', [DashboardVendorsController::class , 'status']);
+        Route::put('vendor/active/{id}', [DashboardVendorsController::class , 'active']);
         Route::get('vendororders/{id}', DashboardVendorOrdersController::class);
         Route::get('vendorreviews/{id}', VendorReviewsController::class);
         Route::resource('customer', CustomersController::class);
+        Route::put('customer/status/{id}', [CustomersController::class , 'status']);
         Route::get('customerorders/{id}', CustomerOrdersController::class);
         Route::get('customerreviews/{id}', CustomerReviewsController::class);
         Route::get('home', DashboardHomeController::class);
         Route::resource('user', UsersController::class);
         Route::resource('product', ProductsController::class);
+        Route::put('product/status/{id}', [ProductsController::class , 'status']);
         Route::resource('location', DashboardLocationsController::class);
         Route::resource('layout', DashboardLayoutsController::class);
         Route::apiResource('attachment', DashboardAttachmentsController::class);
+        Route::put('attachment/status/{id}', [DashboardAttachmentsController::class , 'status']);
+        Route::put('complaint/status/{id}', [ComplaintsController::class , 'status']);
+        Route::post('send/notification', [NotificationsController::class , 'send_notifcation']);
         Route::apiResource('setting', SettingsController::class);
         Route::apiResource('role', RoleController::class);
         Route::get('permission', PermissionController::class);

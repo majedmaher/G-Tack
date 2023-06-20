@@ -54,6 +54,7 @@ class HomeController extends Controller
             'users' => $vendorsCount  + $customersCount,
             'orders' => $orders,
             'vendors' => $vendors,
+            'downloads' => 145,
         ];
         return parent::success($data, 'تمت العملية بنجاح');
     }

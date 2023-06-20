@@ -9,7 +9,7 @@ class Complaint extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type' , 'customer_id' , 'vendor_id' , 'order_id' , 'content' , 'image'];
+    protected $fillable = ['type' , 'customer_id' , 'vendor_id' , 'status' , 'order_id' , 'content' , 'image'];
 
     public function getImageAttribute()
     {

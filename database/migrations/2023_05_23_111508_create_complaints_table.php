@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignId('vendor_id')->nullable()->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('order_id')->constrained('orders', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('content');
+            $table->enum('status' , ['PENDING' , 'SOLVED' , 'REJECTED'])->default('PENDING');
             $table->string('image')->nullable();
             $table->timestamps();
         });

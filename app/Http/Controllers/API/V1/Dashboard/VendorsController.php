@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Resources\VendorCollection;
 use App\Models\User;
 use App\Models\Vendor;
+use App\Models\VendorRegions;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -97,7 +98,7 @@ class VendorsController extends Controller
             'vendor_type' => 'required|in:GAS,WATER',
             'commercial_name' => 'nullable|string|max:255',
             'governorate_id' => 'nullable|exists:locations,id',
-            'region_id' => 'nullable|exists:locations,id',
+            'region_ids' => 'nullable|array|exists:locations,id',
         ];
 
         $customMessages = [
@@ -129,8 +130,15 @@ class VendorsController extends Controller
         $vendor->phone = $request->phone;
         $vendor->user_id  = $user->id;
         $vendor->governorate_id = $request->governorate_id;
-        $vendor->region_id  = $request->region_id;
         $vendor->save();
+        foreach ($request->region_ids as $value){
+            VendorRegions::create([
+                'vendor_id' => $vendor->id,
+                'region_id' => $value,
+            ]);
+        }
+        $user = User::with('vendor.regions.region' , 'vendor.governorate')->find($user->id);
+        return parent::success($user , "تم العملية بنجاح");
         return ControllersService::generateProcessResponse(true,  'CREATE_SUCCESS', 200 , $vendor->id);
     }
 
@@ -160,7 +168,7 @@ class VendorsController extends Controller
             'phone' => 'required|numeric|unique:vendors,phone,' . $id,
             'commercial_name' => 'nullable|string|max:255',
             'governorate_id' => 'nullable|exists:locations,id',
-            'region_id' => 'nullable|exists:locations,id',
+            'region_ids' => 'nullable|array|exists:locations,id',
         ];
 
         $customMessages = [
@@ -193,6 +201,18 @@ class VendorsController extends Controller
             $user->status = $request->status;
         }
         $user->save();
+        $OldVendorRegions = VendorRegions::where('vendor_id' , $vendor->id)->whereNotIn('region_id' , $request->region_ids)->delete();
+        foreach ($request->region_ids as $value){
+            $vendorRegions = VendorRegions::where('vendor_id' , $vendor->id)->where('region_id' , $value)->first();
+            if(!$vendorRegions){
+                VendorRegions::create([
+                    'vendor_id' => $vendor->id,
+                    'region_id' => $value,
+                ]);
+            }
+        }
+        $user = User::with('vendor.regions.region' , 'vendor.governorate')->find($user->id);
+        return parent::success($user , "تم العملية بنجاح");
         return ControllersService::generateProcessResponse(true,  'UPDATE_SUCCESS', 200 , $vendor->id);
     }
 
@@ -208,5 +228,36 @@ class VendorsController extends Controller
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 
+    public function status(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE,WAITING,BLOCK',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $vendor = User::with('vendor')->find(Vendor::find($id)->user_id);
+            $vendor->update(['status' => $request->status]);
+            return parent::success($vendor , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
+    }
+
+    public function active(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'active' => 'required|in:ACTIVE,INACTIVE',
+        ], [
+            'active.required' => 'يرجى أرسال الحالة',
+            'active.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $vendor = Vendor::with('user')->find($id);
+            $vendor->update(['active' => $request->active]);
+            return parent::success($vendor , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
+    }
 
 }
