@@ -33,8 +33,8 @@ class AttachmentsController extends Controller
     public function store(AttachmentRequest $attachmentRequest)
     {
         try {
-            Document::create($attachmentRequest->all());
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
+            $document = Document::create($attachmentRequest->all());
+            return parent::success($document , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -64,8 +64,9 @@ class AttachmentsController extends Controller
     public function update(AttachmentRequest $attachmentRequest, $id)
     {
         try {
-            Document::find($id)->update($attachmentRequest->all());
-            return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
+            $document = Document::find($id);
+            $document->update($attachmentRequest->all());
+            return parent::success($document , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -83,5 +84,21 @@ class AttachmentsController extends Controller
     {
         Document::find($id)->delete();
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
+    }
+
+    public function status(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $document = Document::find($id);
+            $document->update(['status' => $request->status]);
+            return parent::success($document , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
 }

@@ -36,7 +36,7 @@ class ProductsController extends Controller
     {
         try {
             $product = Product::create($productStoreRequest->userData());
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200 , $product , "");
+            return parent::success($product , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -66,8 +66,9 @@ class ProductsController extends Controller
     public function update(ProductStoreRequest $productStoreRequest, $id)
     {
         try {
-            Product::find($id)->update($productStoreRequest->userData());
-            return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
+            $product = Product::find($id);
+            $product->update($productStoreRequest->userData());
+            return parent::success($product , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -85,5 +86,21 @@ class ProductsController extends Controller
     {
         Product::find($id)->delete();
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
+    }
+
+    public function status(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $product = Product::find($id);
+            $product->update(['status' => $request->status]);
+            return parent::success($product , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
 }

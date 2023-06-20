@@ -47,6 +47,4 @@ class Vendor extends Model
     {
         return $this->hasMany(Attachment::class , 'vendor_id' , 'id');
     }
-
-
 }

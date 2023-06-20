@@ -58,4 +58,20 @@ class ComplaintsController extends Controller
         Complaint::create($complaintStoreRequest->complaintData());
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
     }
+
+    public function status(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:PENDING,SOLVED,REJECTED',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $complaint = Complaint::find($id);
+            $complaint->update(['status' => $request->status]);
+            return parent::success($complaint , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
+    }
 }

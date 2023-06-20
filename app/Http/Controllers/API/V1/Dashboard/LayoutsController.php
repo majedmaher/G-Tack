@@ -34,8 +34,8 @@ class LayoutsController extends Controller
     public function store(LayoutStoreRequest $layoutStoreRequest)
     {
         try {
-            Layout::create($layoutStoreRequest->layoutData());
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
+            $layout = Layout::create($layoutStoreRequest->layoutData());
+            return parent::success($layout , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -65,8 +65,9 @@ class LayoutsController extends Controller
     public function update(LayoutStoreRequest $layoutStoreRequest, $id)
     {
         try {
-            Layout::find($id)->update($layoutStoreRequest->layoutData());
-            return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
+            $layout = Layout::find($id);
+            $layout->update($layoutStoreRequest->layoutData());
+            return parent::success($layout , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),

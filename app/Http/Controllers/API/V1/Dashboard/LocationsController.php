@@ -37,8 +37,8 @@ class LocationsController extends Controller
     public function store(LocationStoreRequest $locationStoreRequest)
     {
         try {
-            Location::create($locationStoreRequest->all());
-            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
+            $location = Location::create($locationStoreRequest->all());
+            return parent::success($location , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
@@ -68,8 +68,9 @@ class LocationsController extends Controller
     public function update(LocationStoreRequest $locationStoreRequest, $id)
     {
         try {
-            Location::find($id)->update($locationStoreRequest->all());
-            return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
+            $location = Location::find($id);
+            $location->update($locationStoreRequest->all());
+            return parent::success($location , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),

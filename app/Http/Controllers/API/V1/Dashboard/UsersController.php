@@ -57,7 +57,8 @@ class UsersController extends Controller
                 'role_id' => $userRequest->role_id,
             ]);
         DB::commit();
-        return ControllersService::generateProcessResponse(true,  'CREATE_SUCCESS', 200);
+        $user = User::with('role_has_user.role.permission')->find($user->id);
+        return parent::success($user , "تم العملية بنجاح");
         } catch (Throwable $e) {
             DB::rollBack();
             return response([
@@ -123,7 +124,8 @@ class UsersController extends Controller
                 'role_id' => $request->role_id,
             ]);
         DB::commit();
-        return ControllersService::generateProcessResponse(true,  'UPDATE_SUCCESS', 200);
+        $user = User::with('role_has_user.role.permission')->find($id);
+        return parent::success($user , "تم العملية بنجاح");
         } catch (Throwable $e) {
             DB::rollBack();
             return response([

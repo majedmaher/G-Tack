@@ -5,8 +5,11 @@ namespace App\Http\Controllers\API\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
 use App\Http\Resources\NotificationCollection;
+use App\Models\User;
+use App\Notifications\SendNotificationForAllUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 class NotificationsController extends Controller
 {
@@ -20,28 +23,6 @@ class NotificationsController extends Controller
         $user = Auth::user();
         $notifications = $user->notifications;
         return (new NotificationCollection($notifications))->additional(['message' => 'تمت العملية بنجاح']);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**
@@ -59,14 +40,17 @@ class NotificationsController extends Controller
         return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function send_notifcation(Request $request)
     {
-        //
+        $data = $request->all();
+        if($request->type == 'CUSTOMER'){
+            $data['topic'] = 'gtack';
+            $users = User::where('type' , 'CUSTOMER')->get();
+        }else{
+            $data['topic'] = 'gtackVendor';
+            $users = User::where('type' , 'VENDOR')->get();
+        }
+        Notification::send($users, new SendNotificationForAllUsers($data));
     }
+
 }
