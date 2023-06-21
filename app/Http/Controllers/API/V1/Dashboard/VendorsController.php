@@ -38,7 +38,16 @@ class VendorsController extends Controller
                 $q->where('governorate_id' , $request->governorate);
         })
         ->when($request->region, function($q) use($request){
-            $q->where('region_id' , $request->region);
+            $region = $request->region;
+            $q->whereHas('regions' , function($q) use($region){
+                $q->where('region_id' , $region);
+            });
+        })
+        ->when($request->region_ids , function ($q) use($request){
+            $region_ids = $request->region_ids;
+            $q->whereHas('regions' , function($q) use($region_ids){
+                $q->whereIn('region_id' , $region_ids);
+            });
         })
         ->when($request->type, function($q) use($request){
             $q->where('type' , $request->type);
@@ -58,6 +67,9 @@ class VendorsController extends Controller
             } elseif ($value == 'year') {
                 $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
             }
+        })
+        ->when($request->orderBy, function($q) use($request){
+            $q->orderBy('orders_count' , $request->orderBy);
         })
         ->with('governorate' , 'region' , 'user' , 'attachments.document')
         ->withCount('reviews')
