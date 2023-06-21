@@ -108,9 +108,9 @@ class VendorsController extends Controller
             'phone' => 'required|numeric|unique:users',
             'type' => 'required|in:CUSTOMER,VENDOR',
             'vendor_type' => 'required|in:GAS,WATER',
-            'commercial_name' => 'nullable|string|max:255',
-            'governorate_id' => 'nullable|exists:locations,id',
-            'region_ids' => 'nullable|array|exists:locations,id',
+            'commercial_name' => 'required|string|max:255',
+            'governorate_id' => 'required|exists:locations,id',
+            'region_ids' => 'required|array|exists:locations,id',
         ];
 
         $customMessages = [
@@ -121,6 +121,7 @@ class VendorsController extends Controller
             'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
             'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
             'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
+            'region_ids.exists' => 'لا توجد منطقة بهذا الأسم',
         ];
 
         $validator = Validator::make($request->all(), $roles, $customMessages);
@@ -178,9 +179,9 @@ class VendorsController extends Controller
         $roles = [
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:vendors,phone,' . $id,
-            'commercial_name' => 'nullable|string|max:255',
-            'governorate_id' => 'nullable|exists:locations,id',
-            'region_ids' => 'nullable|array|exists:locations,id',
+            'commercial_name' => 'required|string|max:255',
+            'governorate_id' => 'required|exists:locations,id',
+            'region_ids' => 'required|array|exists:locations,id',
         ];
 
         $customMessages = [
@@ -190,7 +191,7 @@ class VendorsController extends Controller
             'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
             'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
             'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
-            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
+            'region_ids.exists' => 'لا توجد منطقة بهذا الأسم',
         ];
 
         $validator = Validator::make($request->all(), $roles, $customMessages);
