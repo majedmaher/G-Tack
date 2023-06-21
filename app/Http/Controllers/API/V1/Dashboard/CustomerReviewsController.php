@@ -16,11 +16,11 @@ class CustomerReviewsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function __invoke(Request $request , $id)
+    public function __invoke(Request $request , $id = null)
     {
         $countRow = $request->countRow;
-        $reviewsCustomer = Review::where('customer_id' , $id)
-        ->when($request->postingTime, function ($builder) use ($request) {
+        $reviewsCustomer = Review::
+        when($request->postingTime, function ($builder) use ($request) {
             $value = $request->postingTime;
             $weekAgo = Carbon::now()->startOfWeek()->format('Y-m-d H:i:s');
             $monthAgo = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
@@ -35,6 +35,9 @@ class CustomerReviewsController extends Controller
             } elseif ($value == 'year') {
                 $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
             }
+        })
+        ->when($id , function($q) use($id){
+            $q->where('customer_id' , $id);
         })
         ->when($request->type , function($q) use($request){
             $q->where('type' , $request->type);

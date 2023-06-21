@@ -88,11 +88,11 @@ Route::prefix('V1')->group(function () {
         Route::put('vendor/status/{id}', [DashboardVendorsController::class , 'status']);
         Route::put('vendor/active/{id}', [DashboardVendorsController::class , 'active']);
         Route::get('vendororders/{id}', DashboardVendorOrdersController::class);
-        Route::get('vendorreviews/{id}', VendorReviewsController::class);
+        Route::get('vendorreviews/{id?}', VendorReviewsController::class);
         Route::resource('customer', CustomersController::class);
         Route::put('customer/status/{id}', [CustomersController::class , 'status']);
         Route::get('customerorders/{id}', CustomerOrdersController::class);
-        Route::get('customerreviews/{id}', CustomerReviewsController::class);
+        Route::get('customerreviews/{id?}', CustomerReviewsController::class);
         Route::get('home', DashboardHomeController::class);
         Route::resource('user', UsersController::class);
         Route::resource('product', ProductsController::class);

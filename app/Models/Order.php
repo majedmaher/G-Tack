@@ -180,6 +180,39 @@ class Order extends Model
         });
     }
 
+    public function scopeFilterReport(Builder $builder, $filters)
+    {
+        $filters = array_merge([
+            'postingTime' => null,
+            'from' => null,
+            'to' => null,
+        ], $filters);
+
+        $builder->when($filters['from'], function ($builder, $value) {
+            $builder->whereDate('orders.created_at', '>=', $value);
+        });
+
+        $builder->when($filters['to'], function ($builder, $value) {
+            $builder->whereDate('orders.created_at', '<=', $value);
+        });
+
+        $builder->when($filters['postingTime'], function ($builder, $value) {
+            $weekAgo = Carbon::now()->startOfWeek()->format('Y-m-d H:i:s');
+            $monthAgo = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
+            $yearAgo = Carbon::now()->startOfYear()->format('Y-m-d H:i:s');
+            $last24Hours = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+            if ($value == '24') {
+                $builder->whereBetween('orders.created_at', [$last24Hours, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'week') {
+                $builder->whereBetween('orders.created_at', [$weekAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'month') {
+                $builder->whereBetween('orders.created_at', [$monthAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            } elseif ($value == 'year') {
+                $builder->whereBetween('orders.created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+            }
+        });
+    }
+
     public function updateStatus($status)
     {
         if ($this->status == $status) {
