@@ -157,8 +157,8 @@ class CustomersController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
-        $user = User::with('customer')->find($user->id);
-        return parent::success($user , "تم العملية بنجاح");
+        $customer = Customer::with('user')->find($id);
+        return parent::success($customer , "تم العملية بنجاح");
     }
 
     /**
@@ -184,6 +184,7 @@ class CustomersController extends Controller
         if (!$validator->fails()){
             $customer = User::with('customer')->find(Customer::find($id)->user_id);
             $customer->update(['status' => $request->status]);
+            $customer = Customer::with('user')->find($id);
             return parent::success($customer , "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
