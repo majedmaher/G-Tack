@@ -78,6 +78,9 @@ class AuthController extends AuthBaseController
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $user->type = $request->type;
+            if ($user->type == 'CUSTOMER') {
+            $user->status = 'ACTIVE';
+            }
             $isSaved = $user->save();
             if ($user->type == 'VENDOR') {
                 $vendor = new Vendor();
