@@ -17,6 +17,7 @@ class SendNewOrderNotification
     public function __construct()
     {
         //
+
     }
 
     /**
