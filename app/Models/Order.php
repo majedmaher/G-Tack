@@ -14,16 +14,6 @@ class Order extends Model
 {
     use HasFactory, Notifiable, SoftDeletes;
 
-    // const STATUS_PENDING = 'PENDING';
-    // const STATUS_ACCEPTED = 'ACCEPTED';
-    // const STATUS_PROCESSING = 'PROCESSING';
-    // const STATUS_ONWAY = 'ONWAY';
-    // const STATUS_FILLED = 'FILLED';
-    // const STATUS_DELIVERED = 'DELIVERED';
-    // const STATUS_DECLINED = 'DECLINED';
-    // const STATUS_COMPLETED = 'COMPLETED';
-    // const STATUS_CANCELLED = 'CANCELLED';
-
     const STATUS_PENDING = 'PENDING';
     const STATUS_ACCEPTED = 'ACCEPTED';
     const STATUS_DECLINED = 'DECLINED';

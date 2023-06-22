@@ -37,8 +37,9 @@ class SettingsController extends Controller
                 'key' => $k,
                 'value' => $v
             ], $k);
+            return parent::success(Setting::where('key',$k)->first() , "تم العملية بنجاح");
         }
-        return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
+
     }
 
     public function update_setting($data,$key){
