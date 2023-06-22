@@ -10,6 +10,7 @@ use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderStatus;
+use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -112,6 +113,7 @@ class OrdersController extends Controller
             $orderAddress = OrderAddress::find($id);
             $orderAddress->update($data);
             Order::find($orderAddress->order_id)->update(['status' => $data['status']]);
+            CreatedLog::handle('تعديل طلب');
             return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
@@ -126,6 +128,7 @@ class OrdersController extends Controller
     public function destroy($id)
     {
         Order::find($id)->delete();
+        CreatedLog::handle('حذف طلب');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 }

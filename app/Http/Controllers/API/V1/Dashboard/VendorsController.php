@@ -8,6 +8,7 @@ use App\Http\Resources\VendorCollection;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorRegions;
+use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -151,8 +152,8 @@ class VendorsController extends Controller
             ]);
         }
         $user = User::with('vendor.regions.region' , 'vendor.governorate')->find($user->id);
+        CreatedLog::handle('أضافة موزع جديد');
         return parent::success($user , "تم العملية بنجاح");
-        return ControllersService::generateProcessResponse(true,  'CREATE_SUCCESS', 200 , $vendor->id);
     }
 
     /**
@@ -225,8 +226,8 @@ class VendorsController extends Controller
             }
         }
         $user = User::with('vendor.regions.region' , 'vendor.governorate')->find($user->id);
+        CreatedLog::handle('تعديل موزع');
         return parent::success($user , "تم العملية بنجاح");
-        return ControllersService::generateProcessResponse(true,  'UPDATE_SUCCESS', 200 , $vendor->id);
     }
 
     /**
@@ -238,6 +239,7 @@ class VendorsController extends Controller
     public function destroy($id)
     {
         Vendor::find($id)->delete();
+        CreatedLog::handle('حذف موزع');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 

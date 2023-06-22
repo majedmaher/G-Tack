@@ -8,6 +8,7 @@ use App\Http\Requests\UserRequest;
 use App\Models\Role;
 use App\Models\RoleHasUser;
 use App\Models\User;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -57,6 +58,7 @@ class UsersController extends Controller
                 'role_id' => $userRequest->role_id,
             ]);
         DB::commit();
+        CreatedLog::handle('أضافة مستخدم جديد');
         $user = User::with('role_has_user.role.permission')->find($user->id);
         return parent::success($user , "تم العملية بنجاح");
         } catch (Throwable $e) {
@@ -124,6 +126,7 @@ class UsersController extends Controller
                 'role_id' => $request->role_id,
             ]);
         DB::commit();
+        CreatedLog::handle('تعديل مستخدم');
         $user = User::with('role_has_user.role.permission')->find($id);
         return parent::success($user , "تم العملية بنجاح");
         } catch (Throwable $e) {
@@ -143,6 +146,7 @@ class UsersController extends Controller
     public function destroy($id)
     {
         User::find($id)->delete();
+        CreatedLog::handle('حذف مستخدم');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 }
