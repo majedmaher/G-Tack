@@ -8,6 +8,7 @@ use App\Http\Requests\LocationStoreRequest;
 use App\Http\Resources\GovernorateCollection;
 use App\Models\Location;
 use App\Models\Product;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -38,6 +39,7 @@ class LocationsController extends Controller
     {
         try {
             $location = Location::create($locationStoreRequest->all());
+            CreatedLog::handle('أضافة موقع جديد');
             return parent::success($location , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -70,6 +72,7 @@ class LocationsController extends Controller
         try {
             $location = Location::find($id);
             $location->update($locationStoreRequest->all());
+            CreatedLog::handle('تعديل موقع ');
             return parent::success($location , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -87,6 +90,7 @@ class LocationsController extends Controller
     public function destroy($id)
     {
         Location::find($id)->delete();
+        CreatedLog::handle('حذف موقع');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 }

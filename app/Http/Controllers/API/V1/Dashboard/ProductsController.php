@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Resources\ProductCollection;
 use App\Models\Product;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -36,6 +37,7 @@ class ProductsController extends Controller
     {
         try {
             $product = Product::create($productStoreRequest->userData());
+            CreatedLog::handle('أضافة منتج جديد');
             return parent::success($product , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -68,6 +70,7 @@ class ProductsController extends Controller
         try {
             $product = Product::find($id);
             $product->update($productStoreRequest->userData());
+            CreatedLog::handle('تعديل منتج');
             return parent::success($product , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -85,6 +88,7 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         Product::find($id)->delete();
+        CreatedLog::handle('حذف منتج');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 

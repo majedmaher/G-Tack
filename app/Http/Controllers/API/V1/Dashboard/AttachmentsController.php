@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
 use App\Http\Requests\AttachmentRequest;
 use App\Models\Document;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -34,6 +35,7 @@ class AttachmentsController extends Controller
     {
         try {
             $document = Document::create($attachmentRequest->all());
+            CreatedLog::handle('أنشاء ورقة ثبوتية جديدة');
             return parent::success($document , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -66,6 +68,7 @@ class AttachmentsController extends Controller
         try {
             $document = Document::find($id);
             $document->update($attachmentRequest->all());
+            CreatedLog::handle('تعديل ورقة ثبوتية');
             return parent::success($document , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -83,6 +86,7 @@ class AttachmentsController extends Controller
     public function destroy($id)
     {
         Document::find($id)->delete();
+        CreatedLog::handle('حذف ورقة ثبوتية');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 

@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Requests\LayoutStoreRequest;
 use App\Http\Resources\LayoutCollection;
 use App\Models\Layout;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -35,6 +36,7 @@ class LayoutsController extends Controller
     {
         try {
             $layout = Layout::create($layoutStoreRequest->layoutData());
+            CreatedLog::handle('أضافة شاشة جديدة');
             return parent::success($layout , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -67,6 +69,7 @@ class LayoutsController extends Controller
         try {
             $layout = Layout::find($id);
             $layout->update($layoutStoreRequest->layoutData());
+            CreatedLog::handle('تعديل شاشة');
             return parent::success($layout , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -84,6 +87,7 @@ class LayoutsController extends Controller
     public function destroy($id)
     {
         Layout::find($id)->delete();
+        CreatedLog::handle('حذف شاشة');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\RoleRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Models\RoleHasPermission;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -30,6 +31,7 @@ class RoleController extends Controller
                 ]);
             }
             $role = Role::with('permission')->find($role->id);
+            CreatedLog::handle('أضافة دور جديد');
             return parent::success($role , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -52,6 +54,7 @@ class RoleController extends Controller
                 }
             }
             $role = Role::with('permission')->find($id);
+            CreatedLog::handle('تعديل دور');
             return parent::success($role , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([

@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Requests\ComplaintStoreRequest;
 use App\Http\Resources\ComplaintResource;
 use App\Models\Complaint;
+use App\Services\CreatedLog;
 use Illuminate\Http\Request;
 
 class ComplaintsController extends Controller
@@ -70,6 +71,7 @@ class ComplaintsController extends Controller
         if (!$validator->fails()){
             $complaint = Complaint::find($id);
             $complaint->update(['status' => $request->status]);
+            CreatedLog::handle('تعديل حالة الشكوى');
             return parent::success($complaint , "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);

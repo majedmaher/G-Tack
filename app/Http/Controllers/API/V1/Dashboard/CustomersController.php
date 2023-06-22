@@ -7,6 +7,7 @@ use App\Http\Controllers\ControllersService;
 use App\Http\Resources\CustomerCollection;
 use App\Models\Customer;
 use App\Models\User;
+use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -38,7 +39,8 @@ class CustomersController extends Controller
                 $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
             }
         })
-        ->with('user' , 'governorate' , 'region')->withCount('orders')
+        ->with('user' , 'governorate' , 'region')
+        ->withCount('orders')
         ->latest()->paginate($countRow ?? 15);
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
@@ -100,6 +102,7 @@ class CustomersController extends Controller
         $customer->governorate_id = $request->governorate_id;
         $customer->region_id  = $request->region_id;
         $customer->save();
+        CreatedLog::handle('أنشاء زبون جديد');
         $user = User::with('customer')->find($user->id);
         return parent::success($user , "تم العملية بنجاح");
     }
@@ -157,6 +160,7 @@ class CustomersController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->save();
+        CreatedLog::handle('تعديل زبون');
         $customer = Customer::with('user')->find($id);
         return parent::success($customer , "تم العملية بنجاح");
     }
@@ -170,6 +174,7 @@ class CustomersController extends Controller
     public function destroy($id)
     {
         Customer::find($id)->delete();
+        CreatedLog::handle('حذف زبون');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 
