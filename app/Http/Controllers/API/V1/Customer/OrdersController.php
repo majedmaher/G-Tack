@@ -58,13 +58,13 @@ class OrdersController extends Controller
     public function store(CreateOrderRequest $request, CreateOrderService $createOrderService)
     {
         $data = $request->all();
-        try {
+        // try {
             $order = $createOrderService->handle($data);
-        } catch (Throwable $e) {
-            return response([
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+        // } catch (Throwable $e) {
+        //     return response([
+        //         'message' => $e->getMessage(),
+        //     ], 500);
+        // }
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
     }
 
