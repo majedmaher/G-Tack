@@ -18,6 +18,7 @@ class ComplaintResource extends JsonResource
             'id' => $this->id,
             'vendor_type' => $this->vendor_type,
             'type' => $this->type,
+            'status' => $this->status,
             'customer_id' => $this->customer_id,
             'vendor_id' => $this->vendor_id,
             'order_id' => $this->order_id,
