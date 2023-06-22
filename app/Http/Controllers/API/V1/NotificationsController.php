@@ -51,6 +51,7 @@ class NotificationsController extends Controller
             $users = User::where('type' , 'VENDOR')->get();
         }
         Notification::send($users, new SendNotificationForAllUsers($data));
+        return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
     }
 
 }
