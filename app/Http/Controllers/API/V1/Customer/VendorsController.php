@@ -22,7 +22,7 @@ class VendorsController extends Controller
         $name = $request->name;
         $governorate_id = $request->governorate_id;
         $region_id = $request->region_id;
-        $region_ids = $request->region_ids;
+        $region_ids = $request->get('region_ids');
 
         $vendors = Vendor::where('active' , 'ACTIVE')
         ->whereHas('user' , function($q){
