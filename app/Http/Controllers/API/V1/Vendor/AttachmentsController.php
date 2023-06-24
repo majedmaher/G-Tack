@@ -53,7 +53,11 @@ class AttachmentsController extends Controller
         $data['status'] = 'PENDING';
         $data['file_name'] = $document->name;
         $data['vendor_id'] = Auth::user()->vendor->id;
-        Attachment::create($data);
+        if($value['attachment_id']){
+            Attachment::find($value['attachment_id'])->update($data);
+        }else{
+            Attachment::create($data);
+        }
     }
     User::where('id', Auth::user()->id)->update([
         'status' => 'WAITING',
@@ -71,7 +75,7 @@ class AttachmentsController extends Controller
      */
     public function show($id)
     {
-        // $attachments = Attachment::where('vendor_id' , Auth::user()->vendor->id)->with('document')->get();
+        $attachments = Attachment::where('vendor_id' , Auth::user()->vendor->id)->with('document')->get();
         return AttachmentResource::collection($attachments)->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
