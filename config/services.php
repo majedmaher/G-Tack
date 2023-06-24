@@ -31,4 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'fcm' => [
+        'driver' => 'fcm',
+        'credentials' => env('FIREBASE_CREDENTIALS'),
+    ],
+
+
+
 ];
