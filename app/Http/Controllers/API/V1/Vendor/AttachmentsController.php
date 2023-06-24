@@ -71,7 +71,7 @@ class AttachmentsController extends Controller
      */
     public function show($id)
     {
-        // $attachments = Attachment::where('vendor_id' , Auth::user()->vendor->id)->with('document')->get();
+        $attachments = Attachment::where('vendor_id' , Auth::user()->vendor->id)->with('document')->get();
         return AttachmentResource::collection($attachments)->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
