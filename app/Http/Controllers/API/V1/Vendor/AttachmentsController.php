@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1\Vendor;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
 use App\Http\Requests\AttachmentStoreRequest;
+use App\Http\Resources\AttachmentResource;
 use App\Models\Attachment;
 use App\Models\Document;
 use App\Models\User;
@@ -70,7 +71,8 @@ class AttachmentsController extends Controller
      */
     public function show($id)
     {
-        //
+        $attachments = Attachment::where('vendor_id' , Auth::user()->vendor->id)->with('document')->get();
+        return AttachmentResource::collection($attachments)->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
     /**
