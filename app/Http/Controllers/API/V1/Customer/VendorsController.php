@@ -23,7 +23,9 @@ class VendorsController extends Controller
         $governorate_id = $request->governorate_id;
         $region_id = $request->region_id;
         $region_ids = $request->input('region_ids');
-
+        if (!is_array($region_ids)) {
+            $region_ids = [];
+        }
         $vendors = Vendor::where('active' , 'ACTIVE')
         ->whereHas('user' , function($q){
             $q->where('status' , 'ACTIVE');
