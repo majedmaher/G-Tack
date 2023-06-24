@@ -27,7 +27,8 @@ class AttachmentStoreRequest extends FormRequest
      */
     public function rules()
     {
-        $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->user()->vendor->type])->get();
+        $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->user()->vendor->type])
+        ->get();
         $role = [];
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
