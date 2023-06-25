@@ -141,6 +141,9 @@ class AuthController extends AuthBaseController
         if (!$validator->fails()) {
             $user = User::where('id', Auth::user()->id)->with('customer')->first();
             $user->name = $request->name;
+            if($user->phone != $request->phone){
+                $user->is_phone_verified = 1;
+            }
             $user->phone = $request->phone;
             $isSaved = $user->save();
             $customer = Customer::where('user_id', $user->id)->first();
