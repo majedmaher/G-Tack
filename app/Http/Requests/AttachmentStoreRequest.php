@@ -27,10 +27,13 @@ class AttachmentStoreRequest extends FormRequest
      */
     public function rules()
     {
-        $document_ids = $this->request->get('document_ids');
+        $documentIds  = $this->input('document_ids');
+        if (!is_array($documentIds)) {
+            $documentIds = [];
+        }
         $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->user()->vendor->type])
-        ->when($document_ids , function($q) use ($document_ids){
-            $q->whereIn('id' , $document_ids);
+        ->when($documentIds  , function($q) use ($documentIds ){
+            $q->whereIn('id' , $documentIds );
         })->get();
         $role = [];
         foreach ($document as $key => $value) {
@@ -40,7 +43,7 @@ class AttachmentStoreRequest extends FormRequest
         }
         $role[$this->data_prefix . 'document_id'] = 'required|exists:documents,id';
         $role[$this->data_prefix . 'file'] = 'required|in:IMAGE,FILE';
-        return $role;
+        return [];
     }
 
     public function messages()

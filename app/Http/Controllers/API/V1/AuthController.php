@@ -37,6 +37,7 @@ class AuthController extends AuthBaseController
             }
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
+            $user->is_phone_verified = 1;
             $isSaved = $user->save();
             if ($isSaved) {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
@@ -221,6 +222,38 @@ class AuthController extends AuthBaseController
         } else {
             return ControllersService::generateValidationErrorMessage("الرقم المدخل غير مسجل من قبل", 200);
         }
+    }
+
+    public function verify_code(Request $request){
+        $roles = [
+            'otp' => 'required|numeric|digits:4',
+            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'type' =>  'required|in:CUSTOMER,VENDOR,ADMIN,USER',
+        ];
+
+        $customMessages = [
+            'otp.numeric' => 'يجب أن يكون الكود رقم',
+            'otp.required' => 'يرجى إدخال الكود المرسل',
+            'otp.digits' => 'يجب أن يكون الكود متكون من 4 خانات',
+            'phone.exists' => 'الرقم المدخل غير مسجل من قبل',
+        ];
+
+        $validator = Validator::make($request->all(), $roles, $customMessages);
+        if ($validator->fails()){
+            return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
+        }
+        $user = User::where('phone', $request->phone)->where('type' , $request->type)->first();
+        if ($user) {
+            if ($request->otp == $user->otp && $request->otp == 1234) {
+                $user->email_verified_at = Carbon::now();
+                $user->is_phone_verified = 1;
+                $user->save();
+                return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
+            } else {
+                return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
+            }
+        }
+        return ControllersService::generateValidationErrorMessage("الرقم المدخل غير مسجل من قبل", 200);
     }
 
     public function sendCodePassword(Request $request)

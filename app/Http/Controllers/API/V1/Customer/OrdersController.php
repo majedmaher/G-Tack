@@ -59,13 +59,12 @@ class OrdersController extends Controller
     {
         $data = $request->all();
         try {
-            $order = $createOrderService->handle($data);
+            return $createOrderService->handle($data);
         } catch (Throwable $e) {
             return response([
                 'message' => $e->getMessage(),
             ], 500);
         }
-        return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
     }
 
     /**

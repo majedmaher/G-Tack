@@ -113,6 +113,7 @@ Route::prefix('V1')->group(function () {
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('verifyCode', [AuthController::class , 'verify_code']);
         Route::resource('complaint', ComplaintsController::class);
         Route::resource('notification', NotificationsController::class);
         Route::delete('delete/profile', [AuthController::class , 'deleteAcount']);

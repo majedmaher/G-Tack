@@ -35,6 +35,7 @@ class AttachmentsController extends Controller
      */
     public function store(AttachmentStoreRequest $attachmentStoreRequest)
     {
+        // return $attachmentStoreRequest->get('document_ids');
         $data = $attachmentStoreRequest->all();
         foreach($data['data'] as $value){
             $document = Document::where('id' , $value['document_id'])->first();

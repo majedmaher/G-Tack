@@ -19,7 +19,7 @@ class LayoutResource extends JsonResource
             'type' => $this->type,
             'title' => $this->title,
             'description' => $this->description,
-            'image' => url('/') . '/'.$this->image,
+            'image' => $this->image,
         ];
     }
 }

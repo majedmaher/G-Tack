@@ -13,11 +13,7 @@ class PusherService
     public function handle($data)
     {
         try {
-            $orders = Order::filter([
-                'status' => 'ONWAY',
-                // 'status2' => 'DELIVERING',
-                'vendor_id' =>  Auth::user()->vendor->id,
-            ])->get();
+            $orders = Order::whereIn('status' , ['DELIVERING' , 'ONWAY'])->where('vendor_id' , Auth::user()->vendor->id)->get();
             foreach($orders as $order){
                 event(new OrderTracking($order , $data));
             }
@@ -40,7 +36,7 @@ class PusherService
         $socketId = $data['socket_id'];
         // Generate the authentication response with the channel name and socket ID
         $auth = $pusher->socket_auth($channel, $socketId);
-        
+
         return response()->json($auth);
     }
 }
