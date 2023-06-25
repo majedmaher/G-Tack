@@ -151,9 +151,16 @@ class VendorsController extends Controller
                 'region_id' => $value,
             ]);
         }
-        $user = User::with('vendor.regions.region' , 'vendor.governorate')->find($user->id);
+        $vendor = Vendor::with('governorate' , 'region' , 'user' , 'attachments.document')
+        ->where('user_id' , $user->id)
+        ->withCount('reviews')
+        ->withSum('reviews' , 'rate')
+        ->withSum('orders' , 'time')
+        ->withCount('orders')
+        ->withAvg('orders' , 'time')
+        ->first();
         CreatedLog::handle('أضافة موزع جديد');
-        return parent::success($user , "تم العملية بنجاح");
+        return parent::success($vendor , "تم العملية بنجاح");
     }
 
     /**
@@ -225,9 +232,16 @@ class VendorsController extends Controller
                 ]);
             }
         }
-        $user = User::with('vendor.regions.region' , 'vendor.governorate')->find($user->id);
+        $vendor = Vendor::with('governorate' , 'region' , 'user' , 'attachments.document')
+        ->where('user_id' , $user->id)
+        ->withCount('reviews')
+        ->withSum('reviews' , 'rate')
+        ->withSum('orders' , 'time')
+        ->withCount('orders')
+        ->withAvg('orders' , 'time')
+        ->first();
         CreatedLog::handle('تعديل موزع');
-        return parent::success($user , "تم العملية بنجاح");
+        return parent::success($vendor , "تم العملية بنجاح");
     }
 
     /**

@@ -40,6 +40,7 @@ class LocationsController extends Controller
         try {
             $location = Location::create($locationStoreRequest->all());
             CreatedLog::handle('أضافة موقع جديد');
+            $location = Location::with('regions')->find($location->id);
             return parent::success($location , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
@@ -73,6 +74,7 @@ class LocationsController extends Controller
             $location = Location::find($id);
             $location->update($locationStoreRequest->all());
             CreatedLog::handle('تعديل موقع ');
+            $location = Location::with('regions')->find($location->id);
             return parent::success($location , "تم العملية بنجاح");
         } catch (Throwable $e) {
             return response([
