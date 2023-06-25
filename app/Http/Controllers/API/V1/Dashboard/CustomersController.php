@@ -103,8 +103,8 @@ class CustomersController extends Controller
         $customer->region_id  = $request->region_id;
         $customer->save();
         CreatedLog::handle('أنشاء زبون جديد');
-        $user = User::with('customer')->find($user->id);
-        return parent::success($user , "تم العملية بنجاح");
+        $customer = Customer::where('user_id' , $user->id)->with('user' , 'governorate' , 'region')->withCount('orders')->first();
+        return parent::success($customer , "تم العملية بنجاح");
     }
 
     /**
@@ -161,7 +161,7 @@ class CustomersController extends Controller
         $user->phone = $request->phone;
         $user->save();
         CreatedLog::handle('تعديل زبون');
-        $customer = Customer::with('user')->find($id);
+        $customer = Customer::where('user_id' , $id)->with('user' , 'governorate' , 'region')->withCount('orders')->first();
         return parent::success($customer , "تم العملية بنجاح");
     }
 
