@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Events\OrderCreated;
+use App\Http\Controllers\ControllersService;
 use App\Models\Address;
 use App\Models\Order;
 use App\Models\OrderAddress;
 use App\Models\OrderItem;
 use App\Models\OrderStatus;
+use App\Models\Vendor;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,12 @@ class CreateOrderService
     {
         DB::beginTransaction();
         try {
+            $vendor = Vendor::with('user')->find($data['vendor_id']);
+
+            if($vendor->user->status != "ACTIVE" || $vendor->active != "ACTIVE" ){
+                return ControllersService::generateProcessResponse(false, 'CREATE_FAILED', 200);
+            }
+
             $newOrder = Order::create([
                 'customer_id' => Auth::user()->customer->id,
                 'vendor_id' => $data['vendor_id'],
@@ -54,8 +62,8 @@ class CreateOrderService
                 ]);
             }
             DB::commit();
-
             event(new OrderCreated($newOrder));
+            return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
         } catch (Throwable $e) {
             DB::rollBack();
             throw $e;
