@@ -25,6 +25,7 @@ use App\Http\Controllers\API\V1\Dashboard\PermissionController;
 use App\Http\Controllers\API\V1\Dashboard\ProductsController;
 use App\Http\Controllers\API\V1\Dashboard\ReportsController;
 use App\Http\Controllers\API\V1\Dashboard\RoleController;
+use App\Http\Controllers\API\V1\Dashboard\SearchController;
 use App\Http\Controllers\API\V1\Dashboard\UsersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorOrdersController as DashboardVendorOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\VendorReviewsController;
@@ -94,6 +95,7 @@ Route::prefix('V1')->group(function () {
         Route::get('customerorders/{id}', CustomerOrdersController::class);
         Route::get('customerreviews/{id?}', CustomerReviewsController::class);
         Route::get('home', DashboardHomeController::class);
+        Route::get('search', SearchController::class);
         Route::resource('user', UsersController::class);
         Route::resource('product', ProductsController::class);
         Route::put('product/status/{id}', [ProductsController::class , 'status']);
