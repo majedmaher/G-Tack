@@ -3,9 +3,13 @@
 namespace App\Listeners;
 
 use App\Events\OrderCreated;
+use App\Http\Controllers\ControllersService;
+use App\Models\User;
+use App\Notifications\AdminNotification;
 use App\Notifications\NewOrderNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
 
 class SendNewOrderNotification
 {
@@ -32,6 +36,9 @@ class SendNewOrderNotification
         // Send the notifciation
         $order->vendor->user->notify(new NewOrderNotification($order));
         // $order->customer->user->notify(new NewOrderNotification($order));
-
+        $title = $order->customer->name;
+        $body = 'بطلب تعبئة جديد' . $order->customer->name . 'قام ';
+        $users = User::whereIn('type' , ['ADMIN' , 'USER'])->get();
+        Notification::send($users, new AdminNotification($title , $body));
     }
 }
