@@ -11,7 +11,6 @@ class AdminNotification extends Notification
 {
     use Queueable;
 
-
     public $title , $body;
 
     /**
