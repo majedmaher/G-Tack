@@ -159,9 +159,10 @@ class CustomersController extends Controller
         $user = User::find($customer->user_id);
         $user->name = $request->name;
         $user->phone = $request->phone;
+        $user->email = $request->phone;
         $user->save();
         CreatedLog::handle('تعديل زبون');
-        $customer = Customer::where('user_id' , $id)->with('user' , 'governorate' , 'region')->withCount('orders')->first();
+        $customer = Customer::with('user' , 'governorate' , 'region')->withCount('orders')->find($id);
         return parent::success($customer , "تم العملية بنجاح");
     }
 
