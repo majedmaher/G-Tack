@@ -169,7 +169,7 @@ class AuthController extends AuthBaseController
         if ($user->type == 'CUSTOMER') {
             $customer = Customer::where('user_id', $user->id)->first();
             $customer->delete();
-            $user->delete();
+            // $user->delete();
         } else {
             $vendor = Vendor::whereHas('orders' , function($q){
                 $q->whereIn('status'  , ['PENDING' , 'ACCEPTED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED']);
@@ -178,7 +178,7 @@ class AuthController extends AuthBaseController
                 return ControllersService::generateProcessResponse(false, 'DELETE_FAILED');
             }
             $vendor->delete();
-            $user->delete();
+            // $user->delete();
         }
             return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS' , 200);
     }

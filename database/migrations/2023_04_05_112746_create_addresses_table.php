@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('map_address');
             $table->string('description');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

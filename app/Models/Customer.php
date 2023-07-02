@@ -32,4 +32,10 @@ class Customer extends Model
     {
         return $this->belongsTo(Location::class , 'region_id' , 'id');
     }
+
+    public function delete()
+    {
+        $this->user->delete();
+        parent::delete();
+    }
 }

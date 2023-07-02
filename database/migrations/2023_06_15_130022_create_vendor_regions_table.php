@@ -18,7 +18,6 @@ return new class extends Migration
             $table->foreignId('vendor_id')->constrained('vendors', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('region_id')->constrained('locations', 'id')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

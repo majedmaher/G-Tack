@@ -72,6 +72,18 @@ class User extends Authenticatable
         return $this->hasMany(Log::class , 'user_id' , 'id');
     }
 
+    public function delete_customer()
+    {
+        $this->customer->delete();
+        parent::delete();
+    }
+
+    public function delete_vendor()
+    {
+        $this->vendor->delete();
+        parent::delete();
+    }
+
     /**
      * Specifies the user's FCM token
      *
