@@ -20,7 +20,6 @@ return new class extends Migration
             $table->enum('context' , ['REJECTION' , 'CANCELLATION']);
             $table->enum('status' , ['ACTIVE' , 'INACTIVE']);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

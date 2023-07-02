@@ -22,6 +22,7 @@ class AttachmentSeeder extends Seeder
                 "is_required" => 1,
                 "file" => "IMAGE",
                 "status" => "ACTIVE",
+                "slug" => "A",
                 "validity" => 0,
             ],
 
@@ -31,6 +32,7 @@ class AttachmentSeeder extends Seeder
                 "is_required" => 1,
                 "file" => "IMAGE",
                 "status" => "ACTIVE",
+                "slug" => "B",
                 "validity" => 0,
             ],
 
@@ -40,6 +42,7 @@ class AttachmentSeeder extends Seeder
                 "is_required" => 1,
                 "file" => "IMAGE",
                 "status" => "ACTIVE",
+                "slug" => "C",
                 "validity" => 0,
             ]
         ];
@@ -51,6 +54,7 @@ class AttachmentSeeder extends Seeder
                 "is_required" => $value['is_required'],
                 "file" => $value['file'],
                 "status" => $value['status'],
+                "slug" => $value['slug'],
                 "validity" => $value['validity'],
             ]);
         }

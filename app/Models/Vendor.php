@@ -47,4 +47,10 @@ class Vendor extends Model
     {
         return $this->hasMany(Attachment::class , 'vendor_id' , 'id');
     }
+
+    public function delete()
+    {
+        $this->user->delete();
+        parent::delete();
+    }
 }

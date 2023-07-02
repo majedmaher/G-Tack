@@ -22,7 +22,6 @@ return new class extends Migration
             $table->enum('status' , ['PENDING' , 'DELIVERING' , 'ACCEPTED' , 'RECEIVED' , 'DECLINED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED' , 'COMPLETED' , 'CANCELLED_BY_VENDOR' , 'CANCELLED_BY_CUSTOMER']);
             $table->text('note')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
