@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Request;
 
 class Attachment extends Model
 {
-    use HasFactory , SoftDeletes;
+    use HasFactory;
 
     protected $fillable = ['document_id' , 'vendor_id' , 'file_path' , 'file_name' , 'status'];
 
