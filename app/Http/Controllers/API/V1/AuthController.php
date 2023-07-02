@@ -175,7 +175,7 @@ class AuthController extends AuthBaseController
                 $q->whereIn('status'  , ['PENDING' , 'ACCEPTED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED']);
             })->where('user_id', $user->id)->first();
             if($vendor){
-                return ControllersService::generateProcessResponse(false, 'DELETE_FAILED');
+                return ControllersService::generateProcessResponse(false, 'DELETE_FAILED' , 200);
             }
             $vendor->delete();
             // $user->delete();
