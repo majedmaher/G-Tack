@@ -4,14 +4,17 @@ namespace App\Http\Controllers\API\V1\Dashboard;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ControllersService;
+use App\Http\Requests\VendorRequest;
 use App\Http\Resources\VendorCollection;
+use App\Models\Attachment;
+use App\Models\Document;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorRegions;
 use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Throwable;
 
 class VendorsController extends Controller
 {
@@ -24,61 +27,60 @@ class VendorsController extends Controller
     {
         $show = $request->show;
         $countRow = $request->countRow;
-        $vendors = Vendor::
-        when($show == 'new', function($q) use($show){
-            $q->whereHas('user' , function($qu) use($show) {
-                $qu->where('status' , 'WAITING');
+        $vendors = Vendor::when($show == 'new', function ($q) use ($show) {
+            $q->whereHas('user', function ($qu) use ($show) {
+                $qu->where('status', 'WAITING');
             });
         })
-        ->when($show == 'old', function($q) use($show){
-            $q->whereHas('user' , function($qu) use($show) {
-                $qu->where('status' , 'ACTIVE');
-            });
-        })
-        ->when($request->governorate, function($q) use($request){
-                $q->where('governorate_id' , $request->governorate);
-        })
-        ->when($request->region, function($q) use($request){
-            $region = $request->region;
-            $q->whereHas('regions' , function($q) use($region){
-                $q->where('region_id' , $region);
-            });
-        })
-        ->when($request->region_ids , function ($q) use($request){
-            $region_ids = $request->region_ids;
-            $q->whereHas('regions' , function($q) use($region_ids){
-                $q->whereIn('region_id' , $region_ids);
-            });
-        })
-        ->when($request->type, function($q) use($request){
-            $q->where('type' , $request->type);
-        })
-        ->when($request->postingTime, function ($builder) use ($request) {
-            $value = $request->postingTime;
-            $weekAgo = Carbon::now()->startOfWeek()->format('Y-m-d H:i:s');
-            $monthAgo = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
-            $yearAgo = Carbon::now()->startOfYear()->format('Y-m-d H:i:s');
-            $last24Hours = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
-            if ($value == '24') {
-                $builder->whereBetween('created_at', [$last24Hours, Carbon::now()->format('Y-m-d H:i:s')]);
-            } elseif ($value == 'week') {
-                $builder->whereBetween('created_at', [$weekAgo, Carbon::now()->format('Y-m-d H:i:s')]);
-            } elseif ($value == 'month') {
-                $builder->whereBetween('created_at', [$monthAgo, Carbon::now()->format('Y-m-d H:i:s')]);
-            } elseif ($value == 'year') {
-                $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
-            }
-        })
-        ->when($request->orderBy, function($q) use($request){
-            $q->orderBy('orders_count' , $request->orderBy);
-        })
-        ->with('governorate' , 'region' , 'user' , 'attachments.document')
-        ->withCount('reviews')
-        ->withSum('reviews' , 'rate')
-        ->withSum('orders' , 'time')
-        ->withCount('orders')
-        ->withAvg('orders' , 'time')
-        ->latest()->paginate($countRow ?? 15);
+            ->when($show == 'old', function ($q) use ($show) {
+                $q->whereHas('user', function ($qu) use ($show) {
+                    $qu->where('status', 'ACTIVE');
+                });
+            })
+            ->when($request->governorate, function ($q) use ($request) {
+                $q->where('governorate_id', $request->governorate);
+            })
+            ->when($request->region, function ($q) use ($request) {
+                $region = $request->region;
+                $q->whereHas('regions', function ($q) use ($region) {
+                    $q->where('region_id', $region);
+                });
+            })
+            ->when($request->region_ids, function ($q) use ($request) {
+                $region_ids = $request->region_ids;
+                $q->whereHas('regions', function ($q) use ($region_ids) {
+                    $q->whereIn('region_id', $region_ids);
+                });
+            })
+            ->when($request->type, function ($q) use ($request) {
+                $q->where('type', $request->type);
+            })
+            ->when($request->postingTime, function ($builder) use ($request) {
+                $value = $request->postingTime;
+                $weekAgo = Carbon::now()->startOfWeek()->format('Y-m-d H:i:s');
+                $monthAgo = Carbon::now()->startOfMonth()->format('Y-m-d H:i:s');
+                $yearAgo = Carbon::now()->startOfYear()->format('Y-m-d H:i:s');
+                $last24Hours = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+                if ($value == '24') {
+                    $builder->whereBetween('created_at', [$last24Hours, Carbon::now()->format('Y-m-d H:i:s')]);
+                } elseif ($value == 'week') {
+                    $builder->whereBetween('created_at', [$weekAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+                } elseif ($value == 'month') {
+                    $builder->whereBetween('created_at', [$monthAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+                } elseif ($value == 'year') {
+                    $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
+                }
+            })
+            ->when($request->orderBy, function ($q) use ($request) {
+                $q->orderBy('orders_count', $request->orderBy);
+            })
+            ->with('governorate', 'region', 'user', 'attachments.document')
+            ->withCount('reviews')
+            ->withSum('reviews', 'rate')
+            ->withSum('orders', 'time')
+            ->withCount('orders')
+            ->withAvg('orders', 'time')
+            ->latest()->paginate($countRow ?? 15);
 
         return response()->json([
             'message' => 'تمت العمليه بنجاح',
@@ -102,65 +104,71 @@ class VendorsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(VendorRequest $request)
     {
-        $roles = [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|unique:users',
-            'type' => 'required|in:CUSTOMER,VENDOR',
-            'vendor_type' => 'required|in:GAS,WATER',
-            'commercial_name' => 'required|string|max:255',
-            'governorate_id' => 'required|exists:locations,id',
-            'region_ids' => 'required|array|exists:locations,id',
-        ];
+        try {
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->phone;
+            $user->phone = $request->phone;
+            $user->password = $request->phone;
+            $user->otp = mt_rand(1000, 9999);
+            $user->type = $request->type;
+            $user->save();
+            $vendor = new Vendor();
+            $vendor->type = $request->vendor_type;
+            $vendor->name = $request->name;
+            $vendor->commercial_name = $request->commercial_name;
+            $vendor->phone = $request->phone;
+            $vendor->user_id  = $user->id;
+            $vendor->governorate_id = $request->governorate_id;
+            $vendor->save();
+            foreach ($request->region_ids as $value) {
+                VendorRegions::create([
+                    'vendor_id' => $vendor->id,
+                    'region_id' => $value,
+                ]);
+            }
 
-        $customMessages = [
-            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
-            'phone.unique' => 'هذا الرقم موجود مسبقا',
-            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
-            'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
-            'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
-            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
-            'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
-            'region_ids.exists' => 'لا توجد منطقة بهذا الأسم',
-        ];
+            foreach ($request['data'] as $value) {
+                $document = Document::where('id', $value['document_id'])->first();
+                if ($request->hasFile($document->slug)) {
+                    $file = $request->file($document->slug);
+                    $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
+                    if ($value['file'] == "IMAGE") {
+                        $file->move('image/vendors', $fileName);
+                        $data['file_path'] = 'image/vendors/' . $fileName;
+                    } else {
+                        $file->move('file/vendors', $fileName);
+                        $data['file_path'] = 'file/vendors/' . $fileName;
+                    }
+                }
+                $data['document_id'] = $value['document_id'];
+                $data['status'] = 'PENDING';
+                $data['file_name'] = $document->name;
+                $data['vendor_id'] = $vendor->id;
+                if ($value['attachment_id']) {
+                    Attachment::find($value['attachment_id'])->update($data);
+                } else {
+                    Attachment::create($data);
+                }
+            }
 
-        $validator = Validator::make($request->all(), $roles, $customMessages);
-        if ($validator->fails()) {
-            return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
+            $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')
+                ->where('user_id', $user->id)
+                ->withCount('reviews')
+                ->withSum('reviews', 'rate')
+                ->withSum('orders', 'time')
+                ->withCount('orders')
+                ->withAvg('orders', 'time')
+                ->first();
+            CreatedLog::handle('أضافة موزع جديد');
+            return parent::success($vendor, "تم العملية بنجاح");
+        } catch (Throwable $e) {
+            return response([
+                'message' => $e->getMessage(),
+            ], 500);
         }
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->phone;
-        $user->phone = $request->phone;
-        $user->password = $request->phone;
-        $user->otp = mt_rand(1000, 9999);
-        $user->type = $request->type;
-        $user->save();
-        $vendor = new Vendor();
-        $vendor->type = $request->vendor_type;
-        $vendor->name = $request->name;
-        $vendor->commercial_name = $request->commercial_name;
-        $vendor->phone = $request->phone;
-        $vendor->user_id  = $user->id;
-        $vendor->governorate_id = $request->governorate_id;
-        $vendor->save();
-        foreach ($request->region_ids as $value){
-            VendorRegions::create([
-                'vendor_id' => $vendor->id,
-                'region_id' => $value,
-            ]);
-        }
-        $vendor = Vendor::with('governorate' , 'region' , 'user' , 'attachments.document')
-        ->where('user_id' , $user->id)
-        ->withCount('reviews')
-        ->withSum('reviews' , 'rate')
-        ->withSum('orders' , 'time')
-        ->withCount('orders')
-        ->withAvg('orders' , 'time')
-        ->first();
-        CreatedLog::handle('أضافة موزع جديد');
-        return parent::success($vendor , "تم العملية بنجاح");
     }
 
     /**
@@ -171,8 +179,8 @@ class VendorsController extends Controller
      */
     public function show($id)
     {
-        $vendor = Vendor::with('governorate' , 'region', 'user' , 'attachments.document')->find($id);
-        return parent::success($vendor , 'تمت العملية بنجاح');
+        $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')->find($id);
+        return parent::success($vendor, 'تمت العملية بنجاح');
     }
 
     /**
@@ -182,66 +190,74 @@ class VendorsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(VendorRequest $request, $id)
     {
-        $roles = [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|numeric|unique:vendors,phone,' . $id,
-            'commercial_name' => 'required|string|max:255',
-            'governorate_id' => 'required|exists:locations,id',
-            'region_ids' => 'required|array|exists:locations,id',
-        ];
-
-        $customMessages = [
-            'phone.required' => 'يرجى ادخال رقم الهاتف الخاص بك',
-            'phone.unique' => 'هذا الرقم موجود مسبقا',
-            'name.required' => 'يرجى ادخال إسم الشخصي الخاصة بك',
-            'name.max' => 'يجب أن يكون إسمك أقل من 255 حرف',
-            'commercial_name.max' => 'يجب أن يكون إسمك التجاري أقل من 255 حرف',
-            'governorate_id.exists' => 'لا توجد محافظة بهذا الأسم',
-            'region_ids.exists' => 'لا توجد منطقة بهذا الأسم',
-        ];
-
-        $validator = Validator::make($request->all(), $roles, $customMessages);
-        if ($validator->fails()) {
-            return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
-        }
-
-        $vendor = Vendor::find($id);
-        $vendor->name = $request->name;
-        $vendor->commercial_name = $request->commercial_name;
-        $vendor->phone = $request->phone;
-        $vendor->active = $request->active;
-        $vendor->governorate_id = $request->governorate_id;
-        $vendor->region_id  = $request->region_id;
-        $vendor->update();
-        $user = User::find($vendor->user_id);
-        $user->name = $request->name;
-        $user->phone = $request->phone;
-        if($request->status){
-            $user->status = $request->status;
-        }
-        $user->save();
-        $OldVendorRegions = VendorRegions::where('vendor_id' , $vendor->id)->whereNotIn('region_id' , $request->region_ids)->delete();
-        foreach ($request->region_ids as $value){
-            $vendorRegions = VendorRegions::where('vendor_id' , $vendor->id)->where('region_id' , $value)->first();
-            if(!$vendorRegions){
-                VendorRegions::create([
-                    'vendor_id' => $vendor->id,
-                    'region_id' => $value,
-                ]);
+        try {
+            $vendor = Vendor::find($id);
+            $vendor->name = $request->name;
+            $vendor->commercial_name = $request->commercial_name;
+            $vendor->phone = $request->phone;
+            $vendor->active = $request->active;
+            $vendor->governorate_id = $request->governorate_id;
+            $vendor->region_id  = $request->region_id;
+            $vendor->update();
+            $user = User::find($vendor->user_id);
+            $user->name = $request->name;
+            $user->phone = $request->phone;
+            if ($request->status) {
+                $user->status = $request->status;
             }
+            $user->save();
+            $OldVendorRegions = VendorRegions::where('vendor_id', $vendor->id)->whereNotIn('region_id', $request->region_ids)->delete();
+            foreach ($request->region_ids as $value) {
+                $vendorRegions = VendorRegions::where('vendor_id', $vendor->id)->where('region_id', $value)->first();
+                if (!$vendorRegions) {
+                    VendorRegions::create([
+                        'vendor_id' => $vendor->id,
+                        'region_id' => $value,
+                    ]);
+                }
+            }
+
+            foreach ($request['data'] as $value) {
+                $document = Document::where('id', $value['document_id'])->first();
+                if ($request->hasFile($document->slug)) {
+                    $file = $request->file($document->slug);
+                    $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
+                    if ($value['file'] == "IMAGE") {
+                        $file->move('image/vendors', $fileName);
+                        $data['file_path'] = 'image/vendors/' . $fileName;
+                    } else {
+                        $file->move('file/vendors', $fileName);
+                        $data['file_path'] = 'file/vendors/' . $fileName;
+                    }
+                }
+                $data['document_id'] = $value['document_id'];
+                $data['status'] = 'PENDING';
+                $data['file_name'] = $document->name;
+                $data['vendor_id'] = $vendor->id;
+                if ($value['attachment_id']) {
+                    Attachment::find($value['attachment_id'])->update($data);
+                } else {
+                    Attachment::create($data);
+                }
+            }
+
+            $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')
+                ->where('user_id', $user->id)
+                ->withCount('reviews')
+                ->withSum('reviews', 'rate')
+                ->withSum('orders', 'time')
+                ->withCount('orders')
+                ->withAvg('orders', 'time')
+                ->first();
+            CreatedLog::handle('تعديل موزع');
+            return parent::success($vendor, "تم العملية بنجاح");
+        } catch (Throwable $e) {
+            return response([
+                'message' => $e->getMessage(),
+            ], 500);
         }
-        $vendor = Vendor::with('governorate' , 'region' , 'user' , 'attachments.document')
-        ->where('user_id' , $user->id)
-        ->withCount('reviews')
-        ->withSum('reviews' , 'rate')
-        ->withSum('orders' , 'time')
-        ->withCount('orders')
-        ->withAvg('orders' , 'time')
-        ->first();
-        CreatedLog::handle('تعديل موزع');
-        return parent::success($vendor , "تم العملية بنجاح");
     }
 
     /**
@@ -257,7 +273,7 @@ class VendorsController extends Controller
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 
-    public function status(Request $request , $id)
+    public function status(Request $request, $id)
     {
         $validator = Validator($request->all(), [
             'status' => 'required|in:ACTIVE,INACTIVE,WAITING,BLOCK',
@@ -265,15 +281,15 @@ class VendorsController extends Controller
             'status.required' => 'يرجى أرسال الحالة',
             'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
         ]);
-        if (!$validator->fails()){
+        if (!$validator->fails()) {
             $vendor = User::with('vendor')->find(Vendor::find($id)->user_id);
             $vendor->update(['status' => $request->status]);
-            return parent::success($vendor , "تم العملية بنجاح");
+            return parent::success($vendor, "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
 
-    public function active(Request $request , $id)
+    public function active(Request $request, $id)
     {
         $validator = Validator($request->all(), [
             'active' => 'required|in:ACTIVE,INACTIVE',
@@ -281,12 +297,11 @@ class VendorsController extends Controller
             'active.required' => 'يرجى أرسال الحالة',
             'active.in' => 'يرجى أختبار حالة بشكل صيحيح',
         ]);
-        if (!$validator->fails()){
+        if (!$validator->fails()) {
             $vendor = Vendor::with('user')->find($id);
             $vendor->update(['active' => $request->active]);
-            return parent::success($vendor , "تم العملية بنجاح");
+            return parent::success($vendor, "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
-
 }
