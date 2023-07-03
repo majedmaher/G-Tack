@@ -42,7 +42,7 @@ class HomeController extends Controller
 
         $vendors = Vendor::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
-        })->latest()->take(8)->get();
+        })->where('status' , 'WAITING')->latest()->take(8)->get();
 
         $data = [
             'ordersLocation' => $ordersLocation,
