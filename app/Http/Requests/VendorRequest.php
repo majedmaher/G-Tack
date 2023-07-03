@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Models\Document;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AttachmentStoreRequest extends FormRequest
+class VendorRequest extends FormRequest
 {
 
     private $data_prefix = 'data.*.';
@@ -41,8 +41,16 @@ class AttachmentStoreRequest extends FormRequest
             $file = $value->file == "IMAGE" ? "image|mimes:jpeg,png|max:5000" : "file|mimes:pdf|max:5000";
             $role[$value->slug] = $is_required . '|' . $file;
         }
+        $role['name'] = 'required|string|max:255';
+        $role['phone'] = 'required|numeric|unique:users';
+        $role['type'] = 'required|in:CUSTOMER,VENDOR';
+        $role['vendor_type'] = 'required|in:GAS,WATER';
+        $role['commercial_name'] = 'required|string|max:255';
+        $role['governorate_id'] = 'required|exists:locations,id';
+        $role['region_ids'] = 'required|array|exists:locations,id';
         $role[$this->data_prefix . 'document_id'] = 'required|exists:documents,id';
         $role[$this->data_prefix . 'file'] = 'required|in:IMAGE,FILE';
+
         return $role;
     }
 
@@ -50,6 +58,14 @@ class AttachmentStoreRequest extends FormRequest
     {
         $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->user()->vendor->type])->get();
         $messages = [];
+        $messages['phone.required'] = 'يرجى ادخال رقم الهاتف الخاص بك';
+        $messages['phone.unique'] = 'هذا الرقم موجود مسبقا';
+        $messages['name.required'] = 'يرجى ادخال إسم الشخصي الخاصة بك';
+        $messages['name.max'] = 'يجب أن يكون إسمك أقل من 255 حرف';
+        $messages['commercial_name.max'] = 'يجب أن يكون إسمك التجاري أقل من 255 حرف';
+        $messages['governorate_id.exists'] = 'لا توجد محافظة بهذا الأسم';
+        $messages['region_id.exists'] = 'لا توجد منطقة بهذا الأسم';
+        $messages['region_ids.exists'] = 'لا توجد منطقة بهذا الأسم';
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
             $file = $value->file == "IMAGE" ? "image|mimes:jpeg,png|max:5000" : "file|mimes:pdf|max:5000";
@@ -68,6 +84,7 @@ class AttachmentStoreRequest extends FormRequest
         $messages[$this->data_prefix . 'document_id.exists'] = "لا يوجد ملفات تريدها بهذا الاسم";
         $messages[$this->data_prefix . 'file.required'] = "يجب عليك ان ترسل نوع الملف المرسل";
         $messages[$this->data_prefix . 'file.in'] = "لا يوجد نوع بهذا الأسم";
+
         return $messages;
     }
 }
