@@ -71,6 +71,12 @@ class VendorsController extends Controller
                     $builder->whereBetween('created_at', [$yearAgo, Carbon::now()->format('Y-m-d H:i:s')]);
                 }
             })
+            ->when($request->from, function ($builder) use ($request) {
+                $builder->whereDate('created_at', '>=', $request->from);
+            })
+            ->when($request->to, function ($builder) use ($request) {
+                $builder->whereDate('created_at', '<=', $request->to);
+            })
             ->when($request->orderBy, function ($q) use ($request) {
                 $q->orderBy('orders_count', $request->orderBy);
             })

@@ -23,6 +23,7 @@ class VendorResource extends JsonResource
             'max_orders' => $this->max_orders,
             'max_product' => $this->max_product,
             'active' => $this->active,
+            'created_at' => $this->created_at,
             'reviews_count' => intval($this->reviews_count),
             'reviews_sum_rate' => intval($this->reviews_sum_rate),
             'orders_count' => $this->orders_count,
