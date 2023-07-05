@@ -43,7 +43,6 @@ class AttachmentStoreRequest extends FormRequest
         }
         $role[$this->data_prefix . 'document_id'] = 'required|exists:documents,id';
         $role[$this->data_prefix . 'file'] = 'required|in:IMAGE,FILE';
-        // return [];
         return $role;
     }
 
