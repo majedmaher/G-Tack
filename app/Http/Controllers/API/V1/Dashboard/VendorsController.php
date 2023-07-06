@@ -11,6 +11,7 @@ use App\Models\Document;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorRegions;
+use App\Notifications\ResendDocumentsNotification;
 use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -309,5 +310,12 @@ class VendorsController extends Controller
             return parent::success($vendor, "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
+    }
+
+    public function ResendDocuments($id)
+    {
+        $vendor = Vendor::with('user')->find($id);
+        $vendor->user->notify(new ResendDocumentsNotification());
+        return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
     }
 }

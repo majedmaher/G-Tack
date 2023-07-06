@@ -38,7 +38,7 @@ class HomeController extends Controller
 
         $orders = Order::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
-        })->with('vendor' , 'customer')->latest()->take(8)->get();
+        })->with('items', 'vendor', 'customer', 'address', 'statuses')->latest()->take(8)->get();
 
         $vendors = Vendor::when($request->type, function ($query) use ($request) {
             $query->where('type', $request->type);
