@@ -11,7 +11,6 @@ use App\Models\Vendor;
 use App\Services\DivecTokensService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -163,6 +162,12 @@ class AuthController extends AuthBaseController
         }
     }
 
+    public function getUser(Request $request){
+        $user = User::with('customer' , 'vendor.regions.region')->find(Auth::user()->id);
+        return response()->json(['code' => 200 , 'status' => true,
+        'message' => "تمت العملية بنجاح" , 'data' => $user]
+        , 200);
+    }
     public function deleteAcount(Request $request)
     {
         $user = User::where('id', Auth::user()->id)->first();
