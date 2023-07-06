@@ -77,7 +77,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::with('role_has_user.role.permission')->where('type' , 'USER')->find($id);
+        $user = User::with('role_has_user.role.permission' , 'logs')->where('type' , 'USER')->find($id);
 
         return parent::success($user , 'تمت العملية بنجاح');
     }
