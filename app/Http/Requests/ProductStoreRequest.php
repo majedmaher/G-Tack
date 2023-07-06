@@ -29,7 +29,7 @@ class ProductStoreRequest extends FormRequest
             'name' => 'required|max:255',
             'price' => 'required|numeric',
             'size' => 'required|numeric',
-            'image' => 'required|image',
+            'image' => $this->getMethod() === 'POST' ? 'required' : 'nullable'.'|image',
         ];
     }
 

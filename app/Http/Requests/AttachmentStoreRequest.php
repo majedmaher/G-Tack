@@ -38,7 +38,7 @@ class AttachmentStoreRequest extends FormRequest
         $role = [];
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
-            $file = $value->file == "IMAGE" ? "image|mimes:jpeg,png|max:5000" : "file|mimes:pdf|max:5000";
+            $file = $value->file == "IMAGE" ? "image|mimes:jpeg,png|max:5000" : "file|mimes:pdf";
             $role[$value->slug] = $is_required . '|' . $file;
         }
         $role[$this->data_prefix . 'document_id'] = 'required|exists:documents,id';

@@ -27,7 +27,7 @@ class LayoutStoreRequest extends FormRequest
         return [
             "title" => "required|max:255",
             "description" => "required|max:255",
-            "image" => "required|image",
+            'image' => $this->getMethod() === 'POST' ? 'required' : 'nullable'.'|image',
             "type" => "required|in:CUSTOMER,VENDOR"
         ];
     }

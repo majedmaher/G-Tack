@@ -32,6 +32,7 @@ class OrderResource extends JsonResource
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'address' => new AddressResource($this->whenLoaded('address')),
             'reviews' => new ReviewResource($this->whenLoaded('reviews')),
+            'statuses' => OrderStatusResource::collection($this->whenLoaded('statuses')),
         ];
     }
 }
