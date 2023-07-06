@@ -318,4 +318,29 @@ class VendorsController extends Controller
         $vendor->user->notify(new ResendDocumentsNotification());
         return ControllersService::generateProcessResponse(true, 'CREATE_SUCCESS', 200);
     }
+
+    public function statusAttachment(Request $request, $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:PENDING,REJECTED,APPROVED',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+
+        if ($validator->fails()) {
+            return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
+        }
+        $attachment = Attachment::find($id);
+        $attachment->update(['status' => $request->status]);
+        $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')
+        ->where('id', $attachment->vendor_id)
+        ->withCount('reviews')
+        ->withSum('reviews', 'rate')
+        ->withSum('orders', 'time')
+        ->withCount('orders')
+        ->withAvg('orders', 'time')
+        ->first();
+        return parent::success($vendor, "تم العملية بنجاح");
+    }
 }

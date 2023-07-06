@@ -88,6 +88,7 @@ Route::prefix('V1')->group(function () {
         Route::resource('vendor', DashboardVendorsController::class);
         Route::put('vendor/status/{id}', [DashboardVendorsController::class , 'status']);
         Route::put('vendor/active/{id}', [DashboardVendorsController::class , 'active']);
+        Route::put('vendor/statusAttachment/{id}', [DashboardVendorsController::class , 'statusAttachment']);
         Route::post('vendor/ResendDocuments/{id}', [DashboardVendorsController::class , 'ResendDocuments']);
         Route::get('vendororders/{id}', DashboardVendorOrdersController::class);
         Route::get('vendorreviews/{id?}', VendorReviewsController::class);
