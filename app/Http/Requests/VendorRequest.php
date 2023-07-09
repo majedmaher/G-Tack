@@ -31,18 +31,18 @@ class VendorRequest extends FormRequest
         if (!is_array($documentIds)) {
             $documentIds = [];
         }
-        $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->user()->vendor->type])
+        $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->input('vendor_type')])
         ->when($documentIds  , function($q) use ($documentIds ){
             $q->whereIn('id' , $documentIds );
         })->get();
         $role = [];
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
-            $file = $value->file == "IMAGE" ? "image|mimes:jpeg,png|max:5000" : "file|mimes:pdf|max:5000";
-            $role[$value->slug] = $is_required . '|' . $file;
+            // $file = $value->file == "IMAGE" ? "image" : "file";
+            $role[$this->data_prefix . $value->slug] = $is_required;
         }
         $role['name'] = 'required|string|max:255';
-        $role['phone'] = 'required|numeric|unique:users';
+        // $role['phone'] = 'required|numeric|unique:users,phone,' . $this->route('vendor');
         $role['type'] = 'required|in:CUSTOMER,VENDOR';
         $role['vendor_type'] = 'required|in:GAS,WATER';
         $role['commercial_name'] = 'required|string|max:255';
@@ -56,7 +56,7 @@ class VendorRequest extends FormRequest
 
     public function messages()
     {
-        $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->user()->vendor->type])->get();
+        $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' ,  $this->input('vendor_type')])->get();
         $messages = [];
         $messages['phone.required'] = 'يرجى ادخال رقم الهاتف الخاص بك';
         $messages['phone.unique'] = 'هذا الرقم موجود مسبقا';
@@ -71,13 +71,13 @@ class VendorRequest extends FormRequest
             $file = $value->file == "IMAGE" ? "image|mimes:jpeg,png|max:5000" : "file|mimes:pdf|max:5000";
             $messages[$value->slug . '.' . $is_required] = $value->slug . ' يجب عليك أدخال الحقل';
             if ($value->file == "IMAGE") {
-                $messages[$value->slug . '.image'] = "يجب عليك رفع صورة";
-                $messages[$value->slug . '.mimes'] = "إمتداد الصور المسموح بها هو jpeg , png";
-                $messages[$value->slug . '.max'] = "حجم الصوره المسموح به هو 5 بكسل";
+                $messages[$this->data_prefix . $value->slug . '.image'] = "يجب عليك رفع صورة";
+                $messages[$this->data_prefix . $value->slug . '.mimes'] = "إمتداد الصور المسموح بها هو jpeg , png";
+                $messages[$this->data_prefix . $value->slug . '.max'] = "حجم الصوره المسموح به هو 5 بكسل";
             } else {
-                $messages[$value->slug . '.file'] = 'يجب عليك رفع ملف';
-                $messages[$value->slug . '.mimes'] = 'إمتداد الملف المسموح به هو pdf';
-                $messages[$value->slug . '.max'] = 'حجم الملف المسموح به هو 5 بكسل';
+                $messages[$this->data_prefix . $value->slug . '.file'] = 'يجب عليك رفع ملف';
+                $messages[$this->data_prefix . $value->slug . '.mimes'] = 'إمتداد الملف المسموح به هو pdf';
+                $messages[$this->data_prefix . $value->slug . '.max'] = 'حجم الملف المسموح به هو 5 بكسل';
             }
         }
         $messages[$this->data_prefix . 'document_id.required'] = "يجب عليك ان ترسل اسم الملف المرسل";

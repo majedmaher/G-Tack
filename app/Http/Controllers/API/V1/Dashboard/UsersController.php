@@ -23,7 +23,7 @@ class UsersController extends Controller
      */
     public function index(Request $request)
     {
-        $users = User::with('role_has_user.role.permission')->when($request->type, function($q) use($request) {
+        $users = User::with('role_has_user.role.permission' , 'logs')->when($request->type, function($q) use($request) {
             $q->whereHas('role_has_user', function ($builder) use($request) {
                 $builder->whereHas('role', function ($builder2) use($request) {
                     $builder2->where('type' , $request->type);
@@ -77,7 +77,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        $user = User::with('role_has_user.role.permission')->where('type' , 'USER')->find($id);
+        $user = User::with('role_has_user.role.permission' , 'logs')->where('type' , 'USER')->find($id);
 
         return parent::success($user , 'تمت العملية بنجاح');
     }

@@ -115,6 +115,7 @@ class OrdersController extends Controller
             $orderAddress = OrderAddress::where('order_id' , $id)->first();
             $orderAddress->update($data);
             CreatedLog::handle('تعديل طلب');
+            $order = Order::with('items', 'vendor', 'customer', 'address', 'statuses')->find($id);
             return parent::success($order , "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
