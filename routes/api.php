@@ -83,7 +83,7 @@ Route::prefix('V1')->group(function () {
         Route::post('authPusher', [TracingVendorCntroller::class , 'authPusher']);
     });
 
-    Route::prefix('dashboard')->middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('dashboard')->middleware(['auth:sanctum'])->name('dashboard.')->group(function () {
         Route::resource('order', DashboardOrdersController::class);
         Route::resource('vendor', DashboardVendorsController::class);
         Route::put('vendor/status/{id}', [DashboardVendorsController::class , 'status']);
