@@ -114,7 +114,7 @@ class VendorsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(VendorRequest $request)
+    public function store(Request $request)
     {
         DB::beginTransaction();
         try {
