@@ -15,6 +15,9 @@ use App\Notifications\ResendDocumentsNotification;
 use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Throwable;
 
 class VendorsController extends Controller
@@ -113,6 +116,7 @@ class VendorsController extends Controller
      */
     public function store(VendorRequest $request)
     {
+        DB::beginTransaction();
         try {
             $user = new User();
             $user->name = $request->name;
@@ -139,16 +143,14 @@ class VendorsController extends Controller
 
             foreach ($request['data'] as $value) {
                 $document = Document::where('id', $value['document_id'])->first();
-                if ($request->hasFile($document->slug)) {
-                    $file = $request->file($document->slug);
-                    $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
-                    if ($value['file'] == "IMAGE") {
-                        $file->move('image/vendors', $fileName);
-                        $data['file_path'] = 'image/vendors/' . $fileName;
-                    } else {
-                        $file->move('file/vendors', $fileName);
-                        $data['file_path'] = 'file/vendors/' . $fileName;
-                    }
+                if ($value[$document->slug]) {
+                    $base64Data = $value[$document->slug];
+                    $decodedData = base64_decode($base64Data);
+                    $fileName = time() . '_' . Str::random(10) . '.jpg';
+                    $directory = ($value['file'] == 'IMAGE') ? 'image/vendors' : 'file/vendors';
+                    $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+                    File::put($filePath, $decodedData);
+                    $data['file_path'] = $directory . '/' . $fileName;
                 }
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
@@ -170,8 +172,12 @@ class VendorsController extends Controller
                 ->withAvg('orders', 'time')
                 ->first();
             CreatedLog::handle('أضافة موزع جديد');
+
+            DB::commit();
             return parent::success($vendor, "تم العملية بنجاح");
         } catch (Throwable $e) {
+            DB::rollBack();
+
             return response([
                 'message' => $e->getMessage(),
             ], 500);
@@ -199,22 +205,21 @@ class VendorsController extends Controller
      */
     public function update(VendorRequest $request, $id)
     {
+        DB::beginTransaction();
         try {
             $vendor = Vendor::find($id);
+            $vendor->type = $request->vendor_type;
             $vendor->name = $request->name;
             $vendor->commercial_name = $request->commercial_name;
             $vendor->phone = $request->phone;
-            $vendor->active = $request->active;
             $vendor->governorate_id = $request->governorate_id;
-            $vendor->region_id  = $request->region_id;
-            $vendor->update();
+            $vendor->save();
             $user = User::find($vendor->user_id);
             $user->name = $request->name;
+            $user->email = $request->phone;
             $user->phone = $request->phone;
-            if ($request->status) {
-                $user->status = $request->status;
-            }
             $user->save();
+
             $OldVendorRegions = VendorRegions::where('vendor_id', $vendor->id)->whereNotIn('region_id', $request->region_ids)->delete();
             foreach ($request->region_ids as $value) {
                 $vendorRegions = VendorRegions::where('vendor_id', $vendor->id)->where('region_id', $value)->first();
@@ -228,16 +233,14 @@ class VendorsController extends Controller
 
             foreach ($request['data'] as $value) {
                 $document = Document::where('id', $value['document_id'])->first();
-                if ($request->hasFile($document->slug)) {
-                    $file = $request->file($document->slug);
-                    $fileName = time() . '_' . '.' . $file->getClientOriginalExtension();
-                    if ($value['file'] == "IMAGE") {
-                        $file->move('image/vendors', $fileName);
-                        $data['file_path'] = 'image/vendors/' . $fileName;
-                    } else {
-                        $file->move('file/vendors', $fileName);
-                        $data['file_path'] = 'file/vendors/' . $fileName;
-                    }
+                if ($value[$document->slug]) {
+                    $base64Data = $value[$document->slug];
+                    $decodedData = base64_decode($base64Data);
+                    $fileName = time() . '_' . Str::random(10) . '.jpg';
+                    $directory = ($value['file'] == 'IMAGE') ? 'image/vendors' : 'file/vendors';
+                    $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+                    File::put($filePath, $decodedData);
+                    $data['file_path'] = $directory . '/' . $fileName;
                 }
                 $data['document_id'] = $value['document_id'];
                 $data['status'] = 'PENDING';
@@ -258,9 +261,12 @@ class VendorsController extends Controller
                 ->withCount('orders')
                 ->withAvg('orders', 'time')
                 ->first();
-            CreatedLog::handle('تعديل موزع');
+            CreatedLog::handle('أضافة موزع جديد');
+
+            DB::commit();
             return parent::success($vendor, "تم العملية بنجاح");
         } catch (Throwable $e) {
+            DB::rollBack();
             return response([
                 'message' => $e->getMessage(),
             ], 500);
