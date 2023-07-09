@@ -26,7 +26,7 @@ class CustomerOrdersController extends Controller
             'to' => $request->to,
             'postingTime' => $request->postingTime,
         ])
-        ->with('vendor')
+        ->with('items', 'vendor', 'customer', 'address', 'statuses')
         ->latest()->paginate($countRow ?? 15);
 
         $data = [

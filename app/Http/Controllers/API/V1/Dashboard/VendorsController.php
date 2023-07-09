@@ -177,7 +177,6 @@ class VendorsController extends Controller
             return parent::success($vendor, "تم العملية بنجاح");
         } catch (Throwable $e) {
             DB::rollBack();
-
             return response([
                 'message' => $e->getMessage(),
             ], 500);
