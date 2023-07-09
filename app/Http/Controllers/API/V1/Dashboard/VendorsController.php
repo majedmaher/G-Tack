@@ -116,8 +116,8 @@ class VendorsController extends Controller
      */
     public function store(VendorRequest $request)
     {
-        // DB::beginTransaction();
-        // try {
+        DB::beginTransaction();
+        try {
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->phone;
@@ -175,12 +175,12 @@ class VendorsController extends Controller
 
             DB::commit();
             return parent::success($vendor, "تم العملية بنجاح");
-        // } catch (Throwable $e) {
-        //     DB::rollBack();
-        //     return response([
-        //         'message' => $e->getMessage(),
-        //     ], 500);
-        // }
+        } catch (Throwable $e) {
+            DB::rollBack();
+            return response([
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
