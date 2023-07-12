@@ -73,7 +73,9 @@ class Order extends Model
                 'commercial_name',
                 'governorate_id',
                 'phone',
-                'active'
+                'active',
+                'lat',
+                'lng'
             );
     }
 
