@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('commercial_name');
             $table->string('phone');
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->double('lat')->nullable();
+            $table->double('lng')->nullable();
             $table->unsignedInteger('max_orders')->nullable();
             $table->float('max_product')->nullable();
             $table->enum('active' , ['ACTIVE' , 'INACTIVE']);

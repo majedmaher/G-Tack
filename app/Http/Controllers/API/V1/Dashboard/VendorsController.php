@@ -84,7 +84,7 @@ class VendorsController extends Controller
             ->when($request->orderBy, function ($q) use ($request) {
                 $q->orderBy('orders_count', $request->orderBy);
             })
-            ->with('governorate', 'region', 'user', 'attachments.document')
+            ->with('governorate', 'regions', 'user', 'attachments.document')
             ->withCount('reviews')
             ->withSum('reviews', 'rate')
             ->withSum('orders', 'time')
@@ -164,7 +164,7 @@ class VendorsController extends Controller
                 }
             }
 
-            $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')
+            $vendor = Vendor::with('governorate', 'regions', 'user', 'attachments.document')
                 ->where('user_id', $user->id)
                 ->withCount('reviews')
                 ->withSum('reviews', 'rate')
@@ -253,7 +253,7 @@ class VendorsController extends Controller
                 }
             }
 
-            $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')
+            $vendor = Vendor::with('governorate', 'regions', 'user', 'attachments.document')
                 ->where('user_id', $user->id)
                 ->withCount('reviews')
                 ->withSum('reviews', 'rate')
@@ -262,7 +262,6 @@ class VendorsController extends Controller
                 ->withAvg('orders', 'time')
                 ->first();
             CreatedLog::handle('أضافة موزع جديد');
-
             DB::commit();
             return parent::success($vendor, "تم العملية بنجاح");
         } catch (Throwable $e) {

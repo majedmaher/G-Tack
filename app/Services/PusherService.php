@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Events\OrderTracking;
 use App\Models\Order;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 use Pusher\Pusher;
 use Throwable;
@@ -14,6 +15,10 @@ class PusherService
     {
         try {
             $orders = Order::whereIn('status' , ['DELIVERING' , 'ONWAY'])->where('vendor_id' , Auth::user()->vendor->id)->get();
+            Vendor::find(Auth::user()->vendor->id)->update([
+                "lat" => $data["lat"] ?? "",
+                "lng" => $data["lng"] ?? "",
+            ]);
             foreach($orders as $order){
                 event(new OrderTracking($order , $data));
             }
