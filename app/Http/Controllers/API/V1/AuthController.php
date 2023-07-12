@@ -206,12 +206,13 @@ class AuthController extends AuthBaseController
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
         $user = User::where('phone', $request->phone)->where('type' , $request->type)->with('customer' , 'vendor.regions.region')->first();
-        $dataForToken = [
-            'fcm_token' => $request->fcm_token,
-            'user_id' => $user->id,
-            'device_name' => $request->device_name,
-        ];
+
         if ($user) {
+            $dataForToken = [
+                'fcm_token' => $request->fcm_token,
+                'user_id' => $user->id,
+                'device_name' => $request->device_name,
+            ];
             if ($request->otp == $user->otp) {
                 $user->email_verified_at = Carbon::now();
                 $user->is_phone_verified = 1;
