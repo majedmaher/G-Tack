@@ -134,6 +134,7 @@ class VendorsController extends Controller
             $vendor->user_id  = $user->id;
             $vendor->governorate_id = $request->governorate_id;
             $vendor->save();
+
             foreach ($request->region_ids as $value) {
                 VendorRegions::create([
                     'vendor_id' => $vendor->id,
