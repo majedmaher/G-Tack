@@ -27,6 +27,8 @@ class VendorResource extends JsonResource
             'reviews_count' => intval($this->reviews_count),
             'reviews_sum_rate' => intval($this->reviews_sum_rate),
             'orders_count' => $this->orders_count,
+            'lat' => $this->lat,
+            'lng' => $this->lng,
             'orders_sum_time' => $this->orders_sum_time,
             'orders_avg_time' => $this->orders_avg_time,
             'user' => new UserResource($this->whenLoaded('user')),
