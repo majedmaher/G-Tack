@@ -16,8 +16,8 @@ class PusherService
         try {
             $orders = Order::whereIn('status' , ['DELIVERING' , 'ONWAY'])->where('vendor_id' , Auth::user()->vendor->id)->get();
             Vendor::find(Auth::user()->vendor->id)->update([
-                "lat" => isset($data["lat"]),
-                "lng" => isset($data["lng"]),
+                "lat" => $data["lat"] ?? "",
+                "lng" => $data["lng"] ?? "",
             ]);
             foreach($orders as $order){
                 event(new OrderTracking($order , $data));
