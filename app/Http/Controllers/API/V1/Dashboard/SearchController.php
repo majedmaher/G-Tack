@@ -56,7 +56,7 @@ class SearchController extends Controller
             $data['users'][$key]['name'] = 'أسم المستخدم ' . $value->name;
         }
 
-        $combinedArray = array_merge($data['vendors'], $data['customers'], $data['orders'], $data['users']);
+        $combinedArray = array_merge($data['vendors'] ?? [], $data['customers'] ?? [], $data['orders'] ?? [], $data['users'] ?? []);
 
         return $combinedArray;
     }
