@@ -132,6 +132,7 @@ class VendorsController extends Controller
             $vendor->commercial_name = $request->commercial_name;
             $vendor->phone = $request->phone;
             $vendor->user_id  = $user->id;
+            $vendor->max_product  = $request->max_product ?? NULL;
             $vendor->governorate_id = $request->governorate_id;
             $vendor->save();
 
