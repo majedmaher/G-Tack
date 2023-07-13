@@ -39,7 +39,7 @@ class VendorRequest extends FormRequest
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
             // $file = $value->file == "IMAGE" ? "image" : "file";
-            $role[$this->data_prefix . $value->slug] = $is_required;
+            $role['data.' . $key . '.' . $value->slug] = $is_required;
         }
         $role['name'] = 'required|string|max:255';
         // $role['phone'] = 'required|numeric|unique:users,phone,' . $this->route('vendor');
