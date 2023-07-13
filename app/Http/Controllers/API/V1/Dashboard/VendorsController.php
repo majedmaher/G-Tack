@@ -116,7 +116,6 @@ class VendorsController extends Controller
      */
     public function store(VendorRequest $request)
     {
-        return $request->rules();
         DB::beginTransaction();
         try {
             $user = new User();
