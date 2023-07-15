@@ -15,7 +15,7 @@ class Review extends Model
     public function vendor()
     {
         return $this->belongsTo(Vendor::class , 'vendor_id' , 'id')
-        ->select('id' , 'type' , 'name' , 'commercial_name' , 'phone' , 'active');
+        ->select('id' , 'type' , 'avatar' , 'name' , 'commercial_name' , 'phone' , 'active');
     }
 
     public function customer()
