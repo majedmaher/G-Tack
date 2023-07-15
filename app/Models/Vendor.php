@@ -51,7 +51,7 @@ class Vendor extends Model
 
     public function getAvatarAttribute()
     {
-        return Request::root('/') . '/' . $this->attributes['image'];
+        return Request::root('/') . '/' . $this->attributes['avatar'];
     }
 
     public function delete()
