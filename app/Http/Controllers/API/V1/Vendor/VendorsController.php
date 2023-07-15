@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+
 class VendorsController extends Controller
 {
     /**
@@ -71,7 +72,7 @@ class VendorsController extends Controller
             'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
         ]);
 
-        if(!$validator->fails()) {
+        if (!$validator->fails()) {
             $user = User::find(Auth::user()->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
@@ -82,7 +83,7 @@ class VendorsController extends Controller
                 $name = Str::random(12);
                 $path = $request->file('avatar');
                 $name = $name . time() . '.' . $request->file('avatar')->getClientOriginalExtension();
-                $avatar = 'vendor/avatars/'.$name;
+                $avatar = 'vendor/avatars/' . $name;
                 $path->move('vendor/avatars', $name);
             }
             $vendor->update([
@@ -92,13 +93,17 @@ class VendorsController extends Controller
                 'governorate_id' => $request->governorate_id ?? Vendor::find(Auth::user()->vendor->id)->governorate_id,
                 'region_id' => $request->region_id ?? NULL,
                 'max_product' => $request->max_product,
-                'avatar' => $avatar ?? $vendor->avatar,
             ]);
+            if ($avatar) {
+                $vendor->update([
+                    'avatar' => $avatar,
+                ]);
+            }
             return response()->json([
                 'status' => true,
                 'code' => 200,
                 'message' => Messages::getMessage('UPDATE_SUCCESS'),
-                'data' => User::where( 'id' ,Auth::user()->id)->with('vendor')->first(),
+                'data' => User::where('id', Auth::user()->id)->with('vendor')->first(),
             ]);
         }
         return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
@@ -115,16 +120,15 @@ class VendorsController extends Controller
         //
     }
 
-        /**
-    * Update the specified resource in storage.
+    /**
+     * Update the specified resource in storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function status(Request $request , $id)
+    public function status(Request $request, $id)
     {
         $vendor = Vendor::find($id)->update(['active' => $request->status]);
         return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
     }
-
 }
