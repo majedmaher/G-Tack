@@ -33,13 +33,13 @@ class SendStatusOrderNotification
     {
         $order = $event->order;
         $title = $order->vendor->commercial_name;
-        $body = ControllersService::getMessage($order->status) .' ' . $order->vendor->commercial_name;
+        $body = ControllersService::getMessage($order->status) .' : ' . $order->numder;
         if ($order->status == 'CANCELLED_BY_CUSTOMER') {
             $order->vendor->user->notify(new StatusOrderNotification($order));
-            $body = ControllersService::getMessage($order->status) . ' ' . $order->customer->name;
+            $body = ControllersService::getMessage($order->status) . ' : ' . $order->customer->name;
         } elseif ($order->status == 'CANCELLED_BY_VENDOR' and $order->status == 'DECLINED') {
             $order->customer->user->notify(new StatusOrderNotification($order));
-            $body = ControllersService::getMessage($order->status) . ' ' . $order->vendor->commercial_name;
+            $body = ControllersService::getMessage($order->status) . ' : ' . $order->numder;
         } else {
             $order->customer->user->notify(new StatusOrderNotification($order));
         }
