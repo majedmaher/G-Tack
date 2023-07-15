@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Request;
 
 class Vendor extends Model
 {
@@ -46,6 +47,11 @@ class Vendor extends Model
     public function attachments()
     {
         return $this->hasMany(Attachment::class , 'vendor_id' , 'id');
+    }
+
+    public function getAvatarAttribute()
+    {
+        return Request::root('/') . '/' . $this->attributes['image'];
     }
 
     public function delete()
