@@ -39,6 +39,7 @@ class VendorRequest extends FormRequest
             $role['data.' . $key . '.' . $value->slug] = $is_required;
         }
         $role['name'] = 'required|string|max:255';
+        $role['avatar'] = $this->getMethod() === 'POST' ? 'required' : 'nullable';
         // $role['phone'] = 'required|numeric|unique:users,phone,' . $this->route('vendor');
         $role['type'] = 'required|in:CUSTOMER,VENDOR';
         $role['vendor_type'] = 'required|in:GAS,WATER';

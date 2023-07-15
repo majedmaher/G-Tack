@@ -134,6 +134,15 @@ class VendorsController extends Controller
             $vendor->user_id  = $user->id;
             $vendor->max_product  = $request->max_product ?? NULL;
             $vendor->governorate_id = $request->governorate_id;
+            if ($request->avatar) {
+                $base64Data = $request->avatar;
+                $decodedData = base64_decode($base64Data);
+                $fileName = time() . '_' . Str::random(10) . '.jpg';
+                $directory = 'vendor/avatars';
+                $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+                File::put($filePath, $decodedData);
+                $vendor->avatar = $directory . '/' . $fileName;
+            }
             $vendor->save();
 
             foreach ($request->region_ids as $value) {
@@ -214,6 +223,15 @@ class VendorsController extends Controller
             $vendor->commercial_name = $request->commercial_name;
             $vendor->phone = $request->phone;
             $vendor->governorate_id = $request->governorate_id;
+            if ($request->avatar) {
+                $base64Data = $request->avatar;
+                $decodedData = base64_decode($base64Data);
+                $fileName = time() . '_' . Str::random(10) . '.jpg';
+                $directory = 'vendor/avatars';
+                $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+                File::put($filePath, $decodedData);
+                $vendor->avatar = $directory . '/' . $fileName;
+            }
             $vendor->save();
             $user = User::find($vendor->user_id);
             $user->name = $request->name;
