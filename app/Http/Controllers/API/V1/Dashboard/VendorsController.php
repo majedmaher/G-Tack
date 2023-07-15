@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorRegions;
 use App\Notifications\ResendDocumentsNotification;
+use App\Notifications\VendorAcceptanceNotification;
 use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -315,6 +316,9 @@ class VendorsController extends Controller
         if (!$validator->fails()) {
             $vendor = User::with('vendor')->find(Vendor::find($id)->user_id);
             $vendor->update(['status' => $request->status]);
+            if($request->status == "ACTIVE"){
+                $vendor->notify(new VendorAcceptanceNotification());
+            }
             return parent::success($vendor, "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
