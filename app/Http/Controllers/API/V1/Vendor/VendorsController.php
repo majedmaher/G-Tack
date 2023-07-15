@@ -79,6 +79,7 @@ class VendorsController extends Controller
                 'password' => $request->phone,
             ]);
             $vendor = Vendor::find(Auth::user()->vendor->id);
+            $avatar = NULL;
             if ($request->file('avatar')) {
                 $name = Str::random(12);
                 $path = $request->file('avatar');
