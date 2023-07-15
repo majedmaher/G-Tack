@@ -74,6 +74,7 @@ class Order extends Model
                 'governorate_id',
                 'phone',
                 'active',
+                'avatar',
                 'lat',
                 'lng'
             );
