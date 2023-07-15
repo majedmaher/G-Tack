@@ -79,7 +79,6 @@ class VendorsController extends Controller
                 'password' => $request->phone,
             ]);
             $vendor = Vendor::find(Auth::user()->vendor->id);
-            $avatar = NULL;
             if ($request->file('avatar')) {
                 $name = Str::random(12);
                 $path = $request->file('avatar');
@@ -95,7 +94,7 @@ class VendorsController extends Controller
                 'region_id' => $request->region_id ?? NULL,
                 'max_product' => $request->max_product,
             ]);
-            if ($avatar) {
+            if (isset($avatar)) {
                 $vendor->update([
                     'avatar' => $avatar,
                 ]);
