@@ -93,12 +93,8 @@ class VendorsController extends Controller
                 'governorate_id' => $request->governorate_id ?? Vendor::find(Auth::user()->vendor->id)->governorate_id,
                 'region_id' => $request->region_id ?? NULL,
                 'max_product' => $request->max_product,
+                'avatar' => $avatar,
             ]);
-            if (isset($avatar)) {
-                $vendor->update([
-                    'avatar' => $avatar,
-                ]);
-            }
             return response()->json([
                 'status' => true,
                 'code' => 200,
