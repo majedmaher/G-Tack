@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Models\Vendor;
 use App\Models\VendorRegions;
 use App\Notifications\ResendDocumentsNotification;
+use App\Notifications\VendorAcceptanceNotification;
 use App\Services\CreatedLog;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -132,7 +133,17 @@ class VendorsController extends Controller
             $vendor->commercial_name = $request->commercial_name;
             $vendor->phone = $request->phone;
             $vendor->user_id  = $user->id;
+            $vendor->max_product  = $request->max_product ?? NULL;
             $vendor->governorate_id = $request->governorate_id;
+            if ($request->avatar) {
+                $base64Data = $request->avatar;
+                $decodedData = base64_decode($base64Data);
+                $fileName = time() . '_' . Str::random(10) . '.jpg';
+                $directory = 'vendor/avatars';
+                $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+                File::put($filePath, $decodedData);
+                $vendor->avatar = $directory . '/' . $fileName;
+            }
             $vendor->save();
 
             foreach ($request->region_ids as $value) {
@@ -213,6 +224,15 @@ class VendorsController extends Controller
             $vendor->commercial_name = $request->commercial_name;
             $vendor->phone = $request->phone;
             $vendor->governorate_id = $request->governorate_id;
+            if ($request->avatar) {
+                $base64Data = $request->avatar;
+                $decodedData = base64_decode($base64Data);
+                $fileName = time() . '_' . Str::random(10) . '.jpg';
+                $directory = 'vendor/avatars';
+                $filePath = $directory . DIRECTORY_SEPARATOR . $fileName;
+                File::put($filePath, $decodedData);
+                $vendor->avatar = $directory . '/' . $fileName;
+            }
             $vendor->save();
             $user = User::find($vendor->user_id);
             $user->name = $request->name;
@@ -296,6 +316,9 @@ class VendorsController extends Controller
         if (!$validator->fails()) {
             $vendor = User::with('vendor')->find(Vendor::find($id)->user_id);
             $vendor->update(['status' => $request->status]);
+            if($request->status == "ACTIVE"){
+                $vendor->notify(new VendorAcceptanceNotification());
+            }
             return parent::success($vendor, "تم العملية بنجاح");
         }
         return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);

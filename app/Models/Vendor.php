@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Request;
 
 class Vendor extends Model
 {
     use HasFactory , Notifiable, SoftDeletes;
 
-    protected $fillable = ['name' , 'type' , 'commercial_name' , 'phone' , 'user_id' , 'governorate_id' , 'region_id' , 'max_orders' , 'max_product' , 'active' , 'lat' , 'lng'];
+    protected $fillable = ['name' , 'type' , 'commercial_name' , 'avatar' , 'phone' , 'user_id' , 'governorate_id' , 'region_id' , 'max_orders' , 'max_product' , 'active' , 'lat' , 'lng'];
 
     public function user()
     {
@@ -46,6 +47,11 @@ class Vendor extends Model
     public function attachments()
     {
         return $this->hasMany(Attachment::class , 'vendor_id' , 'id');
+    }
+
+    public function getAvatarAttribute()
+    {
+        return Request::root('/') . '/' . $this->attributes['avatar'];
     }
 
     public function delete()

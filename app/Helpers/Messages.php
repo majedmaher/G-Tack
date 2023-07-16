@@ -88,8 +88,8 @@ class Messages
         'FILLED' => 'تم الإنتهاء من تعبأت طلبك',
         'DELIVERED' => 'هل تم توصيل طلبك يرجى تأكيد التسليم',
         'COMPLETED' => 'نحن هنا لخدمتكم',
-        'CANCELLED_BY_VENDOR' => 'نعتذر تم إلغاء طلبك من قبل موزع : ',
-        'CANCELLED_BY_CUSTOMER' => 'تم إلغاء طلب من قبل الزبون :',
+        'CANCELLED_BY_VENDOR' => 'نعتذر تم إلغاء طلبك من طرف الموزع : ',
+        'CANCELLED_BY_CUSTOMER' => 'تم إلغاء طلب من طرف الزبون :',
     ];
 
     private static $enMessages = [

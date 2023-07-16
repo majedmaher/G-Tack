@@ -10,6 +10,7 @@ use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class VendorsController extends Controller
 {
@@ -60,6 +61,7 @@ class VendorsController extends Controller
             'commercial_name' => 'required|string|max:255',
             'governorate_id' => 'nullable|exists:locations,id',
             'region_id' => 'nullable|exists:locations,id',
+            'avatar' => 'nullable|image',
         ], [
             'phone.required' => __('يرجى ادخال رقم الهاتف الخاص بك'),
             'phone.unique' => 'لا يمكن أستخدام هذا الرقم',
@@ -70,13 +72,21 @@ class VendorsController extends Controller
             'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
         ]);
 
-        if(!$validator->fails()) {
+        if (!$validator->fails()) {
             $user = User::find(Auth::user()->id)->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'password' => $request->phone,
             ]);
-            $vendor = Vendor::find(Auth::user()->vendor->id)->update([
+            $vendor = Vendor::find(Auth::user()->vendor->id);
+            if ($request->file('avatar')) {
+                $name = Str::random(12);
+                $path = $request->file('avatar');
+                $name = $name . time() . '.' . $request->file('avatar')->getClientOriginalExtension();
+                $avatar = 'vendor/avatars/' . $name;
+                $path->move('vendor/avatars', $name);
+            }
+            $vendor->update([
                 'name' => $request->name,
                 'phone' => $request->phone,
                 'commercial_name' => $request->commercial_name,
@@ -84,11 +94,16 @@ class VendorsController extends Controller
                 'region_id' => $request->region_id ?? NULL,
                 'max_product' => $request->max_product,
             ]);
+            if (isset($avatar)) {
+                $vendor->update([
+                    'avatar' => $avatar,
+                ]);
+            }
             return response()->json([
                 'status' => true,
                 'code' => 200,
                 'message' => Messages::getMessage('UPDATE_SUCCESS'),
-                'data' => User::where( 'id' ,Auth::user()->id)->with('vendor')->first(),
+                'data' => User::where('id', Auth::user()->id)->with('vendor')->first(),
             ]);
         }
         return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);
@@ -105,16 +120,15 @@ class VendorsController extends Controller
         //
     }
 
-        /**
-    * Update the specified resource in storage.
+    /**
+     * Update the specified resource in storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function status(Request $request , $id)
+    public function status(Request $request, $id)
     {
         $vendor = Vendor::find($id)->update(['active' => $request->status]);
         return ControllersService::generateProcessResponse(true, 'UPDATE_SUCCESS', 200);
     }
-
 }

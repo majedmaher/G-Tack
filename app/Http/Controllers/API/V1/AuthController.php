@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-
+use Illuminate\Support\Str;
 class AuthController extends AuthBaseController
 {
     public function login(Request $request)
@@ -54,9 +54,11 @@ class AuthController extends AuthBaseController
             'name' => 'required|string|max:255',
             'phone' => 'required|numeric|unique:users',
             'type' => 'required|in:CUSTOMER,VENDOR',
+            'vendor_type' => 'nullable|in:GAS,WATER',
             'commercial_name' => 'nullable|string|max:255',
             'governorate_id' => 'nullable|exists:locations,id',
             'region_id' => 'nullable|exists:locations,id',
+            'avatar' => 'nullable|image',
         ];
 
         $customMessages = [
@@ -92,6 +94,13 @@ class AuthController extends AuthBaseController
                 $vendor->governorate_id = $request->governorate_id;
                 $vendor->region_id  = $request->region_id ?? NULL;
                 $vendor->max_product  = $request->max_product;
+                if ($request->file('avatar')) {
+                    $name = Str::random(12);
+                    $path = $request->file('avatar');
+                    $name = $name . time() . '.' . $request->file('avatar')->getClientOriginalExtension();
+                    $vendor->avatar = 'vendor/avatars/'.$name;
+                    $path->move('vendor/avatars', $name);
+                }
                 $isSaved = $vendor->save();
             } elseif ($user->type == 'CUSTOMER') {
                 $customer = new Customer();

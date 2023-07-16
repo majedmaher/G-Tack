@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->enum('type' , ['GAS' , 'WATER']);
             $table->string('name');
+            $table->string('avatar');
             $table->string('commercial_name');
             $table->string('phone');
             $table->foreignId('user_id')->constrained('users', 'id')->cascadeOnDelete()->cascadeOnUpdate();

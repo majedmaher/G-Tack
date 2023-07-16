@@ -63,12 +63,12 @@ class StatusOrderNotification extends Notification
     public function toFcm($notifiable)
     {
         $title = $this->order->vendor->commercial_name;
-        $body = ControllersService::getMessage($this->order->status) .' ' . $this->order->vendor->commercial_name;
+        $body = ControllersService::getMessage($this->order->status) .' : ' . $this->order->number;
         if($this->order->status == 'CANCELLED_BY_CUSTOMER'){
-            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->customer->name;
+            $body = ControllersService::getMessage($this->order->status) . ' : ' . $this->order->customer->name;
         }
         if($this->order->status == 'CANCELLED_BY_VENDOR' and $this->order->status == 'DECLINED'){
-            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->vendor->commercial_name;
+            $body = ControllersService::getMessage($this->order->status) . ' : ' . $this->order->number;
         }
         return FcmMessage::create()
             ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
@@ -85,12 +85,12 @@ class StatusOrderNotification extends Notification
     public function toDatabase($notifiable)
     {
         $title = $this->order->vendor->commercial_name;
-        $body = ControllersService::getMessage($this->order->status) .' ' . $this->order->vendor->commercial_name;
+        $body = ControllersService::getMessage($this->order->status) .' : ' . $this->order->number;
         if($this->order->status == 'CANCELLED_BY_CUSTOMER'){
-            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->customer->name;
+            $body = ControllersService::getMessage($this->order->status) . ' : ' . $this->order->customer->name;
         }
         if($this->order->status == 'CANCELLED_BY_VENDOR' and $this->order->status == 'DECLINED'){
-            $body = ControllersService::getMessage($this->order->status) . ' ' . $this->order->vendor->commercial_name;
+            $body = ControllersService::getMessage($this->order->status) . ' : ' . $this->order->number;
         }
         return [
             'title' => $title,

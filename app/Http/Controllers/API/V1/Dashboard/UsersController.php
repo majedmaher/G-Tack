@@ -29,7 +29,7 @@ class UsersController extends Controller
                     $builder2->where('type' , $request->type);
                 });
             });
-        })->where('type' , 'USER')->get();
+        })->whereIn('type' , ['ADMIN' , 'USER'])->get();
         return parent::success($users , 'تمت العملية بنجاح');
     }
 

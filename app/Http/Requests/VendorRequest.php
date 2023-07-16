@@ -27,24 +27,23 @@ class VendorRequest extends FormRequest
      */
     public function rules()
     {
-        $documentIds  = $this->input('document_ids');
-        if (!is_array($documentIds)) {
-            $documentIds = [];
-        }
+        $documents = $this->input('document_ids');
         $document = Document::where('status', 'ACTIVE')->whereIn('type', ['ALL' , $this->input('vendor_type')])
-        ->when($documentIds  , function($q) use ($documentIds ){
-            $q->whereIn('id' , $documentIds );
+        ->when($documents , function($q) use ($documents){
+            $q->whereIn('id' , $documents);
         })->get();
         $role = [];
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
             // $file = $value->file == "IMAGE" ? "image" : "file";
-            $role[$this->data_prefix . $value->slug] = $is_required;
+            $role['data.' . $key . '.' . $value->slug] = $is_required;
         }
         $role['name'] = 'required|string|max:255';
+        $role['avatar'] = $this->getMethod() === 'POST' ? 'required' : 'nullable';
         // $role['phone'] = 'required|numeric|unique:users,phone,' . $this->route('vendor');
         $role['type'] = 'required|in:CUSTOMER,VENDOR';
         $role['vendor_type'] = 'required|in:GAS,WATER';
+        $role['document_ids'] = 'nullable|array';
         $role['commercial_name'] = 'required|string|max:255';
         $role['governorate_id'] = 'required|exists:locations,id';
         $role['region_ids'] = 'required|array|exists:locations,id';
