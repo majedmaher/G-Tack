@@ -33,7 +33,7 @@ class ReviewController extends Controller
         })
         ->when($request->type , function($q) use($request){
             $q->where('type' , $request->type);
-        })->with('vendor' , 'customer' , 'order')->get();
+        })->with('vendor' , 'customer' , 'order')->orderBy('rate', 'desc')->get();
         return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 
