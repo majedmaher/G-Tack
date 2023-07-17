@@ -29,6 +29,20 @@ class MapController extends Controller
                     ->where('status', '!=', 'COMPLETED')->get();
                 return parent::success($orders, "تمت العملية بنجاح");
             },
+            'all' => function () use ($request) {
+                $vendors = Vendor::whereHas('user', function ($qu) {
+                    $qu->where('status', 'ACTIVE');
+                })->with('governorate', 'regions', 'user', 'attachments.document')
+                    ->withCount('reviews')
+                    ->withSum('reviews', 'rate')
+                    ->withSum('orders', 'time')
+                    ->withCount('orders')
+                    ->withAvg('orders', 'time')->get();
+
+                $orders = Order::with('items', 'vendor', 'customer', 'address', 'statuses')
+                    ->where('status', '!=', 'COMPLETED')->get();
+                return parent::success(["orders" => $orders , "vendors" => $vendors], "تمت العملية بنجاح");
+            },
             default => function () {
                 return parent::success(null, 'تأكد من التاب المرسل');
             }

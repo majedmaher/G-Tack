@@ -24,7 +24,7 @@ class ReviewController extends Controller
                 $q->where('id' , 'LIKE' , '%'.$order_id.'%');
             });
         })
-        ->with('customer' , 'order')->get();
+        ->with('customer' , 'order')->orderBy('rate', 'desc')->get();
         return (new ReviewCollection($review))->additional(['code' => 200 , 'status' => true , 'message' => 'تمت العملية بنجاح']);
     }
 

@@ -48,7 +48,7 @@ class VendorRequest extends FormRequest
         $role['governorate_id'] = 'required|exists:locations,id';
         $role['region_ids'] = 'required|array|exists:locations,id';
         $role[$this->data_prefix . 'document_id'] = 'required|exists:documents,id';
-        $role[$this->data_prefix . 'file'] = 'required|in:IMAGE,FILE';
+        $role[$this->data_prefix . 'file'] = $this->getMethod() === 'POST' ? 'required|in:IMAGE,FILE' : 'nullable|in:IMAGE,FILE';
 
         return $role;
     }
