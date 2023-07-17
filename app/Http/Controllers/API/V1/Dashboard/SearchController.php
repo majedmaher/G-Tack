@@ -37,22 +37,26 @@ class SearchController extends Controller
         $data = [];
 
         foreach($vendors as $key => $value){
-            $data['vendors'][$key]['id'] = 'رقم الموزع ' . $value->id;
+            $data['vendors'][$key]['id'] = $value->id;
+            $data['vendors'][$key]['type'] = 'vendor';
             $data['vendors'][$key]['name'] = 'الموزع ' . $value->name;
         }
 
         foreach($customers as $key => $value){
-            $data['customers'][$key]['id'] = 'رقم الزبون ' . $value->id;
+            $data['customers'][$key]['id'] = $value->id;
+            $data['customers'][$key]['type'] = 'customer';
             $data['customers'][$key]['name'] = 'الزبون ' . $value->name;
         }
 
         foreach($orders as $key => $value){
-            $data['orders'][$key]['id'] = 'رقم الطلب ' . $value->id;
+            $data['orders'][$key]['id'] =  $value->id;
+            $data['orders'][$key]['type'] = 'order';
             $data['orders'][$key]['name'] = 'طلب ' . $value->type;
         }
 
         foreach($users as $key => $value){
-            $data['users'][$key]['id'] = 'رقم مستخدم ' . $value->id;
+            $data['users'][$key]['id'] =  $value->id;
+            $data['users'][$key]['type'] = 'user';
             $data['users'][$key]['name'] = 'أسم المستخدم ' . $value->name;
         }
 
