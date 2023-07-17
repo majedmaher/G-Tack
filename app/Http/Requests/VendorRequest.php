@@ -36,7 +36,7 @@ class VendorRequest extends FormRequest
         foreach ($document as $key => $value) {
             $is_required = $value->is_required == 1 ? "required" : "nullable";
             // $file = $value->file == "IMAGE" ? "image" : "file";
-            $role['data.' . $key . '.' . $value->slug] = $is_required;
+            $role['data.' . $key . '.' . $value->slug] =  $this->getMethod() === 'POST' ?  $is_required : "nullable";
         }
         $role['name'] = 'required|string|max:255';
         $role['avatar'] = $this->getMethod() === 'POST' ? 'required' : 'nullable';
