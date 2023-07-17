@@ -20,6 +20,7 @@ use App\Http\Controllers\API\V1\Dashboard\DatabasesController;
 use App\Http\Controllers\API\V1\Dashboard\HomeController as DashboardHomeController;
 use App\Http\Controllers\API\V1\Dashboard\LayoutsController as DashboardLayoutsController;
 use App\Http\Controllers\API\V1\Dashboard\LocationsController as DashboardLocationsController;
+use App\Http\Controllers\API\V1\Dashboard\MapController;
 use App\Http\Controllers\API\V1\Dashboard\OrdersController as DashboardOrdersController;
 use App\Http\Controllers\API\V1\Dashboard\PermissionController;
 use App\Http\Controllers\API\V1\Dashboard\ProductsController;
@@ -85,6 +86,7 @@ Route::prefix('V1')->group(function () {
 
     Route::prefix('dashboard')->middleware(['auth:sanctum'])->name('dashboard.')->group(function () {
         Route::resource('order', DashboardOrdersController::class);
+        Route::get('map', MapController::class);
         Route::resource('vendor', DashboardVendorsController::class);
         Route::put('vendor/status/{id}', [DashboardVendorsController::class , 'status']);
         Route::put('vendor/active/{id}', [DashboardVendorsController::class , 'active']);
