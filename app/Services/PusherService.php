@@ -14,7 +14,8 @@ class PusherService
     public function handle($data)
     {
         try {
-            $orders = Order::whereIn('status' , ['DELIVERING' , 'ONWAY'])->where('vendor_id' , Auth::user()->vendor->id)->get();
+            $orders = Order::whereIn('status' , ['DELIVERING' , 'ONWAY'])
+            ->where('vendor_id' , Auth::user()->vendor->id)->get();
             Vendor::find(Auth::user()->vendor->id)->update([
                 "lat" => $data["lat"] ?? "",
                 "lng" => $data["lng"] ?? "",
