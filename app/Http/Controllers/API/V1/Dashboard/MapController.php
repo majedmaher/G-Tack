@@ -16,6 +16,8 @@ class MapController extends Controller
             'vendors' => function () use ($request) {
                 $vendors = Vendor::whereHas('user', function ($qu) {
                     $qu->where('status', 'ACTIVE');
+                })->when($request->type, function ($q) use ($request) {
+                    $q->where('type', $request->type);
                 })->with('governorate', 'regions', 'user', 'attachments.document')
                     ->withCount('reviews')
                     ->withSum('reviews', 'rate')
@@ -26,12 +28,17 @@ class MapController extends Controller
             },
             'orders' => function () use ($request) {
                 $orders = Order::with('items', 'vendor', 'customer', 'address', 'statuses')
-                    ->where('status', '!=', 'COMPLETED')->get();
+                    ->where('status', '!=', 'COMPLETED')
+                    ->filter([
+                        'type' => $request->type,
+                    ])->get();
                 return parent::success($orders, "تمت العملية بنجاح");
             },
             'all' => function () use ($request) {
                 $vendors = Vendor::whereHas('user', function ($qu) {
                     $qu->where('status', 'ACTIVE');
+                })->when($request->type, function ($q) use ($request) {
+                    $q->where('type', $request->type);
                 })->with('governorate', 'regions', 'user', 'attachments.document')
                     ->withCount('reviews')
                     ->withSum('reviews', 'rate')
@@ -40,7 +47,9 @@ class MapController extends Controller
                     ->withAvg('orders', 'time')->get();
 
                 $orders = Order::with('items', 'vendor', 'customer', 'address', 'statuses')
-                    ->where('status', '!=', 'COMPLETED')->get();
+                ->filter([
+                    'type' => $request->type,
+                ])->where('status', '!=', 'COMPLETED')->get();
                 return parent::success(["orders" => $orders , "vendors" => $vendors], "تمت العملية بنجاح");
             },
             default => function () {
