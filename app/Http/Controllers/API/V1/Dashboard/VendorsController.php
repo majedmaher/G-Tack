@@ -175,7 +175,7 @@ class VendorsController extends Controller
                 }
             }
 
-            $vendor = Vendor::with('governorate', 'regions', 'user', 'attachments.document')
+            $vendor = Vendor::with('governorate', 'regions.region', 'user', 'attachments.document')
                 ->where('user_id', $user->id)
                 ->withCount('reviews')
                 ->withSum('reviews', 'rate')
@@ -203,7 +203,7 @@ class VendorsController extends Controller
      */
     public function show($id)
     {
-        $vendor = Vendor::with('governorate', 'region', 'user', 'attachments.document')->find($id);
+        $vendor = Vendor::with('governorate', 'regions.region', 'user', 'attachments.document')->find($id);
         return parent::success($vendor, 'تمت العملية بنجاح');
     }
 

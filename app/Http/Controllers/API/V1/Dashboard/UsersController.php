@@ -16,14 +16,10 @@ use Throwable;
 
 class UsersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
-        $users = User::with('role_has_user.role.permission' , 'logs')->when($request->type, function($q) use($request) {
+        $users = User::where('id' , '!=' , 1)->with('role_has_user.role.permission' , 'logs')->when($request->type, function($q) use($request) {
             $q->whereHas('role_has_user', function ($builder) use($request) {
                 $builder->whereHas('role', function ($builder2) use($request) {
                     $builder2->where('type' , $request->type);
@@ -33,12 +29,6 @@ class UsersController extends Controller
         return parent::success($users , 'تمت العملية بنجاح');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(UserRequest $userRequest)
     {
         DB::beginTransaction();
@@ -69,12 +59,6 @@ class UsersController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $user = User::with('role_has_user.role.permission' , 'logs')->where('type' , 'USER')->find($id);
@@ -82,13 +66,6 @@ class UsersController extends Controller
         return parent::success($user , 'تمت العملية بنجاح');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $roles = [
@@ -137,16 +114,26 @@ class UsersController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         User::find($id)->delete();
         CreatedLog::handle('حذف مستخدم');
         return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
+    }
+
+    public function status(Request $request , $id)
+    {
+        $validator = Validator($request->all(), [
+            'status' => 'required|in:ACTIVE,INACTIVE',
+        ], [
+            'status.required' => 'يرجى أرسال الحالة',
+            'status.in' => 'يرجى أختبار حالة بشكل صيحيح',
+        ]);
+        if (!$validator->fails()){
+            $user = User::with('role_has_user.role.permission' , 'logs')->find($id);
+            $user->update(['status' => $request->status]);
+            return parent::success($user , "تم العملية بنجاح");
+        }
+        return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(),  400);
     }
 }
