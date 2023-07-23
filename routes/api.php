@@ -96,6 +96,7 @@ Route::prefix('V1')->group(function () {
         Route::get('vendorreviews/{id?}', VendorReviewsController::class);
         Route::resource('customer', CustomersController::class);
         Route::put('customer/status/{id}', [CustomersController::class , 'status']);
+        Route::put('user/status/{id}', [UsersController::class , 'status']);
         Route::get('customerorders/{id}', CustomerOrdersController::class);
         Route::get('customerreviews/{id?}', CustomerReviewsController::class);
         Route::get('home', DashboardHomeController::class);

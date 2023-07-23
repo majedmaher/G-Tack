@@ -72,7 +72,7 @@ class OrdersController extends Controller
     public function show($id)
     {
         $order = Order::with('items', 'vendor', 'customer', 'address', 'statuses')
-            ->select('id', 'vendor_id', 'customer_id', 'number', 'status', 'note', 'total', 'start_time', 'end_time', 'time', 'created_at')
+            ->select('id', 'type' , 'vendor_id', 'customer_id', 'number', 'status', 'note', 'total', 'start_time', 'end_time', 'time', 'created_at')
             ->find($id);
         return parent::success($order, 'تمت العملية بنجاح');
     }
