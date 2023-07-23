@@ -39,6 +39,7 @@ class SearchController extends Controller
         foreach($vendors as $key => $value){
             $data['vendors'][$key]['id'] = $value->id;
             $data['vendors'][$key]['type'] = 'vendor';
+            $data['vendors'][$key]['status'] = $value->user->status;
             $data['vendors'][$key]['name'] = 'الموزع ' . $value->name;
         }
 
