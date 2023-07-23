@@ -60,7 +60,7 @@ Route::prefix('V1')->group(function () {
     Route::get('location', LocationsController::class);
     Route::get('layout', LayoutsController::class);
 
-    Route::prefix('customer')->middleware(['auth:sanctum'])->name('customer.')->group(function () {
+    Route::prefix('customer')->middleware(['auth:sanctum' , 'check.status.user'])->name('customer.')->group(function () {
         Route::get('home', [HomeController::class, 'home']);
         Route::resource('vendor', CustomerVendorsController::class);
         Route::resource('review', ReviewController::class);
@@ -72,7 +72,7 @@ Route::prefix('V1')->group(function () {
         Route::get('reason', ReasonsController::class);
     });
 
-    Route::prefix('vendor')->middleware(['auth:sanctum'])->name('vendor.')->group(function () {
+    Route::prefix('vendor')->middleware(['auth:sanctum' , 'check.status.user'])->name('vendor.')->group(function () {
         Route::resource('attachment', AttachmentsController::class);
         Route::resource('vendor', VendorsController::class);
         Route::resource('order', VendorOrdersController::class);
