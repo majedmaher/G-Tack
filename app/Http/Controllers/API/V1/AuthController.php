@@ -12,15 +12,17 @@ use App\Services\DivecTokensService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+
 class AuthController extends AuthBaseController
 {
     public function login(Request $request)
     {
         $roles = [
-            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'phone' => 'required|numeric|exists:users,phone|' . Rule::exists("users", "phone")->whereNull("deleted_at"),
             'type' => 'required|in:CUSTOMER,VENDOR,ADMIN,USER',
         ];
         $customMessages = [
@@ -30,15 +32,22 @@ class AuthController extends AuthBaseController
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if (!$validator->fails()) {
-            $user = User::where('phone', $request->phone)->where('type' , $request->type)->first();
-            if(!$user){
+            $user = User::where('phone', $request->phone)->where('type', $request->type)->first();
+            if (!$user) {
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
             $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $user->is_phone_verified = 1;
             $isSaved = $user->save();
-            if ($isSaved) {
+
+            $message = 'رمز التحقق هو: ' . $newCode;
+
+            $url = 'https://hotsms.ps/sendbulksms.php?user_name=Gtack&user_pass=7054467&sender=Gtack&mobile=' . $user->phone . '&type=0&text=' . $message;
+
+            $response = Http::get($url);
+
+            if ($isSaved && $response == "1001") {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             } else {
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
@@ -81,7 +90,7 @@ class AuthController extends AuthBaseController
             $user->otp = $newCode;
             $user->type = $request->type;
             if ($user->type == 'CUSTOMER') {
-            $user->status = 'ACTIVE';
+                $user->status = 'ACTIVE';
             }
             $isSaved = $user->save();
             if ($user->type == 'VENDOR') {
@@ -98,7 +107,7 @@ class AuthController extends AuthBaseController
                     $name = Str::random(12);
                     $path = $request->file('avatar');
                     $name = $name . time() . '.' . $request->file('avatar')->getClientOriginalExtension();
-                    $vendor->avatar = 'vendor/avatars/'.$name;
+                    $vendor->avatar = 'vendor/avatars/' . $name;
                     $path->move('vendor/avatars', $name);
                 }
                 $isSaved = $vendor->save();
@@ -117,9 +126,9 @@ class AuthController extends AuthBaseController
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
             }
         } else {
-            $user = User::where('phone' , $request->get('phone'))->onlyTrashed()->first();
+            $user = User::where('phone', $request->get('phone'))->onlyTrashed()->first();
             // return $user;
-            if($user){
+            if ($user) {
                 $user->restore();
                 if ($user->customer()->withTrashed()->exists()) {
                     $user->customer()->withTrashed()->restore();
@@ -149,7 +158,7 @@ class AuthController extends AuthBaseController
         if (!$validator->fails()) {
             $user = User::where('id', Auth::user()->id)->with('customer')->first();
             $user->name = $request->name;
-            if($user->phone != $request->phone){
+            if ($user->phone != $request->phone) {
                 $user->is_phone_verified = 1;
             }
             $user->phone = $request->phone;
@@ -171,11 +180,16 @@ class AuthController extends AuthBaseController
         }
     }
 
-    public function getUser(Request $request){
-        $user = User::with('customer' , 'vendor.regions.region')->find(Auth::user()->id);
-        return response()->json(['code' => 200 , 'status' => true,
-        'message' => "تمت العملية بنجاح" , 'data' => $user]
-        , 200);
+    public function getUser(Request $request)
+    {
+        $user = User::with('customer', 'vendor.regions.region')->find(Auth::user()->id);
+        return response()->json(
+            [
+                'code' => 200, 'status' => true,
+                'message' => "تمت العملية بنجاح", 'data' => $user
+            ],
+            200
+        );
     }
     public function deleteAcount(Request $request)
     {
@@ -185,24 +199,24 @@ class AuthController extends AuthBaseController
             $customer->delete();
             // $user->delete();
         } else {
-            $vendor = Vendor::whereHas('orders' , function($q){
-                $q->whereIn('status'  , ['PENDING' , 'ACCEPTED' , 'ONWAY' , 'PROCESSING' , 'FILLED' , 'DELIVERED']);
+            $vendor = Vendor::whereHas('orders', function ($q) {
+                $q->whereIn('status', ['PENDING', 'ACCEPTED', 'ONWAY', 'PROCESSING', 'FILLED', 'DELIVERED']);
             })->where('user_id', $user->id)->first();
-            if($vendor){
-                return ControllersService::generateProcessResponse(false, 'DELETE_FAILED' , 200);
+            if ($vendor) {
+                return ControllersService::generateProcessResponse(false, 'DELETE_FAILED', 200);
             }
             $vendor->delete();
             // $user->delete();
         }
-            return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS' , 200);
+        return ControllersService::generateProcessResponse(true, 'DELETE_SUCCESS', 200);
     }
 
-    public function submitCode(Request $request , DivecTokensService $divecTokensService)
+    public function submitCode(Request $request, DivecTokensService $divecTokensService)
     {
         // ارسال توكن
         $roles = [
             'otp' => 'required|numeric|digits:4',
-            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'phone' => 'required|numeric|exists:users,phone|' . Rule::exists("users", "phone")->whereNull("deleted_at"),
             'type' =>  'required|in:CUSTOMER,VENDOR,ADMIN,USER',
         ];
         $customMessages = [
@@ -214,7 +228,7 @@ class AuthController extends AuthBaseController
         $validator = Validator::make($request->all(), $roles, $customMessages);
         if ($validator->fails())
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
-        $user = User::where('phone', $request->phone)->where('type' , $request->type)->with('customer' , 'vendor.regions.region')->first();
+        $user = User::where('phone', $request->phone)->where('type', $request->type)->with('customer', 'vendor.regions.region')->first();
 
         if ($user) {
             $dataForToken = [
@@ -228,13 +242,15 @@ class AuthController extends AuthBaseController
                 $user->save();
                 $divecTokensService->handle($dataForToken);
                 return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
-            } elseif ($request->otp == 1234) {
-                $user->email_verified_at = Carbon::now();
-                $user->is_phone_verified = 1;
-                $user->save();
-                $divecTokensService->handle($dataForToken);
-                return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
-            } else {
+            }
+            //  elseif ($request->otp == 1234) {
+            //     $user->email_verified_at = Carbon::now();
+            //     $user->is_phone_verified = 1;
+            //     $user->save();
+            //     $divecTokensService->handle($dataForToken);
+            //     return $this->generateToken($user, 'LOGGED_IN_SUCCESSFULLY');
+            // }
+            else {
                 return ControllersService::generateProcessResponse(false, 'ERROR_CREDENTIALS', 200);
             }
         } else {
@@ -242,10 +258,11 @@ class AuthController extends AuthBaseController
         }
     }
 
-    public function verify_code(Request $request){
+    public function verify_code(Request $request)
+    {
         $roles = [
             'otp' => 'required|numeric|digits:4',
-            'phone' => 'required|numeric|exists:users,phone|'.Rule::exists("users", "phone")->whereNull("deleted_at"),
+            'phone' => 'required|numeric|exists:users,phone|' . Rule::exists("users", "phone")->whereNull("deleted_at"),
             'type' =>  'required|in:CUSTOMER,VENDOR,ADMIN,USER',
         ];
 
@@ -257,10 +274,10 @@ class AuthController extends AuthBaseController
         ];
 
         $validator = Validator::make($request->all(), $roles, $customMessages);
-        if ($validator->fails()){
+        if ($validator->fails()) {
             return ControllersService::generateValidationErrorMessage($validator->getMessageBag()->first(), 200);
         }
-        $user = User::where('phone', $request->phone)->where('type' , $request->type)->first();
+        $user = User::where('phone', $request->phone)->where('type', $request->type)->first();
         if ($user) {
             if ($request->otp == $user->otp && $request->otp == 1234) {
                 $user->email_verified_at = Carbon::now();
