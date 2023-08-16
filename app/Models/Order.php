@@ -28,6 +28,11 @@ class Order extends Model
 
     protected $guarded = [];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
+    ];
+
     protected static function booted()
     {
         static::creating(function (Order $order) {

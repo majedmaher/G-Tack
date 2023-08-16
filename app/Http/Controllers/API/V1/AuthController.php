@@ -43,11 +43,12 @@ class AuthController extends AuthBaseController
 
             $message = 'رمز التحقق هو: ' . $newCode;
 
-            $url = 'https://hotsms.ps/sendbulksms.php?user_name=Gtack&user_pass=7054467&sender=Gtack&mobile=' . $user->phone . '&type=0&text=' . $message;
+            $url = 'https://hotsms.ps/sendbulksms.php?user_name=Gtack&user_pass=7054467&sender=Gtack&mobile=97' . $user->phone . '&type=0&text=' . $message;
+            // $url = 'https://hotsms.ps/sendbulksms.php?user_name=Gtack&user_pass=7054467&sender=Gtack&mobile=970566020127&type=0&text=' . $message;
 
-            $response = Http::get($url);
+            Http::get($url);
 
-            if ($isSaved && $response == "1001") {
+            if ($isSaved) {
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             } else {
                 return ControllersService::generateProcessResponse(false, 'LOGIN_IN_FAILED', 200);
@@ -80,13 +81,13 @@ class AuthController extends AuthBaseController
             'region_id.exists' => 'لا توجد منطقة بهذا الأسم',
         ];
         $validator = Validator::make($request->all(), $roles, $customMessages);
+        $newCode = mt_rand(1000, 9999);
         if (!$validator->fails()) {
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->phone;
             $user->phone = $request->phone;
             $user->password = $request->phone;
-            $newCode = mt_rand(1000, 9999);
             $user->otp = $newCode;
             $user->type = $request->type;
             if ($user->type == 'CUSTOMER') {
@@ -127,12 +128,17 @@ class AuthController extends AuthBaseController
             }
         } else {
             $user = User::where('phone', $request->get('phone'))->onlyTrashed()->first();
-            // return $user;
             if ($user) {
                 $user->restore();
                 if ($user->customer()->withTrashed()->exists()) {
                     $user->customer()->withTrashed()->restore();
                 }
+                $message = 'رمز التحقق هو: ' . $newCode;
+
+                $url = 'https://hotsms.ps/sendbulksms.php?user_name=Gtack&user_pass=7054467&sender=Gtack&mobile=97' . $user->phone . '&type=0&text=' . $message;
+
+                Http::get($url);
+
                 return ControllersService::generateProcessResponse(true,  'AUTH_CODE_SENT', 200);
             }
             return ControllersService::generateValidationErrorMessage($validator->errors()->first(), 200);

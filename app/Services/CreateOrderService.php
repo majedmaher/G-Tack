@@ -24,7 +24,7 @@ class CreateOrderService
         try {
             $vendor = Vendor::with('user')->find($data['vendor_id']);
 
-            if($vendor->user->status != "ACTIVE" || $vendor->active != "ACTIVE" ){
+            if ($vendor->user->status != "ACTIVE" || $vendor->active != "ACTIVE") {
                 return ControllersService::generateProcessResponse(false, 'CREATE_FAILED', 200);
             }
 
@@ -36,6 +36,7 @@ class CreateOrderService
                 'note' => $data['note'],
                 'total' => $data['total'],
                 'type' => $data['type'],
+                'start_time' => now(),
             ]);
 
             $addressOrder = Address::find($data['address_id']);
